@@ -1,0 +1,32 @@
+name: Deployment to GCP
+
+on:
+    push:
+        branches:
+            - main
+            - deploy_test
+
+jobs:
+    deploy:
+        name: Deploy
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+
+            - name: SSH Key to talk to GCP
+              uses: webfactory/ssh-agent@v0.5.3
+              with:
+                ssh-private-key: ${{secrets.GCP_KEY}} #I hate this error, this DOES exist.
+            
+            - name: Ensure the "ubuntu" user has an empty repository folder
+              run: |
+                ssh -o StrictHostKeyChecking=no "ubuntu@${{ secrets.IP }}" "rm -rf /home/ubuntu/repository && mkdir -p /home/ubuntu/repository"
+            
+            - name: Upload All files to VM
+              run: |
+                scp -o StrictHostKeyChecking=no -r ./* "ubuntu@${{ secrets.IP }}":/home/ubuntu/repository
+            
+            - name: Create the build & move it to main area
+              run: |
+                ssh -o StrictHostKeyChecking=no "ubuntu@${{ secrets.IP }}" 'bash -s' < ./deploy.sh
