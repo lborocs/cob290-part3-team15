@@ -44,7 +44,7 @@ echo "Installing all back end dependencies"
 sudo npm install
 
 echo "Starting the server"
-sudo IP=$IP pm2 start server.js
+sudo IP="$IP" pm2 start server.js
 sudo pm2 save
 
 echo "Complete!"
