@@ -5,9 +5,13 @@ function MessageBox() {
   useEffect(() => {
     const messageButton = document.querySelector("#submit_message_button")
     messageButton.addEventListener("click", function(){
-      let message = document.getElementById("message_box").value;
+      let messageBox = document.getElementById("message_box");
+      let message = messageBox.value;
+      if (message === "") {
+        return;
+      }
       console.log(message);
-      document.getElementById("message_box").value = "";
+      messageBox.value = "";
     });
   }, []);
   return (
