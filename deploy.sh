@@ -26,6 +26,7 @@ echo "Ending all existing PM2 Processes"
 sudo pm2 stop all
 sudo pm2 delete all
 sudo pm2 kill
+sudo pm2 unstartup
 
 echo "Clearing old Backend"
 sudo rm -rf $BACK_END_SERVER/*
