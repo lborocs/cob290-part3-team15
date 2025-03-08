@@ -43,8 +43,11 @@ cd $BACK_END_SERVER
 echo "Installing all back end dependencies"
 sudo npm install
 
+echo "Adding IP to Env File"
+echo "IP=$IP" >> .env
+
 echo "Starting the server"
-sudo IP="$IP" pm2 start server.js
+sudo pm2 start server.js
 sudo pm2 save
 
 echo "Complete!"
