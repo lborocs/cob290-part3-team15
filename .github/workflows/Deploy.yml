@@ -29,4 +29,5 @@ jobs:
             
             - name: Create the build & move it to main area
               run: |
-                ssh -o StrictHostKeyChecking=no "ubuntu@${{ secrets.IP }}" 'bash -s' < ./deploy.sh
+                ssh -o StrictHostKeyChecking=no "ubuntu@${{ secrets.IP }}" 'export IP=http://${{ secrets.IP }} && bash -s' < ./deploy.sh
+
