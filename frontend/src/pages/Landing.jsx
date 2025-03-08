@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import viteLogo from '../assets/example.png';
 import Message from '../components/chat/Message'
+import MessageBox from '../components/chat/MessageBox';
       
 //This is the boilerplate stuff
 function Landing(){
@@ -31,6 +32,8 @@ function Landing(){
         <p className="read-the-docs">
             Click on the Vite and React logos to learn more
         </p>
+        {/* This is the MessageBox Component */}
+        <MessageBox messageBox/>
         </>
     )
 }
