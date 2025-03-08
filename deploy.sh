@@ -4,7 +4,7 @@ BACK_END_SERVER="/home/ubuntu/backend"
 STATIC_DIR="/home/ubuntu/static-files"
 TARGET_DIR="/var/www/html"
 
-
+#Frontend
 cd $FRONT_END
 echo "Installing all front end dependencies"
 npm install
@@ -21,11 +21,12 @@ sudo cp -r $FRONT_END/dist/* $TARGET_DIR/
 echo "Restarting Apache..."
 sudo systemctl restart apache2
 
+#Backend
 echo "Ending all existing PM2 Processes"
 sudo pm2 kill
 
 echo "Clearing old Backend"
-sudo rm -rf $BACK_END/*
+sudo rm -rf $BACK_END_SERVER/*
 
 echo "Copying Static files to new Backend"
 sudo cp -r $STATIC_DIR/* $BACK_END_SERVER
