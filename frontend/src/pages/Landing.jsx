@@ -14,7 +14,7 @@ function Landing(){
     //This is a function to fetch data via axios(front) and express(back)
     const exampleRestfulFetch1 = async() => {
         try{
-            const response = await axios.get("http://localhost:3000/chat/getMessage"); //This doesn't have id=? -> It should generate an error
+            const response = await axios.get("/api/chat/getMessage"); //This doesn't have id=? -> It should generate an error
             if (response?.data?.results){
                 setDisplayedData(response.data.results);
             }
@@ -41,7 +41,7 @@ function Landing(){
 
     const exampleRestfulFetch2 = async(number) => {
         try{
-            const response = await axios.get(`http://localhost:3000/chat/getMessage?id=${number}`);
+            const response = await axios.get(`/api/chat/getMessage?id=${number}`);
             //The question mark here basically handles undefined, so data?.test being nothing would do the exit case
             if (response?.data?.results){
                 setDisplayedData(JSON.stringify(response?.data?.results)); //Display purely json response for example
