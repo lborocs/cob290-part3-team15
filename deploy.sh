@@ -23,6 +23,8 @@ sudo systemctl restart apache2
 
 #Backend
 echo "Ending all existing PM2 Processes"
+sudo pm2 stop all
+sudo pm2 delete all
 sudo pm2 kill
 
 echo "Clearing old Backend"
