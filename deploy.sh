@@ -25,15 +25,15 @@ echo "Ending all existing PM2 Processes"
 sudo pm2 kill
 
 echo "Clearing old Backend"
-sudo rm -rf "$BACK_END/*"
+sudo rm -rf $BACK_END/*
 
 echo "Copying Static files to new Backend"
-sudo cp -r "$STATIC_DIR"/* "$BACK_END_SERVER"
+sudo cp -r $STATIC_DIR/* $BACK_END_SERVER
 
 echo "Copying Back end from Repository"
-sudo cp -r "$BACK_END/*" "$BACK_END_SERVER"
+sudo cp -r $BACK_END/* $BACK_END_SERVER
 
-cd "$BACK_END_SERVER"
+cd $BACK_END_SERVER
 echo "Installing all back end dependencies"
 sudo npm install
 
