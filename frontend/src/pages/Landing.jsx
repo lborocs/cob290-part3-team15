@@ -1,11 +1,13 @@
 import { useState,useEffect } from 'react';
 import viteLogo from '../assets/example.png';
+import Message from '../components/chat/Message'
 import axios from "axios";
       
 //This is the boilerplate stuff
 function Landing(){
     //Use State is just like default.. count is the variable, setCount is a function to redefine the useState
     const [count, setCount] = useState(0);
+    const jsonMessage = {user:"Example",content:"Body"}
     const [displayedData, setDisplayedData] = useState(null);
 
 
@@ -74,6 +76,9 @@ function Landing(){
             </a>
         </div>
         <h1>Vite + React</h1>
+        {/*This is Rogger's Message Component*/}
+
+        <Message message={jsonMessage}/>
         {/*This is an example of conditional css i made, when the count variable is less than 5, it includes text_danger (red text) otherwise it doesn't*/}
         <div className="card">
             <button onClick={() => {updateCounter()}}>
