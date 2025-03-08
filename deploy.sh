@@ -4,6 +4,8 @@ BACK_END_SERVER="/home/ubuntu/backend"
 STATIC_DIR="/home/ubuntu/static-files"
 TARGET_DIR="/var/www/html"
 
+echo $IP
+
 #Frontend
 cd $FRONT_END
 echo "Installing all front end dependencies"
