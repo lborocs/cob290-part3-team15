@@ -11,14 +11,22 @@ function Landing(){
 
     //This is a function to fetch data via axios(front) and express(back)
     const exampleRestfulFetch1 = async() => {
-        const response = await axios.get("http://localhost:3000/addFive");
-        //The question mark here basically handles undefined, so data?.test being nothing would do the exit case
-        console.log(response.data?.result)
-        if (response?.data?.result){
-            setDisplayedData(response.data.result); //Display purely json response for example
+        try{
+            const response = await axios.get("http://localhost:3000/chat/getMessage"); //This doesn't have id=? -> It should generate an error
+            if (response?.data?.results){
+                setDisplayedData(response.data.results);
+            }
+            else{
+                setDisplayedData(null);
+            }
         }
-        else{
-            setDisplayedData(null);
+        catch (error) {
+            if (error.response) {
+                setDisplayedData("Error: " + error.response.data?.error || "Bad request");
+            }
+            else {
+                setDisplayedData("An unexpected error occurred");
+            }
         }
     }
 
@@ -30,14 +38,23 @@ function Landing(){
     
 
     const exampleRestfulFetch2 = async(number) => {
-        const response = await axios.get(`http://localhost:3000/addFive?number=${number}`);
-        //The question mark here basically handles undefined, so data?.test being nothing would do the exit case
-        console.log(response.data?.result)
-        if (response?.data?.result){
-            setDisplayedData(response.data.result); //Display purely json response for example
+        try{
+            const response = await axios.get(`http://localhost:3000/chat/getMessage?id=${number}`);
+            //The question mark here basically handles undefined, so data?.test being nothing would do the exit case
+            if (response?.data?.results){
+                setDisplayedData(JSON.stringify(response?.data?.results)); //Display purely json response for example
+            }
+            else{
+                setDisplayedData(null);
+            }
         }
-        else{
-            setDisplayedData(null);
+        catch (error) {
+            if (error.response) {
+                setDisplayedData("Error: " + error.response.data?.error || "Bad request");
+            }
+            else {
+                setDisplayedData("An unexpected error occurred");
+            }
         }
     }
 
@@ -72,7 +89,7 @@ function Landing(){
 
         {/*This is basically an if statement*/}
         {displayedData!==null?
-        <p className="text-danger">The value of the counter + 5 = {displayedData}</p>
+        <p className="text-danger">MessageID {count} : {displayedData}</p>
         :
         <></>}
         

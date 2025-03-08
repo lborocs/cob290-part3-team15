@@ -7,14 +7,14 @@ const port = 3000;
 const corsOptions = {
     origin: ["http://localhost:5173"],
 };
-
 app.use(cors(corsOptions));
-app.get("/addFive",(req,res) => {
-    const inputValue = req.query.number;
-    const number = parseFloat(inputValue);
-    const result = isNaN(number) ? 5 : number + 5;
-    res.json({result:result});
-});
+
+//Import Routes 
+const chat = require("./routes/chat");
+
+//Use Routes E.g. localhost:3000/chat/???
+app.use("/chat", chat); 
+
 
 
 app.listen(port, () => {
