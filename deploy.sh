@@ -34,6 +34,7 @@ echo "Clearing old Backend"
 sudo rm -rf $BACK_END_SERVER/*
 
 echo "Copying Static files to new Backend"
+sudo cp -r $STATIC_DIR/.env $BACK_END_SERVER
 sudo cp -r $STATIC_DIR/* $BACK_END_SERVER
 
 echo "Copying Back end from Repository"
