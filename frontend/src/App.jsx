@@ -5,6 +5,7 @@ import './App.css';
 //Page imports
 import Landing from './pages/Landing';
 import PageDoesNotExist from './pages/PageDoesNotExist';
+import Chat from './pages/Chat';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       {/*2 Button page*/}
       <Route path="/" element={<Landing/>}/>
       {/*Our subsystems (Import page and replace the <Landing/> part)*/}
-      <Route path="/chat" element={<Landing/>}/>
+      <Route path="/chat" element={<Chat/>}/>
       <Route path="/data" element={<Landing/>}/>
 
       {/*Catch case, everything else goes to PageDoesNotExist.jsx*/}
