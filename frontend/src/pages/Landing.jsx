@@ -1,7 +1,9 @@
 import { useState,useEffect } from 'react';
 import viteLogo from '../assets/example.png';
 import Message from '../components/chat/Message'
+import MessageBox from '../components/chat/MessageBox';
 import axios from "axios";
+
       
 //This is the boilerplate stuff
 function Landing(){
@@ -91,6 +93,9 @@ function Landing(){
         <p className="read-the-docs">
             Click on the Vite and React logos to learn more
         </p>
+        
+        {/* This is the MessageBox Component */}
+        <MessageBox/>
 
         {/*This is basically an if statement*/}
         {displayedData!==null?
