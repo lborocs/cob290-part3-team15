@@ -7,16 +7,16 @@ function MessageBox() {
   const [message, SetMessage] = useState("");
   // Update handler function
   const handleMessageChange = (newMessage) => {
-    SetMessage(newMessage);
+    SetMessage(newMessage); // Updates the message state upon chanigng the textfield
   }
 
   // onSubmit function
   const onSubmit = () => {
     if (message===""){
-      return
+      return 
     }
     console.log(message);
-    SetMessage(message);
+    SetMessage(""); // Clear the message box
   }
   return (
     <div className="form-group d-flex justify-content-center">
