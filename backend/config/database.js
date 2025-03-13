@@ -11,6 +11,7 @@ console.log(`
 [STATUS] username: ${dbUser}
 [STATUS] password: ${dbPassword}
 [STATUS] database name: ${dbDatabase}
+[STATUS] test message
 `);
 
 //Database Connection
