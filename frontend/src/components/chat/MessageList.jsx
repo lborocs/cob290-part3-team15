@@ -8,3 +8,5 @@ function MessageList({ messages, userID }) {
     </div>
   );
 }
+
+export default MessageList;
