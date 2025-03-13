@@ -70,34 +70,35 @@ function Landing(){
 
     return(
         <>
-        <div>
-            <a href="https://vite.dev" target="_blank">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-            </a>
-        </div>
-        <h1>Vite + React</h1>
-        {/*This is Rogger's Message Component*/}
+        <div className="flex flex-col items-center justify-center h-screen">
+            <div className="flex items-center justify-center">
+                <a href="https://vite.dev" target="_blank">
+                <img src={viteLogo} className="logo" alt="Vite logo" />
+                </a>
+            </div>
+            <h1>Vite + React</h1>
+            {/*This is Rogger's Message Component*/}
 
-        <Message message={jsonMessage}/>
-        {/*This is an example of conditional css i made, when the count variable is less than 5, it includes text_danger (red text) otherwise it doesn't*/}
-        <div className="card">
-            <button onClick={() => {updateCounter()}}>
-                <p className={`${count < 5 ? 'text-danger' : ''}`}>count is {count}</p>
-            </button>
-            <p>
-                Edit <code>../src/App.jsx</code> and save to test HMR
+            <Message message={jsonMessage}/>
+            {/*This is an example of conditional css i made, when the count variable is less than 5, it includes text_danger (red text) otherwise it doesn't*/}
+            <div className="card">
+                <button onClick={() => {updateCounter()}}>
+                    <p className={`${count < 5 ? 'text-danger' : ''}`}>count is {count}</p>
+                </button>
+                <p>
+                    Edit <code>../src/App.jsx</code> and save to test HMR
+                </p>
+            </div>
+            <p className="read-the-docs">
+                Click on the Vite and React logos to learn more
             </p>
-        </div>
-        <p className="read-the-docs">
-            Click on the Vite and React logos to learn more
-        </p>
 
-        {/*This is basically an if statement*/}
-        {displayedData!==null?
-        <p className="text-danger">MessageID {count} : {displayedData}</p>
-        :
-        <></>}
-        
+            {/*This is basically an if statement*/}
+            {displayedData!==null?
+            <p className="text-red-200">MessageID {count} : {displayedData}</p>
+            :
+            <></>}
+        </div>
         </>
     )
 }

@@ -11,12 +11,12 @@ function Chat(){
     //On window width resize
     useEffect(() => {
         //If the screen is small and you can reset the sidebar, reset it
-        if (windowWidth < 768 && !hasResetSidebar) {
+        if (windowWidth < 1024 && !hasResetSidebar) {
             setSidebarVisible(true);
             setHasResetSidebar(true);
         } 
         //Reset becomes available if large again
-        else if (windowWidth >= 768 && hasResetSidebar) {
+        else if (windowWidth >= 1024 && hasResetSidebar) {
             setHasResetSidebar(false);
             setSidebarVisible(true);
         }
@@ -26,43 +26,29 @@ function Chat(){
         //This is a temporary presentation of what we can do for our layout see the real thing below with some components (Update as required)
 
         //Full container
-        <div className="d-flex vh-100 vw-100 position-relative">
+        <div className="flex h-full w-full relative">
         {/*Leftmost Sidebar (For tab switching) : Never changes */}
-        <div className="vh-100 bg-danger" style={{ width: "80px" }}>
-        {windowWidth<768 && !sidebarVisible ?
-        <button className="mt-2 p-0 ms-auto border border-2 border-white bg-transparent" onClick={(e) => setSidebarVisible(true)} style={{ width: "60px", height: "60px" }}><BsArrowBarRight style={{ width: "30px", height: "30px" }} /></button>
+        <div className="h-full bg-red-500 w-[80px]">
+        {!sidebarVisible ?
+        <button className="lg:hidden mt-2 p-0 ms-auto border-2 border-white bg-transparent w-[60px] h-[60px]" onClick={(e) => setSidebarVisible(true)}><BsArrowBarRight className="w-[30px] h-[30px]" /></button>
         :<></>}
         </div>
 
         {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
-        <div className="d-flex position-relative flex-grow-1">
+        <div className="flex flex-1 relative">
             {sidebarVisible ? 
-            <div className={`d-flex vh-100 bg-warning sidebar-scaling ${windowWidth<576 ? "" : "flex-grow-0"}`} style={{ width: windowWidth<576? "100%": "300px" }}>
-                {windowWidth<768 ? 
-                <button className="mt-2 me-2 p-0 ms-auto border border-2 border-white bg-transparent" onClick={(e) => setSidebarVisible(false)} style={{ width: "60px", height: "60px" }}><BsArrowBarLeft style={{ width: "30px", height: "30px" }} /></button>
-                :<></>}
+            <div className={`flex h-full bg-orange-200 sm:max-lg:fixed sm:flex:1 sm:w-[300px] w-full`}> 
+                <button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px]" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>
             </div>
             :<></>}
             
-            {windowWidth>=576 || !sidebarVisible ?
-            <div className="d-flex flex-column flex-grow-1 vh-100">
-                <div className="blue" style={{ width: "100%", height:"100px" }}>Hi</div>
-                <div className="green flex-grow-1" style={{ width: "100%" }}></div>
+            {/*Main Chat Area*/}
+            <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-full`}>
+                <div className="bg-blue-200 w-full h-[100px]">Hi</div>
+                <div className="bg-green-200 flex-1 h-full w-full"></div>
             </div>
-            :<></>}
         </div>  
     </div>
-
-    // Stuff to actually use, the above is pre components just to visually see
-    /*
-    <div className="d-flex vh-100 vw-100 position-relative">
-        <div className="vh-100 bg-danger " style={{ width: "80px" }}></div>
-        <div className="d-flex position-relative flex-grow-1">
-            <Sidebar type=?/>
-            <Chat />
-        </div>
-    </div>
-    */
     )
 }
 
