@@ -2,16 +2,20 @@ import {useWindowSize,useWindowWidth,useWindowHeight} from '@react-hook/window-s
 import { BsArrowBarLeft } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
 import { useState,useEffect } from 'react';
-
-import Message from '../components/chat/Message.jsx';   
-
+ 
+import MessageList from '../components/chat/MessageList.jsx';
 function Chat(){
     const windowWidth = useWindowWidth();
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
     const [sidebarVisible, setSidebarVisible] = useState(true);
 
-    const jsonMessage = {user:"1",content:"Body"}
-    const userID = 0;
+    const jsonMessages = [
+        {user:"1",content:"Body"},
+        {user:"2", content:"Body2"},
+        {user:"2",content:"Body3"},
+        {user:"1", content:"Body4"}
+    ];
+    const userID = 1;
 
     //On window width resize
     useEffect(() => {
@@ -51,7 +55,7 @@ function Chat(){
             <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-full`}>
                 <div className="bg-blue-200 w-full h-[100px]">Hi</div>
                 <div className="flex flex-col bg-green-200 flex-1 h-full w-full px-4">
-                    <Message message = {jsonMessage} userID = {userID}/>
+                    <MessageList messages = {jsonMessages} userID = {userID}/>
                 </div>
             </div>
         </div>  
