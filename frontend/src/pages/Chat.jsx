@@ -13,6 +13,18 @@ function Chat(){
         {user:"1",content:"Body"},
         {user:"2", content:"Body2"},
         {user:"2",content:"Body333333333333333333333333333333"},
+        {user:"1",content:"Body"},
+        {user:"2", content:"Body2"},
+        {user:"2",content:"Body333333333333333333333333333333"},
+        {user:"1",content:"Body"},
+        {user:"2", content:"Body2"},
+        {user:"2",content:"Body333333333333333333333333333333"},
+        {user:"1",content:"Body"},
+        {user:"2", content:"Body2"},
+        {user:"2",content:"Body333333333333333333333333333333"},
+        {user:"1",content:"Body"},
+        {user:"2", content:"Body2"},
+        {user:"2",content:"Body333333333333333333333333333333"},
         {user:"1", content:"Body4"}
     ];
     const userID = 1;
@@ -41,6 +53,7 @@ function Chat(){
             {!sidebarVisible ?
             <button className="lg:hidden mt-2 p-0 ms-auto border-2 border-white bg-transparent w-[60px] h-[60px]" onClick={(e) => setSidebarVisible(true)}><BsArrowBarRight className="w-[30px] h-[30px]" /></button>
             :<></>}
+            <p>Navbar</p>
         </div>
 
         {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
@@ -52,9 +65,9 @@ function Chat(){
             :<></>}
             
             {/*Main Chat Area*/}
-            <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-full`}>
-                <div className="bg-blue-200 w-full h-[100px]">Hi</div>
-                <div className="flex flex-col bg-green-200 flex-1 h-fit min-h-[calc(100%-100px)] w-full px-4">
+            <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-full relative`}>
+                <div className="bg-blue-200 w-full h-[100px] fixed">Chat</div>
+                <div className="flex flex-col bg-green-200 flex-1 h-fit min-h-[calc(100%-100px)] w-full px-4 mt-[100px]">
                     <MessageList messages = {jsonMessages} userID = {userID}/>
                 </div>
             </div>
