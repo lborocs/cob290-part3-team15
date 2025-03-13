@@ -59,7 +59,7 @@ function Chat(){
         {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
         <div className="flex flex-1 relative ml-[80px]">
             {sidebarVisible ? 
-            <div className={`flex h-full bg-orange-200 fixed sm:flex:1 sm:w-[300px] w-full`}> 
+            <div className={`flex h-full bg-orange-200 fixed sm:flex:1 sm:w-[300px] w-full relative`}> 
                 <button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px]" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>
             </div>
             :<></>}
