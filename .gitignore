@@ -25,3 +25,4 @@ dist-ssr
 
 #Extra
 backend/.env
+backend/make_it_all.sql
