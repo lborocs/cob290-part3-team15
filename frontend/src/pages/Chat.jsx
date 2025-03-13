@@ -12,7 +12,7 @@ function Chat(){
     const jsonMessages = [
         {user:"1",content:"Body"},
         {user:"2", content:"Body2"},
-        {user:"2",content:"Body3"},
+        {user:"2",content:"Body333333333333333333333333333333"},
         {user:"1", content:"Body4"}
     ];
     const userID = 1;
