@@ -81,21 +81,21 @@ function Landing(){
 
             <Message message={jsonMessage}/>
             {/*This is an example of conditional css i made, when the count variable is less than 5, it includes text_danger (red text) otherwise it doesn't*/}
-            <div className="card">
-                <button onClick={() => {updateCounter()}}>
-                    <p className={`${count < 5 ? 'text-danger' : ''}`}>count is {count}</p>
+            <div className="p-[2em]">
+                <button className={`hover:bg-red-400 bg-gray-300 hover:text-white ${count < 5 ? 'text-red-400' : ''}  rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {updateCounter()}}>
+                    <p>count is {count}</p>
                 </button>
                 <p>
                     Edit <code>../src/App.jsx</code> and save to test HMR
                 </p>
             </div>
-            <p className="read-the-docs">
+            <p className="color-[#888]">
                 Click on the Vite and React logos to learn more
             </p>
 
             {/*This is basically an if statement*/}
             {displayedData!==null?
-            <p className="text-red-200">MessageID {count} : {displayedData}</p>
+            <p className="text-red-500">MessageID {count} : {displayedData}</p>
             :
             <></>}
         </div>
