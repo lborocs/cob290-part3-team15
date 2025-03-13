@@ -4,6 +4,7 @@ import { BsArrowBarRight } from "react-icons/bs";
 import { useState,useEffect,useRef } from 'react';
  
 import MessageList from '../components/chat/MessageList.jsx';
+import MessageBox from '../components/chat/MessageBox.jsx';
 function Chat(){
     const messageContainerRef = useRef(null);
     const windowWidth = useWindowWidth();
@@ -77,6 +78,7 @@ function Chat(){
                     <div className="bg-blue-200 w-full h-[100px]">Chat</div>
                     <div className="flex flex-col bg-green-200 flex-1 max-h-[calc(100%-100px)] w-full px-4 overflow-y-scroll" ref={messageContainerRef}>
                         <MessageList messages = {jsonMessages} userID = {userID}/>
+                        <MessageBox />
                     </div>
                 </div>
             </div>  
