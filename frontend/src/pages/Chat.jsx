@@ -76,8 +76,11 @@ function Chat(){
                 {/*Main Chat Area*/}
                 <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-auto relative`}>
                     <div className="bg-blue-200 w-full h-[100px]">Chat</div>
-                    <div className="flex flex-col bg-green-200 flex-1 max-h-[calc(100%-100px)] w-full px-4 overflow-y-scroll" ref={messageContainerRef}>
-                        <MessageList messages = {jsonMessages} userID = {userID}/>
+                    <div className="flex flex-col flex-1 bg-green-200 h-[calc(100%-100px)]">
+                        <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
+                            <MessageList messages = {jsonMessages} userID = {userID}/>
+                            
+                        </div>
                         <MessageBox />
                     </div>
                 </div>
