@@ -1,10 +1,11 @@
 import {useWindowSize,useWindowWidth,useWindowHeight} from '@react-hook/window-size'
 import { BsArrowBarLeft } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
-import { useState,useEffect } from 'react';
+import { useState,useEffect,useRef } from 'react';
  
 import MessageList from '../components/chat/MessageList.jsx';
 function Chat(){
+    const messageContainerRef = useRef(null);
     const windowWidth = useWindowWidth();
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
     const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -43,6 +44,13 @@ function Chat(){
         }
     }, [windowWidth]);
 
+    useEffect(() => {
+        // Scroll to bottom on load
+        if (messageContainerRef.current) {
+          messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+        }
+      }, []);
+
     return(
         //This is a temporary presentation of what we can do for our layout see the real thing below with some components (Update as required)
 
@@ -65,7 +73,7 @@ function Chat(){
                 :<></>}
                 
                 {/*Main Chat Area*/}
-                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-auto relative`}>
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-auto relative`} ref={messageContainerRef}>
                     <div className="bg-blue-200 w-full h-[100px] fixed">Chat</div>
                     <div className="flex flex-col bg-green-200 flex-1 h-auto w-full px-4 mt-[100px]">
                         <MessageList messages = {jsonMessages} userID = {userID}/>
