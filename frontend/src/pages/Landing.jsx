@@ -6,7 +6,7 @@ import Message from '../components/chat/Message.jsx';
 function Landing(){
     //Use State is just like default.. count is the variable, setCount is a function to redefine the useState
     const [count, setCount] = useState(0);
-    const jsonMessage = [
+    const jsonMessages = [
         {messageID:1, userID:1,content:Body}, 
         {messageID:2, userID:2,content:Body2}
     ];
@@ -68,7 +68,7 @@ function Landing(){
             <p className="color-[#888]">
                 Click on the Vite and React logos to learn more
             </p>
-            <Message message = {jsonMessage} userID = {userID}/>
+            <MessageList messageList = {jsonMessages} userID = {userID}/>
         </div>
         </>
     )
