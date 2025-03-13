@@ -47,32 +47,32 @@ function Chat(){
         //This is a temporary presentation of what we can do for our layout see the real thing below with some components (Update as required)
 
         //Full container
-        <div className="flex h-full w-full relative">
-        {/*Leftmost Sidebar (For tab switching) : Never changes */}
-        <div className="h-full bg-red-500 w-[80px] fixed">
-            {!sidebarVisible ?
-            <button className="lg:hidden mt-2 p-0 ms-auto border-2 border-white bg-transparent w-[60px] h-[60px]" onClick={(e) => setSidebarVisible(true)}><BsArrowBarRight className="w-[30px] h-[30px]" /></button>
-            :<></>}
-            <p>Navbar</p>
-        </div>
+        <div className="flex h-screen w-screen relative">
+            {/*Leftmost Sidebar (For tab switching) : Never changes */}
+            <div className="h-full bg-red-500 w-[80px] fixed z-10">
+                <p>Navbar</p>
+                {!sidebarVisible ?
+                <button className="lg:hidden mt-2 p-0 ms-auto border-2 border-white bg-transparent w-[60px] h-[60px]" onClick={(e) => setSidebarVisible(true)}><BsArrowBarRight className="w-[30px] h-[30px]" /></button>
+                :<></>}  
+            </div>
 
-        {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
-        <div className="flex flex-1 relative ml-[80px]">
-            {sidebarVisible ? 
-            <div className={`flex h-full bg-orange-200 fixed sm:flex:1 sm:w-[300px] w-full relative`}> 
-                <button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px]" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>
-            </div>
-            :<></>}
-            
-            {/*Main Chat Area*/}
-            <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-full relative`}>
-                <div className="bg-blue-200 w-full h-[100px] fixed">Chat</div>
-                <div className="flex flex-col bg-green-200 flex-1 h-fit min-h-[calc(100%-100px)] w-full px-4 mt-[100px]">
-                    <MessageList messages = {jsonMessages} userID = {userID}/>
+            {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
+            <div className="flex flex-1 relative ml-[80px]">
+                {sidebarVisible ? 
+                <div className={`flex h-full bg-orange-200 fixed sm:flex:1 sm:w-[300px] w-[calc(100%-80px)] z-10`}> 
+                    <button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>
                 </div>
-            </div>
-        </div>  
-    </div>
+                :<></>}
+                
+                {/*Main Chat Area*/}
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-auto relative`}>
+                    <div className="bg-blue-200 w-full h-[100px] fixed">Chat</div>
+                    <div className="flex flex-col bg-green-200 flex-1 h-auto w-full px-4 mt-[100px]">
+                        <MessageList messages = {jsonMessages} userID = {userID}/>
+                    </div>
+                </div>
+            </div>  
+        </div>
     )
 }
 
