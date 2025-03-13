@@ -1,19 +1,24 @@
 require('dotenv').config();
 const mysql = require("mysql2");
 
+const dbHost = process.env.DB_HOST || 'localhost';
+const dbUser = process.env.DB_USER || 'root';
+const dbPassword = process.env.DB_PASSWORD || '';
+const dbDatabase = process.env.DB_DATABASE || 'make_it_all';
+
 console.log(`
-[STATUS] Connecting to host: ${process.env.DB_HOST}
-[STATUS] username: ${process.env.DB_USER}
-[STATUS] password: ${process.env.DB_PASSWORD}
-[STATUS] database name: ${process.env.DB_DATABASE}
+[STATUS] Connecting to host: ${dbHost}
+[STATUS] username: ${dbUser}
+[STATUS] password: ${dbPassword}
+[STATUS] database name: ${dbDatabase}
 `);
 
 //Database Connection
 const database = mysql.createConnection({
-    host: process.env.DB_HOST, 
-    user: process.env.DB_USER, 
-    password: process.env.DB_PASSWORD, 
-    database: process.env.DB_DATABASE,
+    host: dbHost,
+    user: dbUser,
+    password: dbPassword,
+    database: dbDatabase,
 });
 
 database.connect((err) => {
