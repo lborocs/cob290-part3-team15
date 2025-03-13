@@ -6,7 +6,10 @@ import Message from '../components/chat/Message.jsx';
 function Landing(){
     //Use State is just like default.. count is the variable, setCount is a function to redefine the useState
     const [count, setCount] = useState(0);
-    const jsonMessage = {user:"1",content:"Body"}
+    const jsonMessage = [
+        {messageID:1, userID:1,content:Body}, 
+        {messageID:2, userID:2,content:Body2}
+    ];
     const [displayedData, setDisplayedData] = useState(null);
     const userID = 1;
 
