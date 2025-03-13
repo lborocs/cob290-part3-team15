@@ -3,10 +3,15 @@ import { BsArrowBarLeft } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
 import { useState,useEffect } from 'react';
 
+import Message from '../components/chat/Message.jsx';   
+
 function Chat(){
     const windowWidth = useWindowWidth();
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
     const [sidebarVisible, setSidebarVisible] = useState(true);
+
+    const jsonMessage = {user:"1",content:"Body"}
+    const userID = 0;
 
     //On window width resize
     useEffect(() => {
@@ -45,7 +50,9 @@ function Chat(){
             {/*Main Chat Area*/}
             <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-full`}>
                 <div className="bg-blue-200 w-full h-[100px]">Hi</div>
-                <div className="bg-green-200 flex-1 h-full w-full"></div>
+                <div className="flex flex-col bg-green-200 flex-1 h-full w-full px-4">
+                    <Message message = {jsonMessage} userID = {userID}/>
+                </div>
             </div>
         </div>  
     </div>
