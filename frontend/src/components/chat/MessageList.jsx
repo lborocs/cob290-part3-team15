@@ -1,4 +1,4 @@
-import Message from "../Message";
+import Message from "./Message";
 function MessageList({ messages, userID }) {
   return (
     <div className="flex flex-col">
