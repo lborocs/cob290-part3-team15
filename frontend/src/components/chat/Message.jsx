@@ -1,10 +1,10 @@
 function SelfMessage({ message }) {
   return(
-  <div className={`max-w-75 my-2 rounded-lg border border-2 px-5 py-2 text-base font-medium self-end bg-blue-300`} id="message">
-    <div className="self-start" id="message_user">
+  <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`} id="message">
+    <div className="self-start w-fit text-pretty break-all">
         {message.user}
     </div>
-    <div className="self-start" id="message_content">
+    <div className="self-start w-fit text-pretty break-all">
         {message.content}
     </div>
   </div>
@@ -13,11 +13,11 @@ function SelfMessage({ message }) {
 
 function OtherMessage({ message }) {
   return(
-  <div className={`max-w-75 my-2 rounded-lg border border-2 px-5 py-2 text-base font-medium self-start bg-gray-500`} id="message">
-    <div className="" id="message_user">
+  <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-gray-400 px-4 py-2 text-base font-medium self-start bg-gray-500`} id="message">
+    <div className="text-left w-fit text-pretty break-all">
         {message.user}
     </div>
-    <div className="" id="message_content">
+    <div className="text-left w-fit text-pretty break-all">
         {message.content}
     </div>
   </div>
