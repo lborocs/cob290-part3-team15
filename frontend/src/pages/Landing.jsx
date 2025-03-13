@@ -1,13 +1,14 @@
 import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import viteLogo from '../assets/example.png';
-      
+import Message from '../components/chat/Message.jsx';   
 //This is the boilerplate stuff
 function Landing(){
     //Use State is just like default.. count is the variable, setCount is a function to redefine the useState
     const [count, setCount] = useState(0);
-    const jsonMessage = {user:"Example",content:"Body"}
+    const jsonMessage = {user:"1",content:"Body"}
     const [displayedData, setDisplayedData] = useState(null);
+    const userID = 1;
 
     const updateCounter = () => {
         setCount(count+1);
@@ -64,6 +65,7 @@ function Landing(){
             <p className="color-[#888]">
                 Click on the Vite and React logos to learn more
             </p>
+            <Message message = {jsonMessage} userID = {userID}/>
         </div>
         </>
     )
