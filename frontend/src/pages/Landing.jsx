@@ -7,8 +7,8 @@ function Landing(){
     //Use State is just like default.. count is the variable, setCount is a function to redefine the useState
     const [count, setCount] = useState(0);
     const jsonMessages = [
-        {messageID:1, userID:1,content:Body}, 
-        {messageID:2, userID:2,content:Body2}
+        {messageID:1, userID:1,content:"Body"}, 
+        {messageID:2, userID:2,content:"Body2"}
     ];
     const [displayedData, setDisplayedData] = useState(null);
     const userID = 1;
@@ -68,7 +68,7 @@ function Landing(){
             <p className="color-[#888]">
                 Click on the Vite and React logos to learn more
             </p>
-            <MessageList messageList = {jsonMessages} userID = {userID}/>
+            {/* <MessageList messageList = {jsonMessages} userID = {userID}/> */}
         </div>
         </>
     )
