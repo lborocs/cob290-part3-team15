@@ -17,6 +17,10 @@ const chat = require("./routes/chat");
 app.use("/chat", chat); 
 
 
+//I had to do this, this is the escape error now.
+app.get("/getTeapot", (req,res) => {
+    res.status(418).send("I'm a teapot");
+})
 
 app.listen(port, "0.0.0.0" ,() => {
     console.log(`Example app listening on port ${port}`);
