@@ -26,6 +26,30 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `make_it_all` /*!40100 DEFAULT CHARACTE
 USE `make_it_all`;
 
 --
+-- Table structure for table `direct_message_attachments`
+--
+
+DROP TABLE IF EXISTS `direct_message_attachments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `direct_message_attachments` (
+  `MessageID` int(11) NOT NULL,
+  `AttachmentURL` varchar(512) NOT NULL,
+  PRIMARY KEY (`MessageID`,`AttachmentURL`),
+  CONSTRAINT `MessageID` FOREIGN KEY (`MessageID`) REFERENCES `direct_messages` (`MessageID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `direct_message_attachments`
+--
+
+LOCK TABLES `direct_message_attachments` WRITE;
+/*!40000 ALTER TABLE `direct_message_attachments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `direct_message_attachments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `direct_messages`
 --
 
@@ -66,9 +90,10 @@ CREATE TABLE `users` (
   `UserID` int(11) NOT NULL AUTO_INCREMENT,
   `Forename` varchar(64) NOT NULL,
   `Surname` varchar(64) NOT NULL,
-  `Role` enum('Staff','Manager') NOT NULL DEFAULT 'Staff',
+  `IsManager` tinyint(1) NOT NULL DEFAULT 0,
+  `IconURL` varchar(512) NOT NULL DEFAULT 'path/to/default/icon',
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,8 +102,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Staff');
-INSERT INTO `users` VALUES (2,'John','Smith','Manager');
+INSERT INTO `users` VALUES (1,'Mr','Mime',0,'path/to/default/icon');
+INSERT INTO `users` VALUES (2,'John','Smith',1,'path/to/default/icon');
+INSERT INTO `users` VALUES (3,'Bill','Boomstick',0,'path/to/default/icon');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -91,4 +117,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-13  5:10:16
+-- Dump completed on 2025-03-14 19:08:14
