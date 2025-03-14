@@ -81,7 +81,9 @@ function Chat(){
                             <MessageList messages = {jsonMessages} userID = {userID}/>
                             
                         </div>
-                        <MessageBox />
+                        <div className="bg-purple-500">
+                            <MessageBox />
+                        </div>
                     </div>
                 </div>
             </div>  
