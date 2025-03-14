@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Sidebar = ({ selectedID, setSelectedID }) => {
+const Sidebar = (props) => {
 
   //Temp
   const users = [1, 2, 3, 4, 5];
@@ -13,7 +13,7 @@ const Sidebar = ({ selectedID, setSelectedID }) => {
           <button
             key={user}
             className="p-2 bg-blue-500 text-white rounded"
-            onClick={() => setSelectedID(user)}
+            onClick={() => props.setSelectedID(user)}
           >
             User {user}
           </button>
@@ -22,8 +22,8 @@ const Sidebar = ({ selectedID, setSelectedID }) => {
 
       <div className="flex flex-col mt-4">
         {/* Display selected user */}
-        {selectedID !== null ? (
-          <p>User: {selectedID}</p>
+        {props.selectedID !== null ? (
+          <p>User: {props.selectedID}</p>
         ) : (
             <></>
         )}

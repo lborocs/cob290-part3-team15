@@ -9,11 +9,9 @@ function Content({ message }) {
   );
 }
 
-
-
 function SelfMessage({ message }) {
   return(
-    <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`} id="message">
+    <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}>
       <div className="self-start text-pretty break-all">
         <Content message={message}/>
       </div>
@@ -29,7 +27,7 @@ function OtherMessage({ message }) {
         {message.name}
       </div>
       }
-      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400 px-4 py-2 bg-gray-500`} id="message">
+      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400 px-4 py-2 bg-gray-500`}>
         <div className="text-left flex flex-col text-pretty break-all">
           <Content message={message}/>
         </div>
