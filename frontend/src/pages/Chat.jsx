@@ -7,15 +7,20 @@ import MessageList from '../components/chat/MessageList.jsx';
 import MessageBox from '../components/chat/MessageBox.jsx';
 
 import Sidebar from '../components/chat/Sidebar.jsx';
+import Navbar from '../components/navigation/Navbar.jsx';
 
 function Chat(){
     const messageContainerRef = useRef(null);
     const windowWidth = useWindowWidth();
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
-    const [sidebarVisible, setSidebarVisible] = useState(true);
 
     //Page specific state
     const [mode, setMode] = useState("direct_messages");
+
+    //Navbar
+    const [selectable,setSelectable] = useState(windowWidth<1024);
+    const [sidebarVisible, setSidebarVisible] = useState(true);
+    const activeTab="Chat"
 
     //Communication IDs
     const [userID,setUserID] = useState(1);
@@ -27,11 +32,13 @@ function Chat(){
         if (windowWidth < 1024 && !hasResetSidebar) {
             setSidebarVisible(true);
             setHasResetSidebar(true);
+            setSelectable(true);
         } 
         //Reset becomes available if large again
         else if (windowWidth >= 1024 && hasResetSidebar) {
             setHasResetSidebar(false);
             setSidebarVisible(true);
+            setSelectable(false);
         }
     }, [windowWidth]);
 
@@ -48,19 +55,14 @@ function Chat(){
         //Full container
         <div className="flex h-screen w-screen relative">
             {/*Leftmost Sidebar (For tab switching) : Never changes */}
-            <div className="h-full bg-red-500 w-[80px] z-10">
-                <p>Navbar</p>
-                {!sidebarVisible ?
-                <button className="lg:hidden mt-2 p-0 ms-auto border-2 border-white bg-transparent w-[60px] h-[60px]" onClick={(e) => setSidebarVisible(true)}><BsArrowBarRight className="w-[30px] h-[30px]" /></button>
-                :<></>}  
-            </div>
+            <Navbar selectable={selectable} isSelected={sidebarVisible} setIsSelected={setSidebarVisible} activeTab={activeTab}/>
 
             {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
             <div className="flex flex-1 relative">
                 {sidebarVisible ? 
-                <div className={`flex flex-col h-full fixed bg-orange-200 sm:flex:1 sm:w-[300px] w-[calc(100%-80px)] z-10`}> 
-                    <button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>
-                    <Sidebar selectedID={selectedID} setSelectedID={setSelectedID} />
+                <div className={`flex flex-col h-full fixed bg-orange-200 sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`}> 
+                    {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
+                    <Sidebar selectedID={selectedID} setSelectedID={setSelectedID}/>
                 </div>
                 :<></>}
                 

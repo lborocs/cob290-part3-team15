@@ -1,5 +1,5 @@
 import { useState,useEffect } from 'react';
-import viteLogo from '../assets/example.png';
+import viteLogo from '../assets/logo.png';
 import Message from '../components/chat/Message'
 import axios from "axios";
       
@@ -92,6 +92,11 @@ function Playground(){
             <p className="color-[#888]">
                 Click on the Vite and React logos to learn more
             </p>
+
+            <div className="flex w-1/4 h-20">
+                <div className="bg-text w-1/2"></div>
+                <div className="bg-textAlt w-1/2"></div>
+            </div>
 
             {/*This is basically an if statement*/}
             {displayedData!==null?

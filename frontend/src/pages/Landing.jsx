@@ -1,6 +1,6 @@
 import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import viteLogo from '../assets/example.png';
+import viteLogo from '../assets/logo.png';
 
 //This is the boilerplate stuff
 function Landing(){
