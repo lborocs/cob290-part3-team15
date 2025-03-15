@@ -1,3 +1,6 @@
+// Client socket
+import { socket } from '../socket';
+
 import {useWindowSize,useWindowWidth,useWindowHeight} from '@react-hook/window-size'
 import { BsArrowBarLeft } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
@@ -75,7 +78,7 @@ function Chat(){
                             
                         </div>
                         <div className="bg-purple-500">
-                            <MessageBox />
+                            <MessageBox userID = {userID} selectedID={selectedID} mode={mode}/>
                         </div>
                     </div>
                 </div>

@@ -32,7 +32,7 @@ function MessageList({userID, selectedID, mode}) {
       }
     }
     catch (error) {
-
+      // Empty as we log errors in the request response
     }
   }
 
