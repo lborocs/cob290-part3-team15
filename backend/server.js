@@ -22,6 +22,10 @@ app.get("/getTeapot", (req,res) => {
     res.status(418).send("I'm a teapot");
 })
 
+app.post("/postTeapot", (req,res) => {
+    res.status(418).send("I'm a teapot");
+})
+
 app.listen(port, "0.0.0.0" ,() => {
     console.log(`Example app listening on port ${port}`);
-  });
+});

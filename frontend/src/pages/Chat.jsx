@@ -73,7 +73,7 @@ function Chat(){
                             
                         </div>
                         <div className="bg-purple-500">
-                            <MessageBox />
+                            <MessageBox userID = {userID} selectedID={selectedID} mode={mode}/>
                         </div>
                     </div>
                 </div>

@@ -1,9 +1,10 @@
 import {BsSend} from 'react-icons/bs';
 import { useState } from 'react';
+import axios from "axios";
 
-function MessageBox() {
+function MessageBox({userID, selectedID, mode}) {
   
-  // Initialize use state, which contains the inital state and the function to update the state
+  // Initialize use state, which contains the initial state and the function to update the state
   const [message, SetMessage] = useState("");
   // Update handler function
   const handleMessageChange = (newMessage) => {
@@ -11,12 +12,35 @@ function MessageBox() {
   }
 
   // onSubmit function
-  const onSubmit = () => {
+  const onSubmit = async() => {
     if (message===""){
-      return 
+      return
     }
-    console.log(message);
-    SetMessage(""); // Clear the message box
+
+    let route = "/postTeapot"
+    //This is messy but I guess it works
+    if (mode === 'direct_messages'){
+      route='chat/sendDirectMessage';
+    }
+    else{
+      console.error("Mode Not Found")
+    }
+
+    //Actual API request
+    try{
+      const headers = {headers: {'Content-Type': 'application/json',}}
+      const body = {id:userID,target:selectedID,text:message,};
+      const response = await axios.post(`/api/${route}`, body, headers);
+      if (response?.data?.success){
+        SetMessage("");
+      }
+      else{
+        console.error("Message failed to send");
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
   }
   return (
     <div className="form-group d-flex justify-content-center">
