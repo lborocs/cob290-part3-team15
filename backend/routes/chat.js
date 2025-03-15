@@ -1,9 +1,8 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const router = express.Router();
 const database = require("../config/database");
 
-router.use(bodyParser.json()) // for parsing 'application/json'
+router.use(express.json()) // for parsing 'application/json'
 
 router.get("/getMessage",(req,res) => {
     const query="SELECT Sender,Recipient,Content FROM direct_messages WHERE MessageID=?";
@@ -48,9 +47,9 @@ router.post("/sendDirectMessage", (req,res) => {
     }
 
     const values = [id,target,text];
-    database.query(query, values, (err, results) =>{
-        if (!err) res.send({success: true});
-        else res.send({success: false});
+    database.query(query, values, err =>{
+        if (!err) res.status(200).json({ success: "Message sent successfully" });
+        else res.status(500).json({ error: "Server rejected message" });
     });
 });
 

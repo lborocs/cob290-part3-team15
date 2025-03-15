@@ -8,7 +8,7 @@ function MessageBox({userID, selectedID, mode}) {
   const [message, SetMessage] = useState("");
   // Update handler function
   const handleMessageChange = (newMessage) => {
-    SetMessage(newMessage); // Updates the message state upon changing the textfield
+    SetMessage(newMessage); // Updates the message state upon changing the text field
   }
 
   // onSubmit function
