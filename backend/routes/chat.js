@@ -18,7 +18,7 @@ router.get("/getMessage",(req,res) => {
 });
 
 router.get("/getDirectMessages",(req,res) => {
-    const query="SELECT direct_messages.messageID as messageID, users.Name as name,direct_messages.Content as content,direct_messages.Sender as user FROM direct_messages LEFT JOIN users ON direct_messages.Sender=users.UserID WHERE (Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)";
+    const query="SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user FROM direct_messages LEFT JOIN users ON direct_messages.Sender=users.UserID WHERE (Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)";
     const id = req.query.id;
     const target = req.query.target;
 
