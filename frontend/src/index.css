@@ -1,8 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
+
 
 
 @theme {
   --animate-wiggle: wiggle 1s ease-in-out infinite;
+  --font-sans: 'Inter', system-ui, Helvetica, Arial, sans-serif;
+  --color-primary: #F3F7F7;
+  --color-secondary: #C2C2C2;
+  --color-text: #2E2F2F;
+  --color-textAlt: #1D0C0C;
+  --color-blackFaded: rgba(0,0,0,0.1);
+  --color-accentGreen : #B7D7CC;
+  --color-accentOrange : #F6B964;
+  --color-accentBlue : #9DD486;
+
+  
+
 
   @keyframes wiggle {
     0%, 100% {
@@ -16,13 +30,10 @@
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-
   color: rgba(0, 0, 0, 1);
-  background-color: rgb(221, 221, 221);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

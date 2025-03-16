@@ -1,22 +1,46 @@
 import {BsSend} from 'react-icons/bs';
 import { useState } from 'react';
+import axios from "axios";
 
-function MessageBox() {
+function MessageBox({userID, selectedID, mode}) {
   
-  // Initialize use state, which contains the inital state and the function to update the state
-  const [message, SetMessage] = useState("");
+  // Initialize use state, which contains the initial state and the function to update the state
+  const [message, setMessage] = useState("");
   // Update handler function
   const handleMessageChange = (newMessage) => {
-    SetMessage(newMessage); // Updates the message state upon changing the textfield
+    setMessage(newMessage); // Updates the message state upon changing the text field
   }
 
   // onSubmit function
-  const onSubmit = () => {
+  const onSubmit = async() => {
     if (message===""){
-      return 
+      return
     }
-    console.log(message);
-    SetMessage(""); // Clear the message box
+
+    let route = "/postTeapot"
+    //This is messy but I guess it works
+    if (mode === 'direct_messages'){
+      route='chat/sendDirectMessage';
+    }
+    else{
+      console.error("Mode Not Found")
+    }
+
+    //Actual API request
+    try{
+      const headers = {headers: {'Content-Type': 'application/json',}}
+      const body = {id:userID,target:selectedID,text:message,};
+      const response = await axios.post(`/api/${route}`, body, headers);
+      if (response?.data?.success){
+        setMessage("");
+      }
+      else{
+        console.error("Message failed to send");
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
   }
   return (
     <div className="form-group d-flex justify-content-center">

@@ -1,12 +1,11 @@
 import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import viteLogo from '../assets/example.png';
-      
+import viteLogo from '../assets/logo.png';
+
 //This is the boilerplate stuff
 function Landing(){
     //Use State is just like default.. count is the variable, setCount is a function to redefine the useState
     const [count, setCount] = useState(0);
-    const jsonMessage = {user:"Example",content:"Body"}
     const [displayedData, setDisplayedData] = useState(null);
 
     const updateCounter = () => {
@@ -30,7 +29,7 @@ function Landing(){
             {/*General Navigation*/}
             <div className="flex flex-wrap items-center justify-center gap-x-4 my-4">
                 <button className={`w-50 my-2 hover:bg-red-400 bg-gray-300 hover:text-white ${count % 3 == 0 ? 'text-red-400' : ''}
-                    rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {navigate("/chat")}}>
+                    rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {navigate("/chat/")}}>
                     <p>To Chat</p>
                 </button>
                 <button className={`w-50 my-2 hover:bg-red-400 bg-gray-300 hover:text-white ${count % 3 == 1 ? 'text-red-400' : ''}
