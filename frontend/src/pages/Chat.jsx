@@ -29,7 +29,7 @@ function Chat(){
     const [refresh,setRefresh] = useState(0)
 
     //Communication IDs
-    const [userID,setUserID] = useState(1);
+    const [userID,setUserID] = useState(Math.floor(Math.random() * 2) + 1);
     const [selectedID, setSelectedID] = useState(2);
 
     //On window width resize
