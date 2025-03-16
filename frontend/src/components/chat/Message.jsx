@@ -20,14 +20,6 @@ const handleClick = (e) => {
 
 
 function SelfMessage({ message }) {
-  const handleClick = (e) => {
-    if (e.type === 'click'){
-      console.log("Left Click");
-    } else if (e.type === 'contextmenu'){
-      console.log("Right Click");
-    }
-  };
-
   return(
     <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}
       onClick={handleClick}
