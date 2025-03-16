@@ -58,14 +58,11 @@ function Chat(){
                 setRefresh(previous => previous + 1)
             });
         }
-        if (messageContainerRef.current) {
-          messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-        }
-
         return () => {
             disconnectSocket(); // Disconnect on unmount
         };
       }, []);
+
 
     return(
         //This is a temporary presentation of what we can do for our layout see the real thing below with some components (Update as required)
@@ -89,8 +86,7 @@ function Chat(){
                     <div className="bg-blue-200 w-full h-[100px]">Chat</div>
                     <div className="flex flex-col flex-1 bg-green-200 h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh}/>
-                            
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef}/>
                         </div>
                         <div className="bg-purple-500">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode}/>

@@ -2,7 +2,7 @@ import Message from "./Message";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function MessageList({userID, selectedID, mode, refresh}) {
+function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
   const [messages, setMessages] = useState([]);
   
 
@@ -40,6 +40,13 @@ function MessageList({userID, selectedID, mode, refresh}) {
   useEffect(()=>{
     getMessages();
   }, [selectedID,refresh])
+
+  useEffect(()=>{
+    if (messageContainerRef.current) messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+  }, [messages])
+
+
+  
   
   return (
     <div className="flex flex-col">
