@@ -7,18 +7,9 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
   
 
   const getMessages = async() => {
-    let route = "/getTeapot"
-    //This is messy but I guess it works
-    if (mode === 'direct_messages'){
-      route='chat/getDirectMessages';
-    }
-    else{
-      console.error("Mode Not Found")
-    }
-
     //Actual API request
     try{
-      const response = await axios.get(`/api/${route}?id=${userID}&target=${selectedID}`);
+      const response = await axios.get(`/api/chat/${mode}/getMessages?id=${userID}&target=${selectedID}`);
       if (response?.data?.results){
         // Hide name if back-to-back messages are from the same user
         const messagesWithShowName = response.data.results.map((message, index, arr) => {
@@ -36,10 +27,38 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
     }
   }
 
-    //A use effect with [] at the end just gets instantly called on page load
+  const getNewMessages = async() => {
+    //Actual API request
+    try{
+      const lastMessageTimestamp = messages.slice(-1)[0]?.timestamp || null;
+      if(lastMessageTimestamp){
+        const response = await axios.get(`/api/chat/${mode}/getMessagesAfter?id=${userID}&target=${selectedID}&after=${encodeURIComponent(lastMessageTimestamp)}`);
+        if (response?.data?.results){
+          //Hide name if back-to-back messages are from the same user
+          const lastMessageOwner = messages.slice(-1)[0]?.user || null;
+          const newMessages = response.data.results.map((message, index, arr) => {
+            const showName = (index === 0 && message.user === lastMessageOwner) ? false : (index === 0 || message.user !== arr[index - 1].user || message.user === userID);
+            return {
+              ...message,showName,};
+          });
+          setMessages(prevMessages => [...prevMessages, ...newMessages]);
+        }
+      }
+    }
+    catch (error) {
+      // Empty as we log errors in the request response
+    }
+  }
+
+  //Onload
   useEffect(()=>{
     getMessages();
-  }, [selectedID,refresh])
+  }, [selectedID])
+
+  //Refresh handler
+  useEffect(()=>{
+    getNewMessages();
+  }, [refresh])
 
   useEffect(()=>{
     if (messageContainerRef.current) messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
