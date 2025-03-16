@@ -1,3 +1,4 @@
+import MessageOptions from './MessageOptions.jsx';
 function Content({ message }) {
   return (
     <>
