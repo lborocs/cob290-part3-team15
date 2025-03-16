@@ -1,9 +1,9 @@
+import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 function MessageOptions(){
     return (
         <div className="">
-            <li className="">
-                <button>Edit</button>
-            </li>
+            <button class=""><BsThreeDots/></button>
+            <button class="hover: "><BsPencil/></button>
         </div>
     )
 }
