@@ -10,6 +10,15 @@ function Content({ message }) {
   );
 }
 
+const handleClick = (e) => {
+  if (e.type === 'click'){
+    console.log("Left Click");
+  } else if (e.type === 'contextmenu'){
+    console.log("Right Click");
+  }
+};
+
+
 function SelfMessage({ message }) {
   //Anti Right Click
   const handleRightClick = (event) => {
@@ -27,7 +36,10 @@ function SelfMessage({ message }) {
 
 function OtherMessage({ message }) {
   return(
-    <div className="max-w-3/4 text-base font-medium self-start">
+    <div className="max-w-3/4 text-base font-medium self-start"
+    onClick={handleClick}
+    onContextMenue={handleClick}
+    >
       {message.showName &&
       <div className="w-fit">
         {message.name}
