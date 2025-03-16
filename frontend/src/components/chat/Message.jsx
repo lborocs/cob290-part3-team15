@@ -10,9 +10,29 @@ function Content({ message }) {
   );
 }
 
+const handleClick = (e) => {
+  if (e.type === 'click'){
+    console.log("Left Click");
+  } else if (e.type === 'contextmenu'){
+    console.log("Right Click");
+  }
+};
+
+
 function SelfMessage({ message }) {
+  const handleClick = (e) => {
+    if (e.type === 'click'){
+      console.log("Left Click");
+    } else if (e.type === 'contextmenu'){
+      console.log("Right Click");
+    }
+  };
+
   return(
-    <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}>
+    <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}
+      onClick={handleClick}
+      onContextMenu={handleClick}
+    >
       <div className="self-start text-pretty break-all">
         <Content message={message}/>
       </div>
@@ -22,7 +42,10 @@ function SelfMessage({ message }) {
 
 function OtherMessage({ message }) {
   return(
-    <div className="max-w-3/4 text-base font-medium self-start">
+    <div className="max-w-3/4 text-base font-medium self-start"
+    onClick={handleClick}
+    onContextMenue={handleClick}
+    >
       {message.showName &&
       <div className="w-fit">
         {message.name}
