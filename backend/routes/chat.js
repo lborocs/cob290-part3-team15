@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
+const { io,connectedClients,alertMessage } = require('../socket');
 
 router.use(express.json()) // for parsing 'application/json'
 
@@ -48,9 +49,15 @@ router.post("/sendDirectMessage", (req,res) => {
 
     const values = [id,target,text];
     database.query(query, values, err =>{
-        if (!err) res.status(200).json({ success: "Message sent successfully" });
+        if (!err) {
+            const targetUser = String(req.body.target);
+            alertMessage(targetUser);
+            alertMessage(id); //Might as well do it here so all clients refresh
+            res.status(200).json({ success: "Message sent successfully" });
+        }
         else res.status(500).json({ error: "Server rejected message" });
     });
+    
 });
 
 module.exports = router;

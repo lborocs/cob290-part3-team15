@@ -2,7 +2,7 @@ import Message from "./Message";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function MessageList({userID, selectedID, mode}) {
+function MessageList({userID, selectedID, mode, refresh}) {
   const [messages, setMessages] = useState([]);
   
 
@@ -39,7 +39,7 @@ function MessageList({userID, selectedID, mode}) {
     //A use effect with [] at the end just gets instantly called on page load
   useEffect(()=>{
     getMessages();
-  }, [selectedID])
+  }, [selectedID,refresh])
   
   return (
     <div className="flex flex-col">

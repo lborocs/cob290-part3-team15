@@ -5,10 +5,10 @@ import axios from "axios";
 function MessageBox({userID, selectedID, mode}) {
   
   // Initialize use state, which contains the initial state and the function to update the state
-  const [message, SetMessage] = useState("");
+  const [message, setMessage] = useState("");
   // Update handler function
   const handleMessageChange = (newMessage) => {
-    SetMessage(newMessage); // Updates the message state upon changing the text field
+    setMessage(newMessage); // Updates the message state upon changing the text field
   }
 
   // onSubmit function
@@ -32,7 +32,7 @@ function MessageBox({userID, selectedID, mode}) {
       const body = {id:userID,target:selectedID,text:message,};
       const response = await axios.post(`/api/${route}`, body, headers);
       if (response?.data?.success){
-        SetMessage("");
+        setMessage("");
       }
       else{
         console.error("Message failed to send");
