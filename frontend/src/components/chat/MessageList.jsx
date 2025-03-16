@@ -2,7 +2,7 @@ import Message from "./Message";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function MessageList({userID, selectedID, mode}) {
+function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
   const [messages, setMessages] = useState([]);
   
 
@@ -39,7 +39,14 @@ function MessageList({userID, selectedID, mode}) {
     //A use effect with [] at the end just gets instantly called on page load
   useEffect(()=>{
     getMessages();
-  }, [selectedID])
+  }, [selectedID,refresh])
+
+  useEffect(()=>{
+    if (messageContainerRef.current) messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+  }, [messages])
+
+
+  
   
   return (
     <div className="flex flex-col">

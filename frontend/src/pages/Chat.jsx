@@ -1,5 +1,5 @@
 // Client socket
-import { socket } from '../socket';
+import { connectSocket, disconnectSocket,getSocket } from '../socket';
 
 import {useWindowSize,useWindowWidth,useWindowHeight} from '@react-hook/window-size'
 import { BsArrowBarLeft } from "react-icons/bs";
@@ -25,6 +25,9 @@ function Chat(){
     const [sidebarVisible, setSidebarVisible] = useState(true);
     const activeTab="Chat"
 
+    //Socket
+    const [refresh,setRefresh] = useState(0)
+
     //Communication IDs
     const [userID,setUserID] = useState(1);
     const [selectedID, setSelectedID] = useState(2);
@@ -47,10 +50,19 @@ function Chat(){
 
     useEffect(() => {
         // Scroll to bottom on load
-        if (messageContainerRef.current) {
-          messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+        connectSocket();  // Connect only if on /chat
+        const socket = getSocket();
+        if (socket){
+            socket.emit('setUserId', userID);
+            socket.on('newMessage', (data) => {
+                setRefresh(previous => previous + 1)
+            });
         }
+        return () => {
+            disconnectSocket(); // Disconnect on unmount
+        };
       }, []);
+
 
     return(
         //This is a temporary presentation of what we can do for our layout see the real thing below with some components (Update as required)
@@ -65,7 +77,7 @@ function Chat(){
                 {sidebarVisible ? 
                 <div className={`flex flex-col h-full fixed bg-orange-200 sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`}> 
                     {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
-                    <Sidebar selectedID={selectedID} setSelectedID={setSelectedID}/>
+                    <Sidebar selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh}/>
                 </div>
                 :<></>}
                 
@@ -74,8 +86,7 @@ function Chat(){
                     <div className="bg-blue-200 w-full h-[100px]">Chat</div>
                     <div className="flex flex-col flex-1 bg-green-200 h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode}/>
-                            
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef}/>
                         </div>
                         <div className="bg-purple-500">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode}/>
