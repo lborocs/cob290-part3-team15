@@ -28,7 +28,6 @@ function SelfMessage({ message }) {
     alert("Right-click is disabled on this page.");
   };
   return(
-    <div onContextMenu={handleRightClick} className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}>
     <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}onMouseEnter={handleHover} onMouseLeave={handleHover}>
       <div className="self-start text-pretty break-all">
         <Content message={message}/>
