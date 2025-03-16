@@ -26,32 +26,6 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `make_it_all` /*!40100 DEFAULT CHARACTE
 USE `make_it_all`;
 
 --
--- Table structure for table `direct_message_attachments`
---
-
-DROP TABLE IF EXISTS `direct_message_attachments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `direct_message_attachments` (
-  `AttachmentID` int(11) NOT NULL AUTO_INCREMENT,
-  `MessageID` int(11) NOT NULL,
-  `Content` blob NOT NULL,
-  PRIMARY KEY (`AttachmentID`),
-  KEY `MessageID` (`MessageID`),
-  CONSTRAINT `MessageID` FOREIGN KEY (`MessageID`) REFERENCES `direct_messages` (`MessageID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `direct_message_attachments`
---
-
-LOCK TABLES `direct_message_attachments` WRITE;
-/*!40000 ALTER TABLE `direct_message_attachments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `direct_message_attachments` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `direct_messages`
 --
 
@@ -92,10 +66,9 @@ CREATE TABLE `users` (
   `UserID` int(11) NOT NULL AUTO_INCREMENT,
   `Forename` varchar(64) NOT NULL,
   `Surname` varchar(64) NOT NULL,
-  `Role` enum('Manager', 'Staff') NOT NULL DEFAULT 'Staff',
-  `Icon` blob NOT NULL DEFAULT '[default profile icon here]',
+  `Role` enum('Staff','Manager') NOT NULL DEFAULT 'Staff',
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,9 +77,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Staff','[default profile icon here]');
-INSERT INTO `users` VALUES (2,'John','Smith','Staff','[default profile icon here]');
-INSERT INTO `users` VALUES (3,'Bill','Boomstick','Staff','[default profile icon here]');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Staff');
+INSERT INTO `users` VALUES (2,'John','Smith','Manager');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -118,3 +90,5 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-03-16 17:29:49
