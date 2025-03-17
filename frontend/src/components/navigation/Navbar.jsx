@@ -45,6 +45,7 @@ const Navbar = (props) => {
                 onClick={(e) => navigate("/landing/")}>
                     <img src={Logo} className="w-12 h-12" alt="Logo" />
                 </button>
+                <p className="h-4 text-xs w-full font-black">Make It All</p>
                 <div className="mt-[10vh]">
                     {Tabs.map((tab) => (
                         <div className="py-2" key={tab.index}>
