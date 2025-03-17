@@ -56,8 +56,8 @@ function OtherMessage({ message }) {
       }
       <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400 px-4 py-2 bg-gray-500`}onMouseEnter={handleHover} onMouseLeave={handleHover}>
         <div className="text-left flex flex-col text-pretty break-all">
-          <Content message={message}/>
           {isHovered && <MessageOptions/>}
+          <Content message={message}/>
         </div>
       </div>
     </div>
