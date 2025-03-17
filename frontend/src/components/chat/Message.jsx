@@ -13,22 +13,22 @@ function Content({ message }) {
 }
 
 function SelfMessage({ message }) {
-  const [isHovered, setisHovered] = useState(false); // Default is not hovered
-  const handleHover = (e) => {
+  const [isHovered, SetisHovered] = useState(false); // Default is not hovered
+  const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
-      setisHovered(true)
+      SetisHovered(true)
     } 
     else if (e.type === 'mouseleave'){
-      setisHovered(false)
+      SetisHovered(false)
     }
   };
   //Anti Right Click
-  const handleRightClick = (event) => {
+  const HandleRightClick = (event) => {
     event.preventDefault();
     alert("Right-click is disabled on this page.");
   };
   return(
-    <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}onMouseEnter={handleHover} onMouseLeave={handleHover} onContextMenu={handleRightClick}>
+    <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
       <div className="self-start text-pretty break-all">
         {isHovered && <MessageOptions/>}
         <Content message={message}/>
@@ -38,13 +38,13 @@ function SelfMessage({ message }) {
 }
 
 function OtherMessage({ message }) {
-  const [isHovered, setisHovered] = useState(false); // Default is not hovered
-  const handleHover = (e) => {
+  const [isHovered, SetisHovered] = useState(false); // Default is not hovered
+  const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
-      setisHovered(true)
+      SetisHovered(true)
     } 
     else if (e.type === 'mouseleave'){
-      setisHovered(false)
+      SetisHovered(false)
     }
   };
   return(
@@ -54,7 +54,7 @@ function OtherMessage({ message }) {
         {message.name}
       </div>
       }
-      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400 px-4 py-2 bg-gray-500`}onMouseEnter={handleHover} onMouseLeave={handleHover}>
+      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400 px-4 py-2 bg-gray-500`}onMouseEnter={HandleHover} onMouseLeave={HandleHover}>
         <div className="text-left flex flex-col text-pretty break-all">
           {isHovered && <MessageOptions/>}
           <Content message={message}/>
