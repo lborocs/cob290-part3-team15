@@ -30,8 +30,8 @@ function SelfMessage({ message }) {
   return(
     <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300`}onMouseEnter={handleHover} onMouseLeave={handleHover} onContextMenu={handleRightClick}>
       <div className="self-start text-pretty break-all">
-        <Content message={message}/>
         {isHovered && <MessageOptions/>}
+        <Content message={message}/>
       </div>
     </div>
   )
