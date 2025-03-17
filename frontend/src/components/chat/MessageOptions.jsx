@@ -1,22 +1,22 @@
 import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 import { useState } from 'react';
 function MessageOptions(){
-    const [isHoveredEdit, setIsHoveredEdit] = useState(false);
-    const [isHoveredOptions, setIsHoveredOptions] = useState(false);  
-    const handleMouseEnterEdit = () => {
-        setIsHoveredEdit(true);
+    const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
+    const [isHoveredOptions, SetIsHoveredOptions] = useState(false);  
+    const HandleMouseEnterEdit = () => {
+        SetIsHoveredEdit(true);
       };
     
-    const handleMouseLeaveEdit = () => {
-        setIsHoveredEdit(false);
+    const HandleMouseLeaveEdit = () => {
+        SetIsHoveredEdit(false);
     };
     
-    const handleMouseEnterOptions = () => {
-        setIsHoveredOptions(true);
+    const HandleMouseEnterOptions = () => {
+        SetIsHoveredOptions(true);
     };
     
-    const handleMouseLeaveOptions = () => {
-        setIsHoveredOptions(false);
+    const HandleMouseLeaveOptions = () => {
+        SetIsHoveredOptions(false);
     };
 
     return (
@@ -24,16 +24,16 @@ function MessageOptions(){
             <button 
             // onClick={} 
             className="p-1 hover: "
-            onMouseEnter={handleMouseEnterOptions}
-            onMouseLeave={handleMouseLeaveOptions}
+            onMouseEnter={HandleMouseEnterOptions}
+            onMouseLeave={HandleMouseLeaveOptions}
             >
             {isHoveredOptions ? <BsThreeDots className="text-purple-200" /> : <BsThreeDots className="text-gray-200" />}
             </button>
             <button
             // onClick={}
             className="p-1 hover: "
-            onMouseEnter={handleMouseEnterEdit}
-            onMouseLeave={handleMouseLeaveEdit}
+            onMouseEnter={HandleMouseEnterEdit}
+            onMouseLeave={HandleMouseLeaveEdit}
             >
             {isHoveredEdit ? <BsPencilFill className="text-purple-200" /> : <BsPencil className="text-gray-200" />}
             </button>
