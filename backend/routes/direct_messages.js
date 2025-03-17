@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
-const { io,connectedClients,alertMessage } = require('../socket');
+const { io,connectedClients,alertMessage } = require('../exports/socket');
+const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
 
-router.get("/getMessages",(req,res) => {
+router.get("/getMessages",authenticateToken,(req,res) => {
     const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp
                  FROM direct_messages 
                  LEFT JOIN users ON direct_messages.Sender=users.UserID 
@@ -25,7 +26,7 @@ router.get("/getMessages",(req,res) => {
     });
 });
 
-router.get("/getMessagesAfter",(req,res) => {
+router.get("/getMessagesAfter",authenticateToken,(req,res) => {
     const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp
                  FROM direct_messages 
                  LEFT JOIN users ON direct_messages.Sender=users.UserID 
@@ -46,7 +47,7 @@ router.get("/getMessagesAfter",(req,res) => {
     });
 });
 
-router.post("/sendMessage", (req,res) => {
+router.post("/sendMessage",authenticateToken,(req,res) => {
     const query = "INSERT INTO direct_messages (Sender,Recipient,Content) VALUES (?,?,?)";
     const id = req.body.id;
     const target = req.body.target;

@@ -3,7 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const server = require('http').createServer(app);
-const { setIo, addUser, removeUser,isEmpty } = require('./socket');
+const { setIo, addUser, removeUser } = require('./exports/socket');
+const jwt = require('jsonwebtoken');
 const io = require('socket.io')(server, {cors: {origin: [process.env.IP || "http://localhost:5173"]}});
 setIo(io);
 const port = process.env.PORT || 8080;
@@ -50,6 +51,7 @@ io.on('connection', (socket) => {
     });
 });
 
+  
 
 server.listen(port, "0.0.0.0", () => {
     console.log(`Example app listening on port ${port}`);

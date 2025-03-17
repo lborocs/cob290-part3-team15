@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
-const { io,connectedClients,alertMessage } = require('../socket');
+const { io,connectedClients,alertMessage } = require('../exports/socket');
+const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
 
-router.get("/getMessage",(req,res) => {
+router.get("/getMessage",authenticateToken,(req,res) => {
     const query="SELECT Sender,Recipient,Content FROM direct_messages WHERE MessageID=?";
     const id = req.query.id;
 

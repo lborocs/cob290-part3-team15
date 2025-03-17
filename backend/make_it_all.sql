@@ -69,7 +69,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,15 +80,8 @@ LOCK TABLES `direct_messages` WRITE;
 /*!40000 ALTER TABLE `direct_messages` DISABLE KEYS */;
 INSERT INTO `direct_messages` VALUES (1,2,1,'I have done my job','2025-03-16 19:41:24');
 INSERT INTO `direct_messages` VALUES (2,1,2,'What is your job?','2025-03-16 20:02:27');
-INSERT INTO `direct_messages` VALUES (3,2,1,'It\'s a tough one..','2025-03-16 20:02:58');
-INSERT INTO `direct_messages` VALUES (4,2,1,'We do work','2025-03-16 20:08:16');
-INSERT INTO `direct_messages` VALUES (5,1,2,'That\'s kinda lame','2025-03-16 20:31:14');
-INSERT INTO `direct_messages` VALUES (6,1,2,'But it is what it is i guess...','2025-03-16 20:31:28');
-INSERT INTO `direct_messages` VALUES (7,1,2,'Have you seen the news by the way?','2025-03-16 20:31:35');
-INSERT INTO `direct_messages` VALUES (8,2,1,'No, i don\'t know how to read','2025-03-16 20:33:09');
-INSERT INTO `direct_messages` VALUES (9,2,1,'Text to speech is really saving me right now.','2025-03-16 20:33:46');
-INSERT INTO `direct_messages` VALUES (10,1,2,'???','2025-03-16 20:39:21');
-INSERT INTO `direct_messages` VALUES (11,2,3,'I don\'t like the stock market','2025-03-16 20:42:42');
+INSERT INTO `direct_messages` VALUES (3,2,1,'I do work','2025-03-16 20:02:58');
+
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,8 +98,9 @@ CREATE TABLE `users` (
   `Surname` varchar(64) NOT NULL,
   `Role` enum('Manager','Staff') NOT NULL DEFAULT 'Staff',
   `Icon` blob NOT NULL DEFAULT '[default profile icon here]',
+  `PasswordHash` varchar(60) NOT NULL,
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,9 +109,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Staff','[default profile icon here]');
-INSERT INTO `users` VALUES (2,'John','Smith','Staff','[default profile icon here]');
-INSERT INTO `users` VALUES (3,'Bill','Boomstick','Staff','[default profile icon here]');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Staff','[default profile icon here]','ABC123BCA!!!');
+INSERT INTO `users` VALUES (2,'John','Smith','Staff','[default profile icon here]','ABC123BCA!!!');
+INSERT INTO `users` VALUES (3,'Bill','Boomstick','Staff','[default profile icon here]','ABC123BCA!!!');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -130,4 +124,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-16 20:48:14
+-- Dump completed on 2025-03-17  7:16:28
