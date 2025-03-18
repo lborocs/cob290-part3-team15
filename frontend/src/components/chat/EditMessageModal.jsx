@@ -4,7 +4,7 @@ function EditMessageModal({open, onClose}){
         <>
             {open && (
                 <Modal open={open} onClose={onClose}>
-                    <h3 className="text-lg mb-2">Edit Message</h3>
+                    <h3 className="text-lg mb-2 justify-start">Edit Message</h3>
                     <hr className="border-t-2 border-gray-300 mb-4" />
                     <textarea className="w-full h-32 p-2 border border-gray-300 rounded-lg mb-4 resize-none" />
                     <div className="flex justify-end mt-4">
