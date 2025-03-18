@@ -14,22 +14,24 @@ function MessageOptions(){
 
     return (
         <>
-            <div className="flex space-x-2 justify-end">
-                <button 
-                // onClick={} 
-                className="p-1"
-                >
-                <BsThreeDots className="text-gray-200 hover:text-purple-200" />
-                </button>
-                <button
-                onClick={() => SetOpenEditModal(true)}
-                className="p-1"
-                onMouseEnter={HandleMouseEnterEdit}
-                onMouseLeave={HandleMouseLeaveEdit}
-                >
-                {isHoveredEdit ? <BsPencilFill className="text-purple-200" /> : <BsPencil className="text-gray-200" />}
-                </button>
-            </div>
+            {!openEditModal && (
+                <div className="flex space-x-2 justify-end">
+                    <button 
+                    // onClick={} 
+                    className="p-1"
+                    >
+                    <BsThreeDots className="text-gray-200 hover:text-purple-200" />
+                    </button>
+                    <button
+                    onClick={() => SetOpenEditModal(true)}
+                    className="p-1"
+                    onMouseEnter={HandleMouseEnterEdit}
+                    onMouseLeave={HandleMouseLeaveEdit}
+                    >
+                    {isHoveredEdit ? <BsPencilFill className="text-purple-200" /> : <BsPencil className="text-gray-200" />}
+                    </button>
+                </div>
+            )}
             <EditMessageModal open={openEditModal} onClose={() => SetOpenEditModal(false)}/>
         </>
       )
