@@ -1,6 +1,6 @@
 import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 import { useState } from 'react';
-import Modal from "./Modal";
+import EditMessageModal from './EditMessageModal';
 function MessageOptions(){
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
     const [isHoveredOptions, SetIsHoveredOptions] = useState(false);  
@@ -41,11 +41,7 @@ function MessageOptions(){
                 {isHoveredEdit ? <BsPencilFill className="text-purple-200" /> : <BsPencil className="text-gray-200" />}
                 </button>
             </div>
-            {openEditModal && (
-            <Modal open={openEditModal} onClose={() => SetOpenEditModal(false)}>
-                <h3>Edit Message</h3>
-            </Modal>
-            )}
+            <EditMessageModal open={openEditModal} onClose={() => SetOpenEditModal(false)}/>
         </>
       )
 }
