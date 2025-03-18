@@ -3,7 +3,6 @@ import { useState } from 'react';
 import EditMessageModal from './EditMessageModal';
 function MessageOptions(){
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
-    const [isHoveredOptions, SetIsHoveredOptions] = useState(false);  
     const [openEditModal, SetOpenEditModal] = useState(false);
     const HandleMouseEnterEdit = () => {
         SetIsHoveredEdit(true);
@@ -12,29 +11,19 @@ function MessageOptions(){
     const HandleMouseLeaveEdit = () => {
         SetIsHoveredEdit(false);
     };
-    
-    const HandleMouseEnterOptions = () => {
-        SetIsHoveredOptions(true);
-    };
-    
-    const HandleMouseLeaveOptions = () => {
-        SetIsHoveredOptions(false);
-    };
 
     return (
         <>
             <div className="flex space-x-2 justify-end">
                 <button 
                 // onClick={} 
-                className="p-1 hover: "
-                onMouseEnter={HandleMouseEnterOptions}
-                onMouseLeave={HandleMouseLeaveOptions}
+                className="p-1"
                 >
-                {isHoveredOptions ? <BsThreeDots className="text-purple-200" /> : <BsThreeDots className="text-gray-200" />}
+                <BsThreeDots className="text-gray-200 hover:text-purple-200" />
                 </button>
                 <button
                 onClick={() => SetOpenEditModal(true)}
-                className="p-1 hover: "
+                className="p-1"
                 onMouseEnter={HandleMouseEnterEdit}
                 onMouseLeave={HandleMouseLeaveEdit}
                 >
