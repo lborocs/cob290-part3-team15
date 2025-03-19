@@ -11,8 +11,9 @@ import MessageBox from '../components/chat/MessageBox.jsx';
 
 import Sidebar from '../components/chat/Sidebar.jsx';
 import Navbar from '../components/navigation/Navbar.jsx';
+import Auth from "../components/login/Auth.jsx";
 
-function Chat(){
+function Chat({ user }){
     const messageContainerRef = useRef(null);
     const windowWidth = useWindowWidth();
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
@@ -29,8 +30,11 @@ function Chat(){
     const [refresh,setRefresh] = useState(0)
 
     //Communication IDs
-    const [userID,setUserID] = useState(1);
+    const userID = user.userID;
+    const role = user.role;
+    const name = user.name;
     const [selectedID, setSelectedID] = useState(2);
+    
 
     //On window width resize
     useEffect(() => {
@@ -83,7 +87,7 @@ function Chat(){
                 
                 {/*Main Chat Area*/}
                 <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-auto relative`}>
-                    <div className="bg-blue-200 w-full h-[100px]">Chat</div>
+                    <div className="bg-blue-200 w-full h-[100px]">User:{name} Role:{role}</div>
                     <div className="flex flex-col flex-1 bg-green-200 h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef}/>
@@ -98,4 +102,4 @@ function Chat(){
     )
 }
 
-export default Chat;
+export default Auth(Chat)

@@ -17,20 +17,12 @@ function MessageBox({userID, selectedID, mode}) {
       return
     }
 
-    let route = "/postTeapot"
-    //This is messy but I guess it works
-    if (mode === 'direct_messages'){
-      route='chat/sendDirectMessage';
-    }
-    else{
-      console.error("Mode Not Found")
-    }
-
     //Actual API request
     try{
-      const headers = {headers: {'Content-Type': 'application/json',}}
+      const accessToken = localStorage.getItem('accessToken');
+      const headers = {headers: {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}}
       const body = {id:userID,target:selectedID,text:message,};
-      const response = await axios.post(`/api/${route}`, body, headers);
+      const response = await axios.post(`/api/chat/${mode}/sendMessage`, body, headers);
       if (response?.data?.success){
         setMessage("");
       }

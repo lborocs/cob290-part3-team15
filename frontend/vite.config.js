@@ -8,5 +8,6 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {target: 'http://localhost:8080', changeOrigin: true,rewrite: (path) => (path.startsWith('/api') ? path.replace(/^\/api/, '') : path)},
+      '/auth': {target: 'http://localhost:4000', changeOrigin: true,rewrite: (path) => (path.startsWith('/auth') ? path.replace(/^\/auth/, '') : path)}
   }},
 })
