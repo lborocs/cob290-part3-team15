@@ -6,7 +6,7 @@ import './App.css';
 import Landing from './pages/Landing';
 import PageDoesNotExist from './pages/PageDoesNotExist';
 import Chat from './pages/Chat';
-import AnalyticsLanding from './pages/AnalyticsLanding';
+import Analytics from './pages/Analytics';
 
 // Analytics subsystem imports
 import Employee from './pages/Analytics/Employee';
@@ -24,7 +24,7 @@ function App() {
       {/*Our subsystems (Import page and replace the <Landing/> part)*/}
       <Route path="/chat" element={<Chat/>}/>
       <Route path="/data" element={<Landing/>}/>
-      <Route path="/analytics" element={<AnalyticsLanding/>}/>
+      <Route path="/analytics" element={<Analytics/>}/>
 
       {/*Routes for the different analytic modes (could change to be just one)*/}
       <Route path="/analytics/employee" element={<Employee/>}/>

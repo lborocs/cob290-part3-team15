@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+// need to figure out backend calls
 const dummyData = [
     { id: 1, title: 'Statistic 1', value: '42', description: 'This is the first statistic.' },
     { id: 2, title: 'Statistic 2', value: '73%', description: 'This is the second statistic.' },
