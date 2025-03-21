@@ -30,7 +30,7 @@ function SelfMessage({ message }) {
   return(
     <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-blue-200 px-4 py-2 text-base font-medium self-end bg-blue-300 relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
       <div className="self-start text-pretty break-all">
-        {isHovered && <MessageOptions/>}
+        {isHovered && <MessageOptions sentByUser={true}/>}
         <Content message={message}/>
       </div>
     </div>
@@ -56,7 +56,7 @@ function OtherMessage({ message }) {
       }
       <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400 px-4 py-2 bg-gray-500 relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover}>
         <div className="text-left flex flex-col text-pretty break-all">
-          {isHovered && <MessageOptions/>}
+          {isHovered && <MessageOptions sentByUser={false}/>}
           <Content message={message}/>
         </div>
       </div>
