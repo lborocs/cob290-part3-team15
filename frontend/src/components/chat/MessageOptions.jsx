@@ -15,7 +15,7 @@ function MessageOptions(){
     return (
         <>
             {!openEditModal && (
-                <div className="flex space-x-2 justify-end">
+                <div className="flex rounded-lg bg-white space-x-2 absolute right-0 bottom-10 y-10 z-5">
                     <button 
                     // onClick={} 
                     className="p-1"
