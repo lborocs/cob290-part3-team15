@@ -60,20 +60,18 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
   return (
     <>
-      <div className="relative justify-center mt-8 h-10">
-        <p className="font-bold text-lg">Messages</p>
+      <div className="flex justify-between items-center mt-8 h-10">
+        <p className="font-bold text-lg ml-10 w-full">Messages</p>
         <CreateChat userID={userID}/>
       </div>
-      <div className="flex flex-col flex-1 pl-2 pr-1 space-y-2 overflox-scroll">
+      <div className="flex flex-col flex-1 px-2 space-y-2 bg-black/10 overflox-scroll rounded-sm py-4 mx-1">
         {chats.map((chat) => (
-          <div key={`${chat.target}-${chat.type}`} className="flex justify-center items-center bg-blackFaded hover:bg-black/30">
-          <button
-            className="flex flex-1 p-2 text-white rounded self-center "
-            onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}
-          >
-            {chat.name}
+          <div key={`${chat.target}-${chat.type}`} className="flex justify-center items-center bg-black/30 hover:bg-black/40 rounded-sm h-16 gap-2">
+          <button className="flex flex-1 py-2 pl-2 pr-1 text-white rounded self-center"
+            onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}>
+            <p>{chat.name}</p>
           </button>
-          <button className="h-full w-10 text-primary hover:text-red-400"
+          <button className="flex h-full w-10 text-primary hover:text-red-400 justify-center items-center"
             onClick={() => {deleteChat(chat.target,chat.type)}}
           ><MdClose className="w-8 h-8"/></button>
           </div>
