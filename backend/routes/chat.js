@@ -22,7 +22,13 @@ router.get("/getMessage",authenticateToken,(req,res) => {
 });
 
 router.get("/getChats",authenticateToken,(req,res) => {
-    const query="SELECT Target as target,Type as type FROM active_chats WHERE UserID=? ORDER BY LastUpdate DESC";
+    const query=`SELECT CASE 
+                 WHEN active_chats.Type = 'direct_messages' THEN CONCAT(users.Forename, ' ', users.Surname)
+                 WHEN active_chats.Type = 'group_messages' THEN 'GROUPS NOT IMPLEMENTED'
+                 ELSE NULL END AS name, active_chats.Target as target,active_chats.Type as type
+                 FROM active_chats 
+                 LEFT JOIN users ON users.UserID = active_chats.UserID AND active_chats.Type = 'direct_messages' 
+                 WHERE active_chats.UserID=? ORDER BY LastUpdate DESC`;
     const id = req.user.userID;
 
     //Stop bad inputs

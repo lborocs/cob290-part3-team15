@@ -42,7 +42,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
   return (
     <>
-      <p className="font-bold text-lg">Direct Messages</p>
+      <p className="font-bold text-lg">Messages</p>
       <CreateChat userID={userID}/>
       <div className="flex flex-col pl-2 pr-1 space-y-2">
         {chats.map((chat) => (
@@ -52,8 +52,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
             className="flex flex-1 p-2 text-white rounded self-center "
             onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}
           >
-            Target {chat.target} <br/>
-            Type {chat.type}
+            {chat.name}
           </button>
           <button className="h-full w-10 text-primary hover:text-red-400"
             onClick={() => {console.log("CLOSE")}}
