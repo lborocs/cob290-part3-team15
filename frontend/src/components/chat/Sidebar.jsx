@@ -46,9 +46,8 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
       <CreateChat userID={userID}/>
       <div className="flex flex-col pl-2 pr-1 space-y-2">
         {chats.map((chat) => (
-          <div className="flex justify-center items-center bg-blackFaded hover:bg-black/30">
+          <div key={`${chat.target}-${chat.type}`} className="flex justify-center items-center bg-blackFaded hover:bg-black/30">
           <button
-            key={`${chat.target}-${chat.type}`}
             className="flex flex-1 p-2 text-white rounded self-center "
             onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}
           >

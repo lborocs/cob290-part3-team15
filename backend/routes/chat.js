@@ -27,7 +27,7 @@ router.get("/getChats",authenticateToken,(req,res) => {
                  WHEN active_chats.Type = 'group_messages' THEN 'GROUPS NOT IMPLEMENTED'
                  ELSE NULL END AS name, active_chats.Target as target,active_chats.Type as type
                  FROM active_chats 
-                 LEFT JOIN users ON users.UserID = active_chats.UserID AND active_chats.Type = 'direct_messages' 
+                 LEFT JOIN users ON users.UserID = active_chats.Target AND active_chats.Type = 'direct_messages' 
                  WHERE active_chats.UserID=? ORDER BY LastUpdate DESC`;
     const id = req.user.userID;
 
