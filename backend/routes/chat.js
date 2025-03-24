@@ -21,4 +21,20 @@ router.get("/getMessage",authenticateToken,(req,res) => {
     });
 });
 
+router.get("/getChats",authenticateToken,(req,res) => {
+    const query="SELECT Target as target,Type as type FROM active_chats WHERE UserID=? ORDER BY LastUpdate DESC";
+    const id = req.user.userID;
+
+    //Stop bad inputs
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
+
+    const values = [id];
+    database.query(query, values, (err, results) => {
+        res.send({results: results});
+    });
+});
+
+
 module.exports = router;

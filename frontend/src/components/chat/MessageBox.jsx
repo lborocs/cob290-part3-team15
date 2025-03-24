@@ -21,7 +21,7 @@ function MessageBox({userID, selectedID, mode}) {
     try{
       const accessToken = localStorage.getItem('accessToken');
       const headers = {headers: {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}}
-      const body = {id:userID,target:selectedID,text:message,};
+      const body = {target:selectedID,text:message,};
       const response = await axios.post(`/api/chat/${mode}/sendMessage`, body, headers);
       if (response?.data?.success){
         setMessage("");

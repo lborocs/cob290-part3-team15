@@ -1,31 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { MdClose } from "react-icons/md";
 
-const Sidebar = (props) => {
+import CreateChat from './CreateChat.jsx';
 
-  //Temp
-  const users = [1, 2, 3, 4, 5];
+const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
+
+  const [chats,setChats] = useState([]);
+  
+
+  const getChats = async() => {
+    try{
+      const accessToken = localStorage.getItem('accessToken');
+  
+      const response = await axios.get(`/api/chat/getChats?id=${userID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+      if (response?.data?.results){
+          setChats(response.data.results);
+      } 
+      else {
+          setChats([]);
+      }
+    }
+    catch (error) {
+      setChats([]);
+    }
+  }
+
+  //On Load, Fetch all chats
+  useEffect(()=>{
+    getChats();
+  }, [])
+
+  //Been told to refresh, new message!
+  useEffect(()=>{
+    getChats();
+  }, [refresh])
+
+
+
+
 
   return (
     <>
       <p className="font-bold text-lg">Direct Messages</p>
-      <div className="flex flex-col px-4 space-y-2">
-        {users.map((user) => (
+      <CreateChat userID={userID}/>
+      <div className="flex flex-col pl-2 pr-1 space-y-2">
+        {chats.map((chat) => (
+          <div className="flex justify-center items-center bg-blackFaded hover:bg-black/30">
           <button
-            key={user}
-            className="p-2 bg-blue-500 text-white rounded"
-            onClick={() => props.setSelectedID(user)}
+            key={`${chat.target}-${chat.type}`}
+            className="flex flex-1 p-2 text-white rounded self-center "
+            onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}
           >
-            User {user}
+            Target {chat.target} <br/>
+            Type {chat.type}
           </button>
+          <button className="h-full w-10 text-primary hover:text-red-400"
+            onClick={() => {console.log("CLOSE")}}
+          ><MdClose className="w-8 h-8"/></button>
+          </div>
         ))}
       </div>
 
       <div className="flex flex-col mt-4">
         {/* Display selected user */}
-        {props.selectedID !== null ? (
-          <p>User: {props.selectedID}</p>
+        {selectedID !== null ? (
+          <p>User: {selectedID}</p>
         ) : (
-            <></>
+          <></>
         )}
       </div>
     </>
