@@ -18,9 +18,6 @@ function Chat({ user }){
     const windowWidth = useWindowWidth();
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
 
-    //Page specific state
-    const [mode, setMode] = useState("direct_messages");
-
     //Navbar
     const [selectable,setSelectable] = useState(windowWidth<1024);
     const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -33,7 +30,23 @@ function Chat({ user }){
     const userID = user.userID;
     const role = user.role;
     const name = user.name;
-    const [selectedID, setSelectedID] = useState(-1);
+
+    //Page specific State (Saves)
+    const [mode, setMode] = useState(() => {
+        const saved = localStorage.getItem('selectedMode');
+        return saved ? saved : 'direct_messages'
+    });
+    useEffect(() => {
+        localStorage.setItem('selectedMode', mode);
+    }, [mode]);
+    //Selected ID (Saves)
+    const [selectedID, setSelectedID] = useState(() => {
+        const saved = localStorage.getItem('selectedID');
+        return saved ? parseInt(saved) : -1
+    });
+    useEffect(() => {
+        localStorage.setItem('selectedID', selectedID);
+    }, [selectedID]);
     
 
     //On window width resize
