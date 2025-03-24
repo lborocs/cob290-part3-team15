@@ -13,7 +13,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
     try{
       const accessToken = localStorage.getItem('accessToken');
   
-      const response = await axios.get(`/api/chat/getChats?id=${userID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+      const response = await axios.get(`/api/chat/getChats`, {headers: { Authorization: `Bearer ${accessToken}` }});
       if (response?.data?.results){
           setChats(response.data.results);
       } 
@@ -25,6 +25,24 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
       setChats([]);
     }
   }
+
+  const deleteChat = async(target,type) => {
+    try{
+      const accessToken = localStorage.getItem('accessToken');
+      const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
+      const body = {target:target,type:type,};
+      const response = await axios.delete('/api/chat/removeChat', { headers:headers, data: body });
+      if (response?.data?.success){
+        setChats((prevChats) => {
+          return prevChats.filter(chat => !(chat.target === target && chat.type === type));
+        });
+      }
+    }
+    catch (error) {//Already Handled
+    }
+  }
+  
+  
 
   //On Load, Fetch all chats
   useEffect(()=>{
@@ -54,7 +72,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
             {chat.name}
           </button>
           <button className="h-full w-10 text-primary hover:text-red-400"
-            onClick={() => {console.log("CLOSE")}}
+            onClick={() => {deleteChat(chat.target,chat.type)}}
           ><MdClose className="w-8 h-8"/></button>
           </div>
         ))}

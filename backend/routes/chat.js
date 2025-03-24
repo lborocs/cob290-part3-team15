@@ -31,9 +31,9 @@ router.get("/getChats",authenticateToken,(req,res) => {
                  WHERE active_chats.UserID=? ORDER BY LastUpdate DESC`;
     const id = req.user.userID;
 
-    //Stop bad inputs
+    //Stop bad ID's 
     if (isNaN(id)) {
-        return res.status(400).json({ error: "Invalid ID" });
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
     }
 
     const values = [id];
@@ -41,6 +41,52 @@ router.get("/getChats",authenticateToken,(req,res) => {
         res.send({results: results});
     });
 });
+
+router.delete("/removeChat",authenticateToken,(req,res) => {
+    var query ="";
+    const id = req.user.userID;
+    const target = req.body.target;
+    const type = req.body.type;
+    console.log("HERE1")
+    //Stop bad ID's 
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
+    }
+
+    var values = [id,target,type];
+    switch (type) {
+        
+        case "direct_messages":{
+            query=`DELETE FROM active_chats WHERE UserID = ? AND Target = ? AND Type = ?;`;
+            database.query(query, values, (err, results) => {
+                if (!err) {
+                    res.status(200).json({ success: "Person removed from active chats!" });
+                } else {
+                    res.status(400).json({ error: "Error removing chat instance" });
+                }
+            });
+            break;
+        }
+        case "group_messages":{
+            //Filler
+            query=`SELECT UserID from users WHERE UserID=?`;
+            values=[id]
+            database.query(query, values, (err, results) => {
+                if (!err) {
+                    res.status(200).json({ success: "Succesfully Left Group" });
+                } else {
+                    res.status(400).json({ error: "Error leaving group" });
+                }
+            });
+        }
+        default:{
+            res.status(400).json({ error: "Invalid request type!" });
+            break;
+        }
+    }
+
+});
+
 
 
 module.exports = router;
