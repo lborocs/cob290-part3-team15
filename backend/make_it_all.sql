@@ -100,7 +100,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,6 +121,93 @@ INSERT INTO `direct_messages` VALUES (9,1,2,'Yo','2025-03-23 23:37:29');
 INSERT INTO `direct_messages` VALUES (10,2,1,'Test','2025-03-24 00:22:17');
 INSERT INTO `direct_messages` VALUES (11,2,1,'Hey don\'t you go hiding me','2025-03-24 05:13:42');
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `group_messages`
+--
+
+DROP TABLE IF EXISTS `group_messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `group_messages` (
+  `MessageID` int(11) NOT NULL AUTO_INCREMENT,
+  `Sender` int(11) NOT NULL,
+  `GroupID` int(11) NOT NULL,
+  `Content` varchar(1024) NOT NULL,
+  `Timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`MessageID`),
+  KEY `User is Sender` (`Sender`),
+  KEY `Group is Group` (`GroupID`),
+  CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `group_messages`
+--
+
+LOCK TABLES `group_messages` WRITE;
+/*!40000 ALTER TABLE `group_messages` DISABLE KEYS */;
+INSERT INTO `group_messages` VALUES (1,2,1,'Guys, It\'s official. I\'m a hater','2025-03-27 19:44:55');
+/*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `group_users`
+--
+
+DROP TABLE IF EXISTS `group_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `group_users` (
+  `UserID` int(11) NOT NULL,
+  `GroupID` int(11) NOT NULL,
+  PRIMARY KEY (`UserID`,`GroupID`),
+  KEY `Group is Group group_users` (`GroupID`),
+  KEY `UserID` (`UserID`) USING BTREE,
+  CONSTRAINT `Group is Group group_users` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `User is User But Cool` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `group_users`
+--
+
+LOCK TABLES `group_users` WRITE;
+/*!40000 ALTER TABLE `group_users` DISABLE KEYS */;
+INSERT INTO `group_users` VALUES (1,1);
+INSERT INTO `group_users` VALUES (2,1);
+/*!40000 ALTER TABLE `group_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `groups`
+--
+
+DROP TABLE IF EXISTS `groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `groups` (
+  `GroupID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(64) NOT NULL,
+  `Owner` int(11) NOT NULL,
+  PRIMARY KEY (`GroupID`),
+  KEY `Group Owner` (`Owner`),
+  CONSTRAINT `Group Owner` FOREIGN KEY (`Owner`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `groups`
+--
+
+LOCK TABLES `groups` WRITE;
+/*!40000 ALTER TABLE `groups` DISABLE KEYS */;
+INSERT INTO `groups` VALUES (1,'The Haters',2);
+/*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -162,4 +249,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-27 19:04:00
+-- Dump completed on 2025-03-27 19:45:33
