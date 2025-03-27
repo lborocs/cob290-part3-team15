@@ -1,9 +1,8 @@
 import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 import { useState } from 'react';
 import EditMessageModal from './EditMessageModal';
-function MessageOptions({sentByUser}){
+function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
-    const [openEditModal, SetOpenEditModal] = useState(false);
     const HandleMouseEnterEdit = () => {
         SetIsHoveredEdit(true);
       };
@@ -14,7 +13,7 @@ function MessageOptions({sentByUser}){
 
     return (
         <>
-            {!openEditModal && (
+            {isHoveredComment && (
                 <div className="flex rounded-lg bg-white space-x-2 absolute right-0 bottom-10 y-10 z-40">
                     <button 
                     // onClick={} 
@@ -24,7 +23,10 @@ function MessageOptions({sentByUser}){
                     </button>
                     {sentByUser &&
                     <button
-                    onClick={() => SetOpenEditModal(true)}
+                    onClick={() => {
+                        console.log("Opening edit modal")
+                        SetOpenEditModal(true)
+                    }}
                     className="p-1"
                     onMouseEnter={HandleMouseEnterEdit}
                     onMouseLeave={HandleMouseLeaveEdit}
@@ -34,7 +36,6 @@ function MessageOptions({sentByUser}){
                     }
                 </div>
             )}
-            <EditMessageModal open={openEditModal} onClose={() => SetOpenEditModal(false)}/>
         </>
       )
 }
