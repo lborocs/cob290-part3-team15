@@ -26,6 +26,37 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `make_it_all` /*!40100 DEFAULT CHARACTE
 USE `make_it_all`;
 
 --
+-- Table structure for table `active_chats`
+--
+
+DROP TABLE IF EXISTS `active_chats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `active_chats` (
+  `UserID` int(11) NOT NULL,
+  `Target` int(11) NOT NULL,
+  `Type` enum('direct_messages','group_messages') NOT NULL,
+  `LastUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`UserID`,`Target`,`Type`),
+  CONSTRAINT `User is User` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `active_chats`
+--
+
+LOCK TABLES `active_chats` WRITE;
+/*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
+INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-03-24 05:18:26');
+INSERT INTO `active_chats` VALUES (1,3,'direct_messages','2025-03-24 06:58:29');
+INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-03-24 05:18:26');
+INSERT INTO `active_chats` VALUES (2,1,'group_messages','2025-03-23 23:55:26');
+INSERT INTO `active_chats` VALUES (3,1,'direct_messages','2025-03-24 06:58:29');
+/*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `direct_message_attachments`
 --
 
@@ -69,7 +100,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,8 +111,15 @@ LOCK TABLES `direct_messages` WRITE;
 /*!40000 ALTER TABLE `direct_messages` DISABLE KEYS */;
 INSERT INTO `direct_messages` VALUES (1,2,1,'I have done my job','2025-03-16 19:41:24');
 INSERT INTO `direct_messages` VALUES (2,1,2,'What is your job?','2025-03-16 20:02:27');
-INSERT INTO `direct_messages` VALUES (3,2,1,'I do work','2025-03-16 20:02:58');
-
+INSERT INTO `direct_messages` VALUES (3,2,1,'I do work','2025-03-17 02:02:58');
+INSERT INTO `direct_messages` VALUES (4,1,2,'No you don\'t','2025-03-23 21:50:24');
+INSERT INTO `direct_messages` VALUES (5,1,3,'I send you the message!','2025-03-23 23:26:33');
+INSERT INTO `direct_messages` VALUES (6,1,3,'You get message?','2025-03-23 23:27:28');
+INSERT INTO `direct_messages` VALUES (7,1,3,'I send you the message!','2025-03-23 23:37:05');
+INSERT INTO `direct_messages` VALUES (8,1,3,'Why no refresh','2025-03-23 23:37:24');
+INSERT INTO `direct_messages` VALUES (9,1,2,'Yo','2025-03-23 23:37:29');
+INSERT INTO `direct_messages` VALUES (10,2,1,'Test','2025-03-24 00:22:17');
+INSERT INTO `direct_messages` VALUES (11,2,1,'Hey don\'t you go hiding me','2025-03-24 05:13:42');
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-17  7:16:28
+-- Dump completed on 2025-03-27 19:04:00
