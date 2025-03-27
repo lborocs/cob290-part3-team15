@@ -45,6 +45,7 @@ function SelfMessage({ message }) {
           SetOpenEditModal(false);
           SetisHovered(false); // Reset the hover state for message options
         }}
+        content={message.content} // Pass the content of the message to the modal to set it as default
       />
     </div>
   )
