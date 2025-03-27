@@ -24,7 +24,6 @@ function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
                     {sentByUser &&
                     <button
                     onClick={() => {
-                        console.log("Opening edit modal")
                         SetOpenEditModal(true)
                     }}
                     className="p-1"

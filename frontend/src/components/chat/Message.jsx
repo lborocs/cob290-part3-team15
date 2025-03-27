@@ -42,7 +42,6 @@ function SelfMessage({ message }) {
       <EditMessageModal // Edit message modal only needed for self messages
         open={openEditModal}
         onClose={() => {
-          console.log("Closing edit modal");
           SetOpenEditModal(false);
           SetisHovered(false); // Reset the hover state for message options
         }}
