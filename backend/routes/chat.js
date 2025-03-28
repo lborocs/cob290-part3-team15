@@ -23,11 +23,12 @@ router.get("/getMessage",authenticateToken,(req,res) => {
 
 router.get("/getChats",authenticateToken,(req,res) => {
     const query=`SELECT CASE 
-                 WHEN active_chats.Type = 'direct_messages' THEN CONCAT(users.Forename, ' ', users.Surname)
-                 WHEN active_chats.Type = 'group_messages' THEN 'GROUPS NOT IMPLEMENTED'
+                 WHEN active_chats.Type = 'direct_messages' THEN CONCAT('DM: ',users.Forename, ' ', users.Surname)
+                 WHEN active_chats.Type = 'group_messages' THEN CONCAT('G: ',groups.Name)
                  ELSE NULL END AS name, active_chats.Target as target,active_chats.Type as type
-                 FROM active_chats 
-                 LEFT JOIN users ON users.UserID = active_chats.Target AND active_chats.Type = 'direct_messages' 
+                 FROM active_chats
+                 LEFT JOIN users ON users.UserID = active_chats.Target AND active_chats.Type = 'direct_messages'
+                 LEFT JOIN groups ON groups.GroupID=active_chats.Target AND active_chats.Type = 'group_messages'
                  WHERE active_chats.UserID=? ORDER BY LastUpdate DESC`;
     const id = req.user.userID;
 
@@ -47,7 +48,6 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
     const id = req.user.userID;
     const target = req.body.target;
     const type = req.body.type;
-    console.log("HERE1")
     //Stop bad ID's 
     if (isNaN(id)) {
         return res.status(400).json({ error: "Error with login instance, please log back in!" });
