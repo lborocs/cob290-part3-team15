@@ -12,7 +12,7 @@ function Content({ message }) {
   );
 }
 
-function SelfMessage({ message }) {
+function SelfMessage({ message,setMessage,mode }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [openEditModal, SetOpenEditModal] = useState(false); // Default is not open and checks if the edit modal is open
   const HandleHover = (e) => {
@@ -46,6 +46,9 @@ function SelfMessage({ message }) {
           SetisHovered(false); // Reset the hover state for message options
         }}
         message={message} // Pass the content of the message to the modal to set it as default
+        setMessage={setMessage} //To allow the modal to directly modify the user's screen display
+        mode={mode}
+        
       />
     </div>
   )
@@ -89,11 +92,12 @@ function OtherMessage({ message }) {
 
 
 
-function Message({ message , userID }) {
+function Message({ messageContent , userID , mode}) {
+  const [message,setMessage]=useState(messageContent);
   const sentByUser = parseInt(message.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
   return (
     <>
-      {sentByUser ? <SelfMessage message={message} /> : <OtherMessage message={message} />}
+      {sentByUser ? <SelfMessage message={message} setMessage={setMessage}  mode={mode}/> : <OtherMessage message={message}/>}
     </>
   );
 }

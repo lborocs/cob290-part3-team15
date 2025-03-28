@@ -1,13 +1,17 @@
 import Modal from "./Modal";
 import { useState } from "react";
 import axios from "axios";
-function EditMessageModal({open, onClose, message}){ 
+function EditMessageModal({open, onClose, message, setMessage,mode}){ 
     const [editedContent, setEditedContent] = useState(message.content); // Initially set the edited content to the message content
     const handleSave = async () => {
         try {
             // Make an api call to update the message content
-            const response = await axios.put(`/api/chat/updateMessage`, {id: message.messageID, content: editedContent});
+            const accessToken = localStorage.getItem('accessToken');
+            const headers = {headers: {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}}
+            const body = {id: message.messageID, content: editedContent};
+            const response = await axios.put(`/api/chat/${mode}/updateMessage`, body, headers);
             if (response?.data?.success) {
+                setMessage({...message, content: editedContent});
                 onClose(); // Close the modal if the update was successful
             } else {
                 console.error("Failed to update message");

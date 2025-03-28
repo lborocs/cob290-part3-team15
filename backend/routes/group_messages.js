@@ -110,6 +110,30 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
         });
       }  
     });
+});
+
+router.put("/updateMessage",authenticateToken,(req,res) => {
+  const query="UPDATE group_messages SET Content=? WHERE MessageID=? AND Sender=?";
+  const id = req.user.userID;
+  const messageID= req.body.id;
+  const content = req.body.content;
+
+  //Stop bad inputs as above
+  if (isNaN(id) || isNaN(messageID)) {
+      return res.status(400).json({ error: "Invalid ID" });
+  }
+  if (!content || content.trim() === "") {
+      return res.status(400).json({ error: "Content cannot be empty" });
+  }
+
+  const values = [content,messageID,id];
+  database.query(query, values, err => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Failed to update message" });
+      }
+      res.status(200).json({ success: true, message: "Message updated successfully" });
   });
+});
 
 module.exports = router;
