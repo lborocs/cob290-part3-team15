@@ -69,7 +69,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,6 +89,9 @@ INSERT INTO `direct_messages` VALUES (8,2,1,'No, i don\'t know how to read','202
 INSERT INTO `direct_messages` VALUES (9,2,1,'Text to speech is really saving me right now.','2025-03-16 20:33:46');
 INSERT INTO `direct_messages` VALUES (10,1,2,'???','2025-03-16 20:39:21');
 INSERT INTO `direct_messages` VALUES (11,2,3,'I don\'t like the stock market','2025-03-16 20:42:42');
+INSERT INTO `direct_messages` VALUES (15,1,2,'Yo','2025-03-28 01:06:51');
+INSERT INTO `direct_messages` VALUES (16,1,2,'Hello','2025-03-28 01:07:58');
+INSERT INTO `direct_messages` VALUES (17,2,1,'What about me!','2025-03-28 01:09:37');
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -130,4 +133,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-28  0:25:30
+-- Dump completed on 2025-03-28  1:11:59

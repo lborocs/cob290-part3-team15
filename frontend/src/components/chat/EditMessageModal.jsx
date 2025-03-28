@@ -6,14 +6,14 @@ function EditMessageModal({open, onClose, message}){
     const handleSave = async () => {
         try {
             // Make an api call to update the message content
-            response = await axios.put(`/api/chat/updateMessage?id=${message.id}&content=${editedContent}`);
+            const response = await axios.put(`/api/chat/updateMessage`, {id: message.messageID, content: editedContent});
             if (response?.data?.success) {
                 onClose(); // Close the modal if the update was successful
             } else {
                 console.error("Failed to update message");
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error updating message:", error);
         }
     }
     return (
