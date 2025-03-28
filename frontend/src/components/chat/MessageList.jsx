@@ -9,7 +9,9 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
   const getMessages = async() => {
     //Actual API request
     try{
-      const response = await axios.get(`/api/chat/${mode}/getMessages?id=${userID}&target=${selectedID}`);
+      const accessToken = localStorage.getItem('accessToken');
+
+      const response = await axios.get(`/api/chat/${mode}/getMessages?target=${selectedID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
       if (response?.data?.results){
         // Hide name if back-to-back messages are from the same user
         const messagesWithShowName = response.data.results.map((message, index, arr) => {
@@ -30,9 +32,10 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
   const getNewMessages = async() => {
     //Actual API request
     try{
+      const accessToken = localStorage.getItem('accessToken');
       const lastMessageTimestamp = messages.slice(-1)[0]?.timestamp || null;
       if(lastMessageTimestamp){
-        const response = await axios.get(`/api/chat/${mode}/getMessagesAfter?id=${userID}&target=${selectedID}&after=${encodeURIComponent(lastMessageTimestamp)}`);
+        const response = await axios.get(`/api/chat/${mode}/getMessagesAfter?target=${selectedID}&after=${encodeURIComponent(lastMessageTimestamp)}`,{headers: { Authorization: `Bearer ${accessToken}` }});
         if (response?.data?.results){
           //Hide name if back-to-back messages are from the same user
           const lastMessageOwner = messages.slice(-1)[0]?.user || null;
@@ -53,7 +56,7 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
   //Onload
   useEffect(()=>{
     getMessages();
-  }, [selectedID])
+  }, [selectedID,mode])
 
   //Refresh handler
   useEffect(()=>{

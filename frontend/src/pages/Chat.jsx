@@ -11,14 +11,12 @@ import MessageBox from '../components/chat/MessageBox.jsx';
 
 import Sidebar from '../components/chat/Sidebar.jsx';
 import Navbar from '../components/navigation/Navbar.jsx';
+import Auth from "../components/login/Auth.jsx";
 
-function Chat(){
+function Chat({ user }){
     const messageContainerRef = useRef(null);
     const windowWidth = useWindowWidth();
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
-
-    //Page specific state
-    const [mode, setMode] = useState("direct_messages");
 
     //Navbar
     const [selectable,setSelectable] = useState(windowWidth<1024);
@@ -29,8 +27,27 @@ function Chat(){
     const [refresh,setRefresh] = useState(0)
 
     //Communication IDs
-    const [userID,setUserID] = useState(Math.floor(Math.random() * 2) + 1);
-    const [selectedID, setSelectedID] = useState(2);
+    const userID = user.userID;
+    const role = user.role;
+    const name = user.name;
+
+    //Page specific State (Saves)
+    const [mode, setMode] = useState(() => {
+        const saved = localStorage.getItem('selectedMode');
+        return saved ? saved : 'direct_messages'
+    });
+    useEffect(() => {
+        localStorage.setItem('selectedMode', mode);
+    }, [mode]);
+    //Selected ID (Saves)
+    const [selectedID, setSelectedID] = useState(() => {
+        const saved = localStorage.getItem('selectedID');
+        return saved ? parseInt(saved) : -1
+    });
+    useEffect(() => {
+        localStorage.setItem('selectedID', selectedID);
+    }, [selectedID]);
+    
 
     //On window width resize
     useEffect(() => {
@@ -75,20 +92,20 @@ function Chat(){
             {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
             <div className="flex flex-1 relative">
                 {sidebarVisible ? 
-                <div className={`flex flex-col h-full fixed bg-orange-200 sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`}> 
+                <div className={`flex flex-col h-full fixed lg:static bg-orange-200 sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`}> 
                     {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
-                    <Sidebar selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh}/>
+                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh}/>
                 </div>
                 :<></>}
                 
                 {/*Main Chat Area*/}
-                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } lg:ml-[300px] flex flex-col flex-1 h-auto relative`}>
-                    <div className="bg-blue-200 w-full h-[100px]">Chat</div>
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative`}>
+                    <div className="bg-blue-200 w-full h-[100px]">User:{name} Role:{role}</div>
                     <div className="flex flex-col flex-1 bg-green-200 h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef}/>
                         </div>
-                        <div className="bg-purple-500">
+                        <div className="flex flex-col bg-purple-500 h-16 justify-center">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode}/>
                         </div>
                     </div>
@@ -98,4 +115,4 @@ function Chat(){
     )
 }
 
-export default Chat;
+export default Auth(Chat)

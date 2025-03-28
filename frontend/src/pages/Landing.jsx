@@ -1,6 +1,7 @@
 import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import viteLogo from '../assets/logo.png';
+import Auth from "../components/login/Auth.jsx";
 
 //This is the boilerplate stuff
 function Landing(){
@@ -33,11 +34,11 @@ function Landing(){
                     <p>To Chat</p>
                 </button>
                 <button className={`w-50 my-2 hover:bg-red-400 bg-gray-300 hover:text-white ${count % 3 == 1 ? 'text-red-400' : ''}
-                    rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {navigate("/login")}}>
+                    rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {navigate("/login/")}}>
                     <p>To basic login</p>
                 </button>
                 <button className={`w-50 my-2 hover:bg-red-400 bg-gray-300 hover:text-white ${count % 3 == 2 ? 'text-red-400' : ''}
-                    rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {navigate("/analytics")}}>
+                    rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {navigate("/analytics/")}}>
                     <p>To Analytics</p>
                 </button>
             </div>
@@ -68,4 +69,4 @@ function Landing(){
     )
 }
       
-export default Landing;
+export default Auth(Landing);

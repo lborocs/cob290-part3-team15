@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
-const { io,connectedClients,alertMessage } = require('../socket');
+const { io,connectedClients,alertMessage } = require('../exports/socket');
+const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
 
-router.get("/getMessages",(req,res) => {
+router.get("/getMessages",authenticateToken,(req,res) => {
     const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp
                  FROM direct_messages 
                  LEFT JOIN users ON direct_messages.Sender=users.UserID 
                  WHERE (Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)
                  ORDER BY direct_messages.Timestamp ASC`;
-    const id = req.query.id;
+    const id = req.user.userID;
     const target = req.query.target;
 
     //Stop bad inputs
@@ -25,13 +26,13 @@ router.get("/getMessages",(req,res) => {
     });
 });
 
-router.get("/getMessagesAfter",(req,res) => {
+router.get("/getMessagesAfter",authenticateToken,(req,res) => {
     const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp
                  FROM direct_messages 
                  LEFT JOIN users ON direct_messages.Sender=users.UserID 
                  WHERE ((Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)) AND direct_messages.Timestamp>?
                  ORDER BY direct_messages.Timestamp DESC`;
-    const id = req.query.id;
+    const id = req.user.userID;
     const target = req.query.target;
     const timestamp= req.query.after;
 
@@ -46,9 +47,9 @@ router.get("/getMessagesAfter",(req,res) => {
     });
 });
 
-router.post("/sendMessage", (req,res) => {
+router.post("/sendMessage",authenticateToken,(req,res) => {
     const query = "INSERT INTO direct_messages (Sender,Recipient,Content) VALUES (?,?,?)";
-    const id = req.body.id;
+    const id = req.user.userID;
     const target = req.body.target;
     const text = req.body.text;
 
@@ -60,6 +61,13 @@ router.post("/sendMessage", (req,res) => {
     const values = [id,target,text];
     database.query(query, values, err =>{
         if (!err) {
+            //Update the active chat list
+            const activeChatQuery = "INSERT INTO active_chats (UserID, Target, Type) VALUES (?, ?, 'direct_messages') ON DUPLICATE KEY UPDATE LastUpdate = NOW();";
+            const activeChat1 = [id, target];
+            const activeChat2 = [target, id];
+            database.query(activeChatQuery, activeChat1, () => {});
+            database.query(activeChatQuery, activeChat2, () => {});
+
             const targetUser = String(req.body.target);
             alertMessage(targetUser);
             alertMessage(id); //Might as well do it here so all clients refresh
