@@ -34,7 +34,7 @@ const Navbar = (props) => {
     const navigate=useNavigate();
     const Tabs=[
         {Label:"Chat",Icon:<MdOutlineChat className="flex flex-1 w-full h-7 mb-2"/>,link:"/chat",index:1},
-        {Label:"Teams",Icon:<MdOutlineGroups className="flex flex-1 w-full h-8 mb-2"/>,link:"/teams",index:2}, 
+        //{Label:"Teams",Icon:<MdOutlineGroups className="flex flex-1 w-full h-8 mb-2"/>,link:"/teams",index:2}, 
         {Label:"Analytics",Icon:<LuChartNoAxesCombined className="flex flex-1 w-full h-7 mb-3"/>,link:"/analytics",index:3}
     ]
 
