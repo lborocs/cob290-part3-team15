@@ -105,7 +105,7 @@ function Chat({ user }){
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef}/>
                         </div>
-                        <div className="flex flex-col bg-purple-500 h-16 justify-center">
+                        <div className="flex flex-col bg-gray-600 h-20 justify-center px-4 shadow-md">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode}/>
                         </div>
                     </div>
