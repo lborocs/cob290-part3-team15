@@ -30,8 +30,8 @@ router.get("/getMessagesAfter",authenticateToken,(req,res) => {
     const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp
                  FROM direct_messages 
                  LEFT JOIN users ON direct_messages.Sender=users.UserID 
-                 WHERE ((Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)) AND direct_messages.Timestamp>?
-                 ORDER BY direct_messages.Timestamp DESC`;
+                 WHERE ((Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)) AND direct_messages.Timestamp>CONVERT_TZ(?, '+00:00', @@session.time_zone)
+                 ORDER BY direct_messages.Timestamp ASC`;
     const id = req.user.userID;
     const target = req.query.target;
     const timestamp= req.query.after;
@@ -40,6 +40,7 @@ router.get("/getMessagesAfter",authenticateToken,(req,res) => {
     if (isNaN(id) || isNaN(target)) {
         return res.status(400).json({ error: "Invalid input" });
     }
+
 
     const values = [id,target,target,id,timestamp];
     database.query(query, values, (err, results) => {
