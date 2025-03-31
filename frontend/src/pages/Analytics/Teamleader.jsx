@@ -1,15 +1,19 @@
 import React from 'react'
-import WelcomeMessage from '../../components/chat/analytics/WelcomeMessage'
-import QuickStatistics from '../../components/chat/analytics/QuickStatistics'
-import SearchBox from '../../components/chat/analytics/SearchBox'
-import StatisticsField from '../../components/chat/analytics/StatisticsField'
-
+import WelcomeMessage from '../../components/analytics/WelcomeMessage'
+import QuickStatistics from '../../components/analytics/QuickStatistics'
+import SearchBox from '../../components/analytics/SearchBox'
+import StatisticsField from '../../components/analytics/StatisticsField'
+ import Navbar from '../../components/navigation/Navbar'
 
 function Teamleader() {
   return (
     <>
     {/* TODO: make the backend calls to get the data for the statistics, name and role */}
-      <div className="grid grid-cols-12 grid-rows-7 w-screen h-screen gap-4">
+      <div className="grid grid-cols-12 grid-rows-7 w-screen h-screen gap-4 ">
+        <div className='col-start-1 row-start-1 row-span-7'>
+           <Navbar />
+        </div>
+       
         <WelcomeMessage userID={"Team15"} role={"Team Leader"}/>
 
         <QuickStatistics colStart={2} rowStart={3} statistic={"Projects"} statisticValue={10}/>

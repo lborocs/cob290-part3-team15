@@ -40,23 +40,23 @@ function StatisticsFieldCarousel() {
     }, [activeButton]);
 
     return (
-        <div className="flex items-center justify-between p-6 bg-gray-100 rounded-lg shadow-md col-span-4 row-span-2">
+        <div className="flex items-center justify-between p-6 bg-secondary/50 rounded-3xl col-span-4 row-span-2">
             <button
-                className={`px-4 py-2 rounded text-white hover:bg-orange-500 ${
-                    activeButton === 'left' ? 'bg-orange-600' : 'bg-orange-400'
+                className={`px-4 py-2 rounded text-white hover:bg-accentOrange/70 ${
+                    activeButton === 'left' ? 'bg-accentOrange/70' : 'bg-accentOrange'
                 }`}
                 onClick={() => handleButtonClick('left')}
             >
                 ←
             </button>
             <div className="text-center mx-6 flex-grow">
-                <h2 className="text-xl font-semibold text-gray-800">{dummyData[currentIndex].title}</h2>
-                <p className="text-4xl font-bold text-orange-300 my-4">{dummyData[currentIndex].value}</p>
+                <h2 className="text-xl font-semibold text-text">{dummyData[currentIndex].title}</h2>
+                <p className="text-4xl font-bold text-accentOrange my-4">{dummyData[currentIndex].value}</p>
                 <p className="text-gray-600">{dummyData[currentIndex].description}</p>
             </div>
             <button
-                className={`px-4 py-2 rounded text-white hover:bg-orange-500 ${
-                    activeButton === 'right' ? 'bg-orange-600' : 'bg-orange-400'
+                className={`px-4 py-2 rounded text-white hover:bg-accentOrange/70 ${
+                    activeButton === 'right' ? 'bg-accentOrange/70' : 'bg-accentOrange'
                 }`}
                 onClick={() => handleButtonClick('right')}
             >
