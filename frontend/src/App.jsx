@@ -7,7 +7,7 @@ const Landing = lazy(() => import('./pages/Landing'));
 const Login = lazy(() => import('./pages/Login'));
 const PageDoesNotExist = lazy(() => import('./pages/PageDoesNotExist'));
 const Chat = lazy(() => import('./pages/Chat'));
-const AnalyticsLanding = lazy(() => import('./pages/AnalyticsLanding'));
+const AnalyticsLanding = lazy(() => import('./pages/Analytics'));
 
 
 // Analytics subsystem imports
