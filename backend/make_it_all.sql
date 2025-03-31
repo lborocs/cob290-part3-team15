@@ -249,4 +249,92 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-30 22:07:24
+DROP TABLE IF EXISTS `projects`;
+
+-- Project Table
+CREATE TABLE `project` (
+    `projectID` INT(11) NOT NULL AUTO_INCREMENT, 
+    `proj_name` VARCHAR(1024) NOT NULL, 
+    `proj_description` TEXT NOT NULL,
+    `team_leader` INT(11) NOT NULL,
+    PRIMARY KEY (`projectID`),
+    KEY `team_leader` (`team_leader`),
+    CONSTRAINT `fk_team_leader` FOREIGN KEY (`team_leader`) REFERENCES `users` (`UserID`) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `project_members`;
+
+-- Project Members Table
+CREATE TABLE `project_members` (
+    `projectID` INT(11) NOT NULL,
+    `UserID` INT(11) NOT NULL,
+    `role` ENUM('Employee', 'Team leader', 'Manager') NOT NULL DEFAULT 'Employee',
+    PRIMARY KEY (`projectID`, `UserID`),
+    CONSTRAINT `fk_project_members_project` FOREIGN KEY (`projectID`) REFERENCES `project` (`projectID`) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT `fk_project_members_user` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `tasks`;
+
+-- Tasks Table
+CREATE TABLE `tasks` (
+    `taskID` INT(11) NOT NULL AUTO_INCREMENT,
+    `projectID` INT(11) NOT NULL,
+    `assigned_to` INT(11), 
+    `task_name` VARCHAR(255) NOT NULL,
+    `task_description` TEXT,
+    `status` ENUM('Pending', 'In Progress', 'Completed') NOT NULL DEFAULT 'Pending',
+    `priority` ENUM('Low', 'Medium', 'High') NOT NULL DEFAULT 'Medium',
+    `due_date` DATE,
+    PRIMARY KEY (`taskID`),
+    KEY `projectID` (`projectID`),
+    KEY `assigned_to` (`assigned_to`),
+    CONSTRAINT `fk_tasks_project` FOREIGN KEY (`projectID`) REFERENCES `project` (`projectID`) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT `fk_tasks_user` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`UserID`) 
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `list`;
+
+CREATE TABLE `list` (
+    `listID` INT AUTO_INCREMENT PRIMARY KEY, 
+    `user_ID` INT(11) NOT NULL,  -- Ensure this matches `users.email`
+    `list_title` VARCHAR(255) NOT NULL,
+    CONSTRAINT `fk_list_user` FOREIGN KEY (`user_ID`) REFERENCES `users`(`UserID`) 
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `items`;
+
+-- Items Table (Updated)
+CREATE TABLE `items` (
+    `item_ID` INT AUTO_INCREMENT PRIMARY KEY, 
+    `description` TEXT NOT NULL, 
+    `list_ID` INT NOT NULL, 
+    `completed` BOOLEAN DEFAULT FALSE,  
+    CONSTRAINT `fk_items_list` FOREIGN KEY (`list_ID`) REFERENCES `list`(`listID`) 
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `user_tasks`;
+
+-- User Tasks Table (Fixed)
+CREATE TABLE `user_tasks` (
+    `task_ID` INT NOT NULL,     
+    `employee_ID` INT(11) NOT NULL, 
+    PRIMARY KEY (`task_ID`, `employee_ID`),     
+    CONSTRAINT `fk_user_tasks_task` FOREIGN KEY (`task_ID`) REFERENCES `tasks`(`taskID`) 
+        ON DELETE CASCADE, 
+    CONSTRAINT `fk_user_tasks_user` FOREIGN KEY (`employee_ID`) REFERENCES `users`(`UserID`) 
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
