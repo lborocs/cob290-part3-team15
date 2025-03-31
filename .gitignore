@@ -26,3 +26,4 @@ dist-ssr
 #Extra
 backend/.env
 backend/make_it_all.sql
+terminals_start_unix.sh
