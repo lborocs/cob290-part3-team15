@@ -71,7 +71,7 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
   
   
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-30">
         {messages.map((message) => (
             <Message key={message.messageID} messageContent={message} userID={userID} mode={mode}/>
         ))}
