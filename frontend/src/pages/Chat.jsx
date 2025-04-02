@@ -100,12 +100,12 @@ function Chat({ user }){
                 
                 {/*Main Chat Area*/}
                 <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative`}>
-                    <div className="bg-blue-200 w-full h-[100px]">User:{name} Role:{role}</div>
+                    <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div>
                     <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef}/>
                         </div>
-                        <div className="flex flex-col bg-primary h-20 justify-center px-4 shadow-md px-30">
+                        <div className="flex flex-col bg-transparent h-20 justify-center px-4 shadow-md px-30">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode}/>
                         </div>
                     </div>
