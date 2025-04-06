@@ -1,6 +1,7 @@
 import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 import { useState } from 'react';
 import DropdownList from './DropdownList';
+import ChatDropdown from "./ChatDropdown";
 function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -16,41 +17,28 @@ function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
       };
-    const copyText = () => {
-        // Put function to copy text here
-        console.log('Copy text clicked'); 
-        setIsDropdownOpen(false); // Close the dropdown when copy text is clicked
-    }
 
-    const handleEditMessage = () => {
-        SetOpenEditModal(true); // Open the edit message modal
-        setIsDropdownOpen(false); // Close the dropdown when edit message is clicked
-    }
-    
-    const handleDeleteMessage = () => {
-        // Put function to delete message here
-        console.log('Delete message clicked'); 
-        setIsDropdownOpen(false); // Close the dropdown when delete message is clicked
-    }
-
-    const items = ['Copy Text', 'Edit Message', 'Delete Message'];
-    const componentsFunctions = [copyText, handleEditMessage, handleDeleteMessage]; // Array of functions to call when item is clicked
-    
+    const closeDropdown = () => {
+        setIsDropdownOpen(false); // Close the dropdown
+    };
 
     return (
         <>
             {isHoveredComment && (
                 <div className="flex rounded-lg bg-white space-x-2 absolute right-0 bottom-10 y-10 z-40">
+                    {/* Dropdown button */}
                     <button 
                     onClick={toggleDropdown} 
                     className="p-1"
                     >
                         <BsThreeDots className="text-gray-200 hover:text-purple-200" />
                     </button>
+                    {/* Dropdown menu */}
                     {isDropdownOpen && (
-                        <DropdownList
-                            items={items}
-                            onClick = {componentsFunctions}
+                        <ChatDropdown
+                            sentByUser={sentByUser}
+                            onClose={closeDropdown}
+                            SetOpenEditModal={SetOpenEditModal}
                         />
                     )}
                     {/* Edit button */}
