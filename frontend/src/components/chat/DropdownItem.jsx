@@ -2,7 +2,7 @@ function DropdownItem({item, onClick }) {
     return (
         <div
         id="dropdown-item"
-        className="p-2 hover:bg-gray-200 cursor-pointer rounded-lg"
+        className="w-auto whitespace-nowrap text-sm p-2 px-4 hover:bg-gray-100 cursor-pointer rounded-md text-gray-700"
         onClick={() => onClick(item)}
         >
         {item}

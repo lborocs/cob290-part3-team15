@@ -3,7 +3,7 @@ import DropdownItem from './DropdownItem';
 
 function DropdownList({ items, onClick }) {
   return (
-    <div id="dropdown-list" className="absolute bg-white rounded-lg p-2 z-50">
+    <div id="dropdown-list" className="w-auto absolute bg-white rounded-lg p-2 z-50 border border-gray-300">
         {/* Goes through each item in the list and maps items to a key value and  */}
         {items.map((item, index) => (
             <DropdownItem key={index} item={item} onClick={onClick} />
