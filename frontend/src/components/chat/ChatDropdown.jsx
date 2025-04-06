@@ -6,6 +6,7 @@ function ChatDropdown({ sentByUser, onClose, SetOpenEditModal }) {
     const dropdownRef = useRef(null); // Reference to the dropdown element
 
     // Close dropdown when clicking outside
+    //
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -18,24 +19,21 @@ function ChatDropdown({ sentByUser, onClose, SetOpenEditModal }) {
         document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [onClose]);
-    
+
     const copyText = () => {
         // Put function to copy text here
         console.log('Copy text clicked'); 
-        setIsDropdownOpen(false); // Close the dropdown when copy text is clicked
         onClose(); // Close the dropdown when copy text is clicked
     }
     
       const handleEditMessage = () => {
         SetOpenEditModal(true); // Open the edit message modal
-        setIsDropdownOpen(false); // Close the dropdown when edit message is clicked
         onClose(); // Close the dropdown when edit message is clicked
     }
     
       const handleDeleteMessage = () => {
         // Put function to delete message here
         console.log('Delete message clicked'); 
-        setIsDropdownOpen(false); // Close the dropdown when delete message is clicked
         onClose(); // Close the dropdown when delete message is clicked
     }
     
