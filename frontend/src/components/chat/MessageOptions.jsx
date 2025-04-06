@@ -34,7 +34,7 @@ function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
                     {isDropdownOpen && (
                         <DropdownList
                             items={['Copy Text', 'Edit Message', 'Delete Message']}
-                            onClick={handleDropdownClick}
+                            components={[]}
                         />
                     )}
                     {/* Edit button */}
