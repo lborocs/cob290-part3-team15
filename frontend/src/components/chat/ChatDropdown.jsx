@@ -1,6 +1,23 @@
 import DropdownList from "./DropdownList";
+// Found that useRef can be used to reference a div element and check if the click is outside of it
+import { useEffect, useRef } from "react";
 
 function ChatDropdown({ sentByUser, onClose, SetOpenEditModal }) {
+    const dropdownRef = useRef(null); // Reference to the dropdown element
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            onClose(); // Call the onClose function to close the dropdown
+        }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [onClose]);
     
     const copyText = () => {
         // Put function to copy text here
@@ -30,11 +47,10 @@ function ChatDropdown({ sentByUser, onClose, SetOpenEditModal }) {
     sentByUser ? [copyText, handleEditMessage, handleDeleteMessage]
     : [copyText, handleDeleteMessage]; // Array of functions to call when item is clicked
     return (
-        <DropdownList
-          items={items}
-          onClick={componentsFunctions}
-        />
-      );
+        <div ref={dropdownRef}>
+          <DropdownList items={items} onClick={componentsFunctions} />
+        </div>
+    );
 }
 
 export default ChatDropdown;
