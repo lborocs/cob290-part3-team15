@@ -10,7 +10,7 @@ function DropdownList({ items, onClick }) {
             <DropdownItem 
             key={index} 
             item={item} 
-            onClick={components[index]} /> // Maps the item to the component at the same index
+            onClick={onClick[index]} /> // Maps the item to the function at the same index
         ))}
     </div>
   );

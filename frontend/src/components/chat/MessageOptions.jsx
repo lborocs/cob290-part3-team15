@@ -1,10 +1,10 @@
 import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 import { useState } from 'react';
-import EditMessageModal from './EditMessageModal';
 import DropdownList from './DropdownList';
 function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    
     const HandleMouseEnterEdit = () => {
         SetIsHoveredEdit(true); // Sets hover state to true when mouse enters
       };
@@ -16,10 +16,26 @@ function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
       };
+    const copyText = () => {
+        // Put function to copy text here
+        console.log('Copy text clicked'); 
+        setIsDropdownOpen(false); // Close the dropdown when copy text is clicked
+    }
+
+    const handleEditMessage = () => {
+        SetOpenEditModal(true); // Open the edit message modal
+        setIsDropdownOpen(false); // Close the dropdown when edit message is clicked
+    }
     
-    const handleDropdownClick = (item) => {
-        setIsDropdownOpen(false); // Close the dropdown after an item is clicked
-    };
+    const handleDeleteMessage = () => {
+        // Put function to delete message here
+        console.log('Delete message clicked'); 
+        setIsDropdownOpen(false); // Close the dropdown when delete message is clicked
+    }
+
+    const items = ['Copy Text', 'Edit Message', 'Delete Message'];
+    const componentsFunctions = [copyText, handleEditMessage, handleDeleteMessage]; // Array of functions to call when item is clicked
+    
 
     return (
         <>
@@ -33,8 +49,8 @@ function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
                     </button>
                     {isDropdownOpen && (
                         <DropdownList
-                            items={['Copy Text', 'Edit Message', 'Delete Message']}
-                            components={[]}
+                            items={items}
+                            onClick = {componentsFunctions}
                         />
                     )}
                     {/* Edit button */}
