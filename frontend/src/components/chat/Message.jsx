@@ -61,6 +61,7 @@ function SelfMessage({ message,setMessage,mode }) {
           sentByUser={true}
           onClose = {closeDropdown}
           SetOpenEditModal = {SetOpenEditModal}
+          message={message} // Pass the message to the dropdown
         />
         
       )}
@@ -115,6 +116,7 @@ function OtherMessage({ message }) {
         <ChatDropdown
         sentByUser={false}
         onClose = {closeDropdown}
+        message={message} // Pass the message to the dropdown
       />
       )}
     </div>

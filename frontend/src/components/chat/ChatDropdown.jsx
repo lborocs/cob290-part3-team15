@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { BsClipboard2Fill } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";
 import { BsFillTrashFill } from "react-icons/bs";
-function ChatDropdown({ sentByUser, onClose, SetOpenEditModal }) {
+function ChatDropdown({ sentByUser, onClose, SetOpenEditModal, message }) {
     const dropdownRef = useRef(null); // Reference to the dropdown element
 
     // Close dropdown when clicking outside
@@ -23,20 +23,19 @@ function ChatDropdown({ sentByUser, onClose, SetOpenEditModal }) {
     }, [onClose]);
 
     const copyText = () => {
-        // Put function to copy text here
-        console.log('Copy text clicked'); 
-        onClose(); // Close the dropdown when copy text is clicked
+      navigator.clipboard.writeText(message.content); // Copy the message text to clipboard
+      onClose(); // Close the dropdown when copy text is clicked
     }
     
-      const handleEditMessage = () => {
-        SetOpenEditModal(true); // Open the edit message modal
-        onClose(); // Close the dropdown when edit message is clicked
+    const handleEditMessage = () => {
+      SetOpenEditModal(true); // Open the edit message modal
+      onClose(); // Close the dropdown when edit message is clicked
     }
     
-      const handleDeleteMessage = () => {
-        // Put function to delete message here
-        console.log('Delete message clicked'); 
-        onClose(); // Close the dropdown when delete message is clicked
+    const handleDeleteMessage = () => {
+      // Put function to delete message here
+      console.log('Delete message clicked'); 
+      onClose(); // Close the dropdown when delete message is clicked
     }
     // List parameters to be passed to the DropdownList component
 
