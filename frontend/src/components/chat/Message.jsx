@@ -41,6 +41,7 @@ function SelfMessage({ message,setMessage,mode }) {
           <MessageOptions sentByUser={true} 
           isHoveredComment={isHovered}
           SetOpenEditModal = {SetOpenEditModal}
+          message={message} // Pass the message to the options
           />
         )}
         <Content message={message}/>
@@ -107,6 +108,7 @@ function OtherMessage({ message }) {
             <MessageOptions sentByUser={false} 
             isHoveredComment={isHovered} 
             SetOpenEditModal = {null}
+            message={message} // Pass the message to the options
             />
           )}
           <Content message={message}/>
