@@ -1,6 +1,7 @@
 import MessageOptions from './MessageOptions.jsx';
 import { useState } from 'react';
 import EditMessageModal from './EditMessageModal.jsx';
+import ChatDropdown from './ChatDropdown.jsx';
 function Content({ message }) {
   return (
     <>
@@ -15,6 +16,7 @@ function Content({ message }) {
 function SelfMessage({ message,setMessage,mode }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [openEditModal, SetOpenEditModal] = useState(false); // Default is not open and checks if the edit modal is open
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
   const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
       SetisHovered(true)
@@ -26,7 +28,11 @@ function SelfMessage({ message,setMessage,mode }) {
   //Anti Right Click
   const HandleRightClick = (event) => {
     event.preventDefault();
-    alert("Right-click is disabled on this page.");
+    setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
+  };
+  // Close dropdown when clicking outside of it
+  const closeDropdown = () => { // Copied from message options
+    setIsDropdownOpen(false); // Close the dropdown
   };
   return(
     <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-accentBlue/80 px-4 py-2 text-base font-medium self-end bg-accentBlue/50 relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
@@ -35,6 +41,7 @@ function SelfMessage({ message,setMessage,mode }) {
           <MessageOptions sentByUser={true} 
           isHoveredComment={isHovered}
           SetOpenEditModal = {SetOpenEditModal}
+          message={message} // Pass the message to the options
           />
         )}
         <Content message={message}/>
@@ -50,6 +57,16 @@ function SelfMessage({ message,setMessage,mode }) {
         mode={mode}
         
       />
+      {isDropdownOpen && ( // Dropdown menu for right click options
+        <ChatDropdown
+          sentByUser={true}
+          onClose = {closeDropdown}
+          SetOpenEditModal = {SetOpenEditModal}
+          message={message} // Pass the message to the dropdown
+        />
+        
+      )}
+      
     </div>
   )
 }
@@ -57,6 +74,7 @@ function SelfMessage({ message,setMessage,mode }) {
 function OtherMessage({ message }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [openEditModal, SetOpenEditModal] = useState(false); // Default is not open and checks if the edit modal is open
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
   const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
       SetisHovered(true)
@@ -65,6 +83,18 @@ function OtherMessage({ message }) {
       SetisHovered(false)
     }
   };
+
+  //Anti Right Click
+  const HandleRightClick = (event) => {
+    event.preventDefault();
+    setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
+  };
+
+  // Close dropdown when clicking outside of it
+  const closeDropdown = () => { // Copied from message options
+    setIsDropdownOpen(false); // Close the dropdown
+  };
+
   return(
     <div className="max-w-3/4 text-base font-medium self-start">
       {message.showName &&
@@ -72,17 +102,25 @@ function OtherMessage({ message }) {
         {message.name}
       </div>
       }
-      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover}>
+      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
         <div className="text-left flex flex-col text-pretty break-all">
           {isHovered && !openEditModal && (
             <MessageOptions sentByUser={false} 
             isHoveredComment={isHovered} 
             SetOpenEditModal = {null}
+            message={message} // Pass the message to the options
             />
           )}
           <Content message={message}/>
         </div>
       </div>
+      {isDropdownOpen && ( // Dropdown menu for right click options
+        <ChatDropdown
+        sentByUser={false}
+        onClose = {closeDropdown}
+        message={message} // Pass the message to the dropdown
+      />
+      )}
     </div>
   )
 }

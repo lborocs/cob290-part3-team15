@@ -1,26 +1,48 @@
 import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 import { useState } from 'react';
-import EditMessageModal from './EditMessageModal';
-function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal}) {
+import DropdownList from './DropdownList';
+import ChatDropdown from "./ChatDropdown";
+function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal, message}) {
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    
     const HandleMouseEnterEdit = () => {
-        SetIsHoveredEdit(true);
+        SetIsHoveredEdit(true); // Sets hover state to true when mouse enters
       };
     
     const HandleMouseLeaveEdit = () => {
-        SetIsHoveredEdit(false);
+        SetIsHoveredEdit(false); // Opposite of the above
+    };
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
+      };
+
+    const closeDropdown = () => {
+        setIsDropdownOpen(false); // Close the dropdown
     };
 
     return (
         <>
             {isHoveredComment && (
                 <div className="flex rounded-lg bg-white space-x-2 absolute right-0 bottom-10 y-10 z-40">
+                    {/* Dropdown button */}
                     <button 
-                    // onClick={} 
+                    onClick={toggleDropdown} 
                     className="p-1"
                     >
-                    <BsThreeDots className="text-gray-200 hover:text-purple-200" />
+                        <BsThreeDots className="text-gray-200 hover:text-purple-200" />
                     </button>
+                    {/* Dropdown menu */}
+                    {isDropdownOpen && (
+                        <ChatDropdown
+                            sentByUser={sentByUser}
+                            onClose={closeDropdown}
+                            SetOpenEditModal={SetOpenEditModal}
+                            message={message} // Pass the message to the dropdown
+                        />
+                    )}
+                    {/* Edit button */}
                     {sentByUser &&
                     <button
                     onClick={() => {
