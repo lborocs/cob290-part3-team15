@@ -112,7 +112,7 @@ LOCK TABLES `direct_messages` WRITE;
 INSERT INTO `direct_messages` VALUES (1,2,1,'I have done my job','2025-03-16 19:41:24');
 INSERT INTO `direct_messages` VALUES (2,1,2,'What is your job?','2025-03-16 20:02:27');
 INSERT INTO `direct_messages` VALUES (3,2,1,'I do work','2025-03-17 02:02:58');
-INSERT INTO `direct_messages` VALUES (4,1,2,'No you don\'t','2025-03-23 21:50:24');
+INSERT INTO `direct_messages` VALUES (4,1,2,'No you don\'t!','2025-03-23 21:50:24');
 INSERT INTO `direct_messages` VALUES (5,1,3,'I send you the message!','2025-03-23 23:26:33');
 INSERT INTO `direct_messages` VALUES (6,1,3,'You get message?','2025-03-23 23:27:28');
 INSERT INTO `direct_messages` VALUES (7,1,3,'I send you the message!','2025-03-23 23:37:05');
@@ -249,4 +249,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-06 19:42:27
+-- Dump completed on 2025-04-08 19:07:52

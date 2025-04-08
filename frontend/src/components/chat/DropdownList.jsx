@@ -1,7 +1,7 @@
 
 import DropdownItem from './DropdownItem';
 
-function DropdownList({ items, onClick }) {
+function DropdownList({ items, onClick, icons }) {
   return (
     <div
     className="w-auto absolute bg-white rounded-lg p-2 z-50 border border-gray-300">
@@ -10,7 +10,9 @@ function DropdownList({ items, onClick }) {
             <DropdownItem 
             key={index} 
             item={item} 
-            onClick={onClick[index]} /> // Maps the item to the function at the same index
+            onClick={onClick[index]} // Maps the item to the function at the same index
+            icon={icons? icons[index] : null} // Maps the icon to the item after checking if it exists, else sets it to null
+            /> 
         ))}
     </div>
   );
