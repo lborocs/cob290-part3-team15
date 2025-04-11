@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { BsClipboard2Fill } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";
 import { BsFillTrashFill } from "react-icons/bs";
-function ChatDropdown({ sentByUser, onClose, SetOpenEditModal, message, setEditing, setEditingMessage }) {
+function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMessage }) {
     const dropdownRef = useRef(null); // Reference to the dropdown element
 
     // Close dropdown when clicking outside

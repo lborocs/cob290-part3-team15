@@ -1,8 +1,7 @@
 import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 import { useState } from 'react';
-import DropdownList from './DropdownList';
 import ChatDropdown from "./ChatDropdown";
-function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal, message, setEditing, setEditingMessage}) {
+function MessageOptions({sentByUser, isHoveredComment, message, setEditing, setEditingMessage}) {
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     
@@ -38,7 +37,6 @@ function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal, message
                         <ChatDropdown
                             sentByUser={sentByUser}
                             onClose={closeDropdown}
-                            SetOpenEditModal={SetOpenEditModal}
                             message={message} // Pass the message to the dropdown
                             setEditing={setEditing}
                             setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
