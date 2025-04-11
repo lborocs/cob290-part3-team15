@@ -34,7 +34,7 @@ function SelfMessage({ message,setMessage,mode, setEditing, setEditingMessage, e
   };
   //console.log("Editing Message ID:", editingMessage?.messageID);
   return(
-    <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-blue-400 ": ""}max-w-3/4 my-2 rounded-lg border border-2 border-accentBlue/80 px-4 py-2 text-base font-medium self-end bg-accentBlue/50 relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
+    <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} max-w-3/4 my-2 rounded-lg border border-2 border-accentGreen/80 px-4 py-2 text-base font-medium self-end bg-accentGreen/50 relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
       <div className="self-start text-pretty break-all">
         {isHovered && (
           <MessageOptions sentByUser={true} 

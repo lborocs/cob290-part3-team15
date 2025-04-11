@@ -39,13 +39,13 @@ const Navbar = (props) => {
     ]
 
     return (
-        <div className="flex relative flex-col h-full items-center bg-accentOrange w-[72px] z-10 border-r-1 border-blackFaded overflow-scroll justify-between">
+        <div className="flex relative flex-col h-full items-center bg-accentOrange w-[72px] z-10 border-r-1 border-blackFaded overflow-hidden justify-between">
             <div className="flex flex-col w-full h-full min-h-80 relative items-center">
                 <button className="flex w-15 h-15 mt-2 rounded-lg bg-[#D3D3D3] items-center justify-center shadow-[1px_2px_5px_rgba(0,0,0,0.3)]"
                 onClick={(e) => navigate("/landing/")}>
                     <img src={Logo} className="w-12 h-12" alt="Logo" />
                 </button>
-                <p className="h-4 text-xs w-full font-black">Make It All</p>
+                <p className="h-4 text-xs w-full font-black select-none">Make It All</p>
                 <div className="mt-[10vh]">
                     {Tabs.map((tab) => (
                         <div className="py-2" key={tab.index}>
