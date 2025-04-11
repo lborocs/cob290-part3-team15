@@ -35,7 +35,7 @@ function SelfMessage({ message,setMessage,mode, setEditing, setEditingMessage })
   return(
     <div className={`max-w-3/4 my-2 rounded-lg border border-2 border-accentBlue/80 px-4 py-2 text-base font-medium self-end bg-accentBlue/50 relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
       <div className="self-start text-pretty break-all">
-        {isHovered && !openEditModal && (
+        {isHovered && (
           <MessageOptions sentByUser={true} 
           isHoveredComment={isHovered}
           message={message} // Pass the message to the options
@@ -91,7 +91,7 @@ function OtherMessage({ message }) {
       }
       <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
         <div className="text-left flex flex-col text-pretty break-all">
-          {isHovered && !openEditModal && (
+          {isHovered && (
             <MessageOptions sentByUser={false} 
             isHoveredComment={isHovered} 
             message={message} // Pass the message to the options
