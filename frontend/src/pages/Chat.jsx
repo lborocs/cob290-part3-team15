@@ -19,6 +19,7 @@ function Chat({ user }){
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
     // Editing
     const [editing, setEditing] = useState(false);
+    const [editingMessage, setEditingMessage] = useState(null); // Store the message being edited (also needs to be passed down the hierarchy)
 
     //Navbar
     const [selectable,setSelectable] = useState(windowWidth<1024);
@@ -105,10 +106,10 @@ function Chat({ user }){
                     <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div>
                     <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing}/>
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage}/>
                         </div>
                         <div className="flex flex-col bg-transparent h-20 justify-center px-4 shadow-md px-30">
-                            <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing}/>
+                            <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing} editingMessage={editingMessage} setEditingMessage={setEditingMessage} setEditing={setEditing}/>
                         </div>
                     </div>
                 </div>

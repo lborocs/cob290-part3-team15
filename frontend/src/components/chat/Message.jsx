@@ -13,7 +13,7 @@ function Content({ message }) {
   );
 }
 
-function SelfMessage({ message,setMessage,mode, setEditing }) {
+function SelfMessage({ message,setMessage,mode, setEditing, setEditingMessage }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [openEditModal, SetOpenEditModal] = useState(false); // Default is not open and checks if the edit modal is open
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
@@ -43,6 +43,7 @@ function SelfMessage({ message,setMessage,mode, setEditing }) {
           SetOpenEditModal = {SetOpenEditModal}
           message={message} // Pass the message to the options
           setEditing={setEditing} // Pass the setMessage function to the options
+          setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
           />
         )}
         <Content message={message}/>
@@ -65,6 +66,7 @@ function SelfMessage({ message,setMessage,mode, setEditing }) {
           SetOpenEditModal = {SetOpenEditModal}
           message={message} // Pass the message to the dropdown
           setEditing={setEditing}
+          setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
         />
         
       )}
@@ -131,12 +133,12 @@ function OtherMessage({ message }) {
 
 
 
-function Message({ messageContent , userID , mode, setEditing}) {
+function Message({ messageContent , userID , mode, setEditing, setEditingMessage }) {
   const [message,setMessage]=useState(messageContent);
   const sentByUser = parseInt(message.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
   return (
     <>
-      {sentByUser ? <SelfMessage message={message} setMessage={setMessage}  mode={mode} setEditing={setEditing}/> : <OtherMessage message={message}/>}
+      {sentByUser ? <SelfMessage message={message} setMessage={setMessage}  mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage}/> : <OtherMessage message={message}/>}
     </>
   );
 }

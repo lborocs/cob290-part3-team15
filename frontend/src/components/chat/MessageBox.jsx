@@ -1,8 +1,8 @@
 import {BsSend} from 'react-icons/bs';
-import { useState,useRef } from 'react';
+import { useState,useRef, useEffect } from 'react';
 import axios from "axios";
 
-function MessageBox({userID, selectedID, mode, editing}) {
+function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMessage, editingMessage}) {
   const ref = useRef(null);
   // Initialize use state, which contains the initial state and the function to update the state
   const [message, setMessage] = useState("");
@@ -10,11 +10,23 @@ function MessageBox({userID, selectedID, mode, editing}) {
   const handleMessageChange = (newMessage) => {
     setMessage(newMessage); // Updates the message state upon changing the text field
   }
-
+  useEffect(() => {
+    if (editing){
+      //If editing, set the message to the message being edited
+      setMessage(editingMessage);
+    }
+  },[editing, editingMessage]);
   // onSubmit function
   const onSubmit = async(e) => {
     e.preventDefault();
-    
+    if (editing){
+       console.log("Editing message: ", message);
+       setEditing(false); // Set editing to false after submitting the message
+        setEditingMessage(null); // Clear the message being edited
+        setMessage(""); // Clear the message input field
+        ref.current.blur(); // Remove focus from the input field
+       return
+    }
     if (message===""){
       return
     }
