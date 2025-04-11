@@ -28,7 +28,7 @@ function ChatDropdown({ sentByUser, onClose, SetOpenEditModal, message, setEditi
     }
     
     const handleEditMessage = () => {
-      SetOpenEditModal(true); // Open the edit message modal
+      setEditing(true); // Set editing use state to true
       onClose(); // Close the dropdown when edit message is clicked
     }
     
