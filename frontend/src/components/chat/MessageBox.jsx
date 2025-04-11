@@ -20,8 +20,6 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
   const onSubmit = async(e) => {
     e.preventDefault();
     if (editing){
-      console.log(editingMessage);
-      console.log("Editing message: ", message);
       // If editing, make an API call to update the message
       try {
         // Make an api call to update the message content
