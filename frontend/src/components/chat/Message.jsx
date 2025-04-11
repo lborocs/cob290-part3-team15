@@ -42,6 +42,7 @@ function SelfMessage({ message,setMessage,mode }) {
           isHoveredComment={isHovered}
           SetOpenEditModal = {SetOpenEditModal}
           message={message} // Pass the message to the options
+          setEditing={setMessage} // Pass the setMessage function to the options
           />
         )}
         <Content message={message}/>
@@ -63,6 +64,7 @@ function SelfMessage({ message,setMessage,mode }) {
           onClose = {closeDropdown}
           SetOpenEditModal = {SetOpenEditModal}
           message={message} // Pass the message to the dropdown
+          setEditing={setEditing}
         />
         
       )}
@@ -107,7 +109,6 @@ function OtherMessage({ message }) {
           {isHovered && !openEditModal && (
             <MessageOptions sentByUser={false} 
             isHoveredComment={isHovered} 
-            SetOpenEditModal = {null}
             message={message} // Pass the message to the options
             />
           )}

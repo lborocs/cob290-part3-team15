@@ -17,6 +17,8 @@ function Chat({ user }){
     const messageContainerRef = useRef(null);
     const windowWidth = useWindowWidth();
     const [hasResetSidebar, setHasResetSidebar] = useState(false);
+    // Editing
+    const [editing, setEditing] = useState(false);
 
     //Navbar
     const [selectable,setSelectable] = useState(windowWidth<1024);
@@ -103,10 +105,10 @@ function Chat({ user }){
                     <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div>
                     <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef}/>
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing}/>
                         </div>
                         <div className="flex flex-col bg-transparent h-20 justify-center px-4 shadow-md px-30">
-                            <MessageBox userID = {userID} selectedID={selectedID} mode={mode}/>
+                            <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing}/>
                         </div>
                     </div>
                 </div>

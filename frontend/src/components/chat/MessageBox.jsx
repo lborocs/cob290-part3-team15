@@ -2,7 +2,7 @@ import {BsSend} from 'react-icons/bs';
 import { useState,useRef } from 'react';
 import axios from "axios";
 
-function MessageBox({userID, selectedID, mode}) {
+function MessageBox({userID, selectedID, mode, editing}) {
   const ref = useRef(null);
   // Initialize use state, which contains the initial state and the function to update the state
   const [message, setMessage] = useState("");

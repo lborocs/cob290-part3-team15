@@ -1,7 +1,7 @@
 
 import DropdownItem from './DropdownItem';
 
-function DropdownList({ items, onClick, icons }) {
+function DropdownList({ items, onClick, icons, setEditing }) {
   return (
     <div
     className="w-auto absolute bg-white rounded-lg p-2 z-50 border border-gray-300">
