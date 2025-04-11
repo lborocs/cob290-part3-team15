@@ -2,7 +2,7 @@
 import { connectSocket, disconnectSocket,getSocket } from '../socket';
 
 import {useWindowSize,useWindowWidth,useWindowHeight} from '@react-hook/window-size'
-import { BsArrowBarLeft } from "react-icons/bs";
+import { BsArrowBarLeft, BsX } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
 import { useState,useEffect,useRef } from 'react';
  
@@ -108,6 +108,24 @@ function Chat({ user }){
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage}/>
                         </div>
+                        {editing && (
+                            <div className="w-full bg-transparent text-black justify-center text-left rounded-lg px-30 z-5">
+                                
+                                <span className="flex items-center">
+                                    <button
+                                        className="mr-4 text-gray-500 hover:text-red-700"
+                                        onClick={() => {
+                                            setEditing(false);
+                                            setEditingMessage(null);
+                                        }}
+                                        >
+                                        <BsX/>
+                                    </button>
+                                    Editing Message: {editingMessage.content}
+                                </span>
+                                
+                            </div>
+                        )}
                         <div className="flex flex-col bg-transparent h-20 justify-center px-4 shadow-md px-30">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing} editingMessage={editingMessage} setEditingMessage={setEditingMessage} setEditing={setEditing}/>
                         </div>
