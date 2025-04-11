@@ -29,7 +29,7 @@ function ChatDropdown({ sentByUser, onClose, SetOpenEditModal, message, setEditi
     
     const handleEditMessage = () => {
       setEditing(true); // Set editing use state to true
-      setEditingMessage(message.content); // Set the message to be edited
+      setEditingMessage(message); // Set the message to be edited
       onClose(); // Close the dropdown when edit message is clicked
     }
     

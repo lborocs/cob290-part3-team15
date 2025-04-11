@@ -49,7 +49,7 @@ function MessageOptions({sentByUser, isHoveredComment, SetOpenEditModal, message
                     <button
                     onClick={() => {
                     setEditing(true); // Set editing state to true when edit button is clicked
-                    setEditingMessage(message.content); // Set the message to be edited
+                    setEditingMessage(message); // Set the message to be edited
                     }}
                     className="p-1"
                     onMouseEnter={HandleMouseEnterEdit}
