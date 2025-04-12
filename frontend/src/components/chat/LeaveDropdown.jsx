@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from "react";
-function LeaveDropdown(onClose){
+import { BsBoxArrowLeft } from "react-icons/bs";
+import DropdownList from "./DropdownList.jsx"; 
+function LeaveDropdown({onClose, leaveFunction}){
+    const items = ['Leave Chat'];
+    const componentsFunctions = [leaveFunction];
+    const icons = [<BsBoxArrowLeft/>];
+
     const dropdownRef = useRef(null); // Reference to the dropdown element
     // Same as chat dropdown, using ref to detect clicks outside the dropdown
     useEffect(() => {

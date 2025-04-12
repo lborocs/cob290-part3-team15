@@ -12,7 +12,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
   const [chats,setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Checks if the dropdown is open
+  const [dropdownChat, setDropdownChat] = useState(null); // Stores the chat for the dropdown
   const filteredChats = chats.filter(chat =>
     chat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -79,13 +79,13 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
   //Anti Right Click for dropdown
 
   // Close dropdown when clicking outside of it
-  const closeDropdown = () => { // Copied from message options
-    setIsDropdownOpen(false); // Close the dropdown
+  const closeDropdown = () => {
+    setDropdownChat(null);
   };
 
-  const HandleRightClick = (event) => {
+  const HandleRightClick = (event, chat) => {
     event.preventDefault();
-    setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
+    setDropdownChat(chat); // Set the clicked on chat for the dropdown
   };
 
 
@@ -124,7 +124,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
       {/*Chat List*/}
       <div className="flex flex-col h-full px-2 space-y-2 overflow-y-auto pb-5 pt-4" >
         {filteredChats.map((chat) => (
-          <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 gap-2 group`} onContextMenu={HandleRightClick}>
+          <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 gap-2 group`} onContextMenu={(e) => HandleRightClick(e,chat)}>
             <button className="flex w-full h-full pt-1 pl-2 pr-1 text-text rounded"
               onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}>
               <div className="w-15 h-15 my-auto">
@@ -141,8 +141,8 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
             {/*Hover stuff*/}
             <button className="flex h-full w-10 text-text justify-center hidden group-hover:block items-center" onClick={() => {deleteChat(chat.target,chat.type)}}><MdClose className="w-8 h-8"/></button>
-            {isDropdownOpen && ( // Dropdown menu for right click options
-              <LeaveDropdown onClose={closeDropdown}/>
+            {dropdownChat?.target === chat.target && dropdownChat?.type === chat.type && ( // Dropdown menu for right click options
+              <LeaveDropdown onClose={closeDropdown} leaveFunction={() => {deleteChat(chat.target,chat.type)}}/>
             )}
           </div>
         ))}
