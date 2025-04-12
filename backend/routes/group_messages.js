@@ -32,7 +32,7 @@ router.get("/getMessagesAfter",authenticateToken,(req,res) => {
                FROM group_messages 
                LEFT JOIN users ON group_messages.Sender=users.UserID 
                INNER JOIN group_users ON group_messages.GroupID=group_users.GroupID
-               WHERE group_messages.GroupID=? AND group_users.UserID=? AND group_messages.Timestamp>?
+               WHERE group_messages.GroupID=? AND group_users.UserID=? AND group_messages.Timestamp>CONVERT_TZ(?, '+00:00', @@session.time_zone)
                ORDER BY group_messages.Timestamp ASC`;
     const id = req.user.userID;
     const group = req.query.target;
