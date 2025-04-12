@@ -85,9 +85,8 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
   const HandleRightClick = (event, chat) => {
     event.preventDefault();
-    setDropdownChat(chat); // Set the clicked on chat for the dropdown
+    setDropdownChat({target: chat.target, type: chat.type, position: {x: event.clientX, y:event.clientY}}); // Set the clicked on chat for the dropdown
   };
-
 
 
 
@@ -141,8 +140,8 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
             {/*Hover stuff*/}
             <button className="flex h-full w-10 text-text justify-center hidden group-hover:block items-center" onClick={() => {deleteChat(chat.target,chat.type)}}><MdClose className="w-8 h-8"/></button>
-            {dropdownChat?.target === chat.target && dropdownChat?.type === chat.type && ( // Dropdown menu for right click options
-              <LeaveDropdown onClose={closeDropdown} leaveFunction={() => {deleteChat(chat.target,chat.type)}}/>
+            {dropdownChat?.target == chat.target && dropdownChat?.type == chat.type && ( // Dropdown menu for right click options
+              <LeaveDropdown onClose={closeDropdown} leaveFunction={() => {deleteChat(chat.target,chat.type)}} position={dropdownChat.position}/>
             )}
           </div>
         ))}
