@@ -6,11 +6,13 @@ import { FaSearch } from "react-icons/fa";
 
 import CreateChat from './CreateChat.jsx';
 import ProfileCard from '../accounts/ProfileCard.jsx';
+import LeaveDropdown from './LeaveDropdown.jsx';
 
 const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
   const [chats,setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Checks if the dropdown is open
   const filteredChats = chats.filter(chat =>
     chat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -74,9 +76,16 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
     getChats();
   }, [refresh])
   
-  //Anti Right Click (Make a copy for the dropdown menu, this is general purpose)
+  //Anti Right Click for dropdown
+
+  // Close dropdown when clicking outside of it
+  const closeDropdown = () => { // Copied from message options
+    setIsDropdownOpen(false); // Close the dropdown
+  };
+
   const HandleRightClick = (event) => {
     event.preventDefault();
+    setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
   };
 
 
@@ -132,6 +141,9 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
             {/*Hover stuff*/}
             <button className="flex h-full w-10 text-text justify-center hidden group-hover:block items-center" onClick={() => {deleteChat(chat.target,chat.type)}}><MdClose className="w-8 h-8"/></button>
+            {isDropdownOpen && ( // Dropdown menu for right click options
+              <LeaveDropdown onClose={closeDropdown}/>
+            )}
           </div>
         ))}
       </div>
