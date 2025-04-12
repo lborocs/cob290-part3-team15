@@ -31,7 +31,7 @@ const ProfileCard = ({ displayBG,type,id}) => {
   const color = colors[colorKeys[colorBasedOnId]];
 
   return (
-    <div className="flex relative w-full h-full">
+    <div className="flex relative w-full h-full group">
       {/* Profile Picture */}
       <div className={`flex justify-center w-full h-full rounded-full mx-auto border-4 border-transparent ${color}`}>
         {type === "Group" ? <HiUserGroup className="w-9 h-full text-white" /> : <FaUser className="w-8 h-full text-white" />}
