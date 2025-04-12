@@ -33,16 +33,21 @@ const Navbar = (props) => {
     {/* This needs to be planned */}
     const navigate=useNavigate();
     const Tabs=[
-        {Label:"Chat",Icon:<MdOutlineChat className="flex flex-1 w-full h-7 mb-2"/>,link:"/chat",index:1},
+        {Label:"Chat",Icon:<MdOutlineChat className="flex flex-1 w-full h-7 mb-2"/>,link:"/chat/",index:1},
         //{Label:"Teams",Icon:<MdOutlineGroups className="flex flex-1 w-full h-8 mb-2"/>,link:"/teams",index:2}, 
-        {Label:"Analytics",Icon:<LuChartNoAxesCombined className="flex flex-1 w-full h-7 mb-3"/>,link:"/analytics",index:3}
+        {Label:"Analytics",Icon:<LuChartNoAxesCombined className="flex flex-1 w-full h-7 mb-3"/>,link:"/analytics/",index:3}
     ]
 
+    //Anti Right Click
+    const HandleRightClick = (event) => {
+        event.preventDefault();
+    };
+
     return (
-        <div className="flex relative flex-col h-full items-center bg-accentOrange w-[72px] z-10 border-r-1 border-blackFaded overflow-hidden justify-between">
+        <div className="flex relative flex-col h-full items-center bg-accentOrange w-[72px] z-10 border-r-1 border-blackFaded overflow-hidden justify-between" onContextMenu={HandleRightClick}>
             <div className="flex flex-col w-full h-full min-h-80 relative items-center">
                 <button className="flex w-15 h-15 mt-2 rounded-lg bg-[#D3D3D3] items-center justify-center shadow-[1px_2px_5px_rgba(0,0,0,0.3)]"
-                onClick={(e) => navigate("/landing/")}>
+                onClick={(e) => navigate("/login/")}>
                     <img src={Logo} className="w-12 h-12" alt="Logo" />
                 </button>
                 <p className="h-4 text-xs w-full font-black select-none">Make It All</p>
@@ -62,8 +67,8 @@ const Navbar = (props) => {
                     ))}
                 </div>
             </div>
-            <div className="w-15 h-15 justify-end">
-                <ProfileCard/>
+            <div className="w-15 h-15 justify-end mb-2">
+                <ProfileCard displayBG="bg-accentOrange" id={30}/>
             </div>
         </div>
     )

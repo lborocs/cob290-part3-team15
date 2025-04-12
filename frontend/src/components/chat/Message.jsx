@@ -12,7 +12,7 @@ function Content({ message }) {
   );
 }
 
-function SelfMessage({ message,setMessage,mode, setEditing, setEditingMessage, editingMessage }) {
+function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
   const HandleHover = (e) => {
@@ -118,11 +118,11 @@ function OtherMessage({ message }) {
 
 
 function Message({ messageContent , userID , mode, setEditing, setEditingMessage, editingMessage }) {
-  const [message,setMessage]=useState(messageContent);
-  const sentByUser = parseInt(message.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
+  //const [message,setMessage]=useState(messageContent);
+  const sentByUser = parseInt(messageContent.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
   return (
     <>
-      {sentByUser ? <SelfMessage message={message} setMessage={setMessage}  mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage}/> : <OtherMessage message={message}/>}
+      {sentByUser ? <SelfMessage message={messageContent} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage}/> : <OtherMessage message={messageContent}/>}
     </>
   );
 }
