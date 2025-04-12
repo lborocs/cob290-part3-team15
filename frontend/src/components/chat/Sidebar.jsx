@@ -75,7 +75,6 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
   useEffect(()=>{
     getChats();
   }, [refresh])
-<<<<<<< HEAD
   
   //Anti Right Click for dropdown
 
@@ -88,8 +87,6 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
     event.preventDefault();
     setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
   };
-=======
->>>>>>> d72e18c06dd53b38d64b7b51bca414de1563a0d6
 
 
 
