@@ -124,7 +124,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
       {/*Chat List*/}
       <div className="flex flex-col h-full px-2 space-y-2 overflow-y-auto pb-5 pt-4" >
         {filteredChats.map((chat) => (
-          <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 gap-2 group`}>
+          <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 gap-2 group`} onContextMenu={HandleRightClick}>
             <button className="flex w-full h-full pt-1 pl-2 pr-1 text-text rounded"
               onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}>
               <div className="w-15 h-15 my-auto">
