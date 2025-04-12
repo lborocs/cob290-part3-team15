@@ -233,7 +233,7 @@ CREATE TABLE `project_users` (
 
 LOCK TABLES `project_users` WRITE;
 /*!40000 ALTER TABLE `project_users` DISABLE KEYS */;
-INSERT INTO `project_users` VALUES (1,2);
+INSERT INTO `project_users` VALUES (1,1);
 INSERT INTO `project_users` VALUES (1,3);
 /*!40000 ALTER TABLE `project_users` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -299,7 +299,7 @@ CREATE TABLE `tasks` (
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
 INSERT INTO `tasks` VALUES (1,1,3,'Boomstick Procurement','High',20,'2025-04-12','2025-04-19');
-INSERT INTO `tasks` VALUES (2,1,2,'Polish Boomsticks','Medium',10,'2025-04-17','2025-04-22');
+INSERT INTO `tasks` VALUES (2,1,1,'Polish Boomsticks','Medium',10,'2025-04-17','2025-04-22');
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -314,7 +314,7 @@ CREATE TABLE `users` (
   `UserID` int(11) NOT NULL AUTO_INCREMENT,
   `Forename` varchar(64) NOT NULL,
   `Surname` varchar(64) NOT NULL,
-  `Role` enum('Manager','Staff') NOT NULL DEFAULT 'Staff',
+  `Role` enum('Manager','Employee') NOT NULL DEFAULT 'Employee',
   `Icon` blob NOT NULL DEFAULT '[default profile icon here]',
   `PasswordHash` varchar(60) NOT NULL,
   PRIMARY KEY (`UserID`)
@@ -327,9 +327,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Staff','[default profile icon here]','ABC123BCA!!!');
-INSERT INTO `users` VALUES (2,'John','Smith','Staff','[default profile icon here]','ABC123BCA!!!');
-INSERT INTO `users` VALUES (3,'Bill','Boomstick','Staff','[default profile icon here]','ABC123BCA!!!');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!');
+INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!');
+INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -342,4 +342,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-12  1:02:24
+-- Dump completed on 2025-04-12  3:50:51

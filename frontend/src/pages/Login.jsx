@@ -55,7 +55,7 @@ function Login(){
             <div className="flex flex-wrap items-center justify-center gap-x-4 my-4 w-[calc(min(700px,100%))]">
                 <button className={`w-[calc(min(200px,90%))] my-2 hover:bg-red-400 bg-gray-300 hover:text-white
                     rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {quickLogin(1)}}>
-                    <p>User 1 (Staff)</p>
+                    <p>User 1 (Employee)</p>
                 </button>
                 <button className={`w-[calc(min(200px,90%))] my-2 hover:bg-red-400 bg-gray-300 hover:text-white
                     rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {quickLogin(2)}}>
@@ -63,7 +63,7 @@ function Login(){
                 </button>
                 <button className={`w-[calc(min(200px,90%))] my-2 hover:bg-red-400 bg-gray-300 hover:text-white
                     rounded-lg border border-2 px-5 py-2 text-base font-medium`} onClick={() => {quickLogin(3)}}>
-                    <p>User 3 (Staff)</p>
+                    <p>User 3 (Leader)</p>
                 </button>
                 <button onClick={scrollToBottom} className="absolute bottom-5 justify-center items-center gap-2 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
                     <div className="flex flex-col justify-center items-center">
