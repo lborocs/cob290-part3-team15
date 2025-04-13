@@ -29,8 +29,11 @@ function Chat({ user }){
     //Sidebar
     const containerRef = useRef(null);
 
+
     //Socket
     const [refresh,setRefresh] = useState(0)
+    const [otherStatusRefresh,setOtherStatusRefresh] = useState(0)
+    const [personalStatus,setPersonalStatus] = useState("Offline");
 
     //Communication IDs
     const userID = user.userID;
@@ -42,14 +45,19 @@ function Chat({ user }){
         const saved = localStorage.getItem('selectedMode');
         return saved ? saved : 'direct_messages'
     });
+
+    //Selected mode handler
     useEffect(() => {
         localStorage.setItem('selectedMode', mode);
     }, [mode]);
+
     //Selected ID (Saves)
     const [selectedID, setSelectedID] = useState(() => {
         const saved = localStorage.getItem('selectedID');
         return saved ? parseInt(saved) : -1
     });
+
+    //SelectedID handler
     useEffect(() => {
         localStorage.setItem('selectedID', selectedID);
     }, [selectedID]);
@@ -58,7 +66,6 @@ function Chat({ user }){
     const HandleRightClick = (event) => {
         event.preventDefault();
     };
-    
 
     //On window width resize
     useEffect(() => {
@@ -77,28 +84,35 @@ function Chat({ user }){
     }, [windowWidth]);
 
     useEffect(() => {
-        // Scroll to bottom on load
-        connectSocket();  // Connect only if on /chat
+        connectSocket();
         const socket = getSocket();
-        if (socket){
-            socket.emit('setUserId', userID);
-            socket.on('newMessage', (data) => {
-                setRefresh(previous => previous + 1)
+    
+        // Setup listeners early, before any emit
+        if (socket) {
+            socket.on('selfStatus', (data) => {
+                setPersonalStatus(data?.status);
             });
+            socket.on('otherStatus', (data) => {
+                setRefresh(previous => previous + 1);
+            });
+    
+            socket.on('newMessage', (data) => {
+                setRefresh(previous => previous + 1);
+            });
+            socket.emit('setUserId', userID);
+            socket.emit('requestStatus', userID);
         }
+    
         return () => {
-            disconnectSocket(); // Disconnect on unmount
+            disconnectSocket();
         };
-      }, []);
-
+    }, []);
 
     return(
-        //This is a temporary presentation of what we can do for our layout see the real thing below with some components (Update as required)
-
         //Full container
         <div className="flex h-screen w-screen relative">
             {/*Leftmost Sidebar (For tab switching) : Never changes */}
-            <Navbar selectable={selectable} isSelected={sidebarVisible} setIsSelected={setSidebarVisible} activeTab={activeTab}/>
+            <Navbar userID = {userID} selectable={selectable} isSelected={sidebarVisible} setIsSelected={setSidebarVisible} activeTab={activeTab} status={personalStatus}/>
 
             {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
             <div className="flex flex-1 relative">

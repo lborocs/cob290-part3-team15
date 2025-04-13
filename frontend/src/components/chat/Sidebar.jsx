@@ -128,7 +128,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,container
             <button className="flex w-full h-full pt-1 pl-2 pr-1 text-text rounded"
               onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}>
               <div className="w-15 h-15 my-auto">
-                  <ProfileCard displayBG={selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange group-hover:bg-orangeHover"} type={chat.type === "group_messages" ? "Group" : "" } id={chat.target}/>
+                  <ProfileCard displayBG={selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange group-hover:bg-orangeHover"} type={chat.type === "group_messages" ? "Group" : "" } id={chat.target} status={chat.status}/>
               </div>
               <div className="flex flex-1 flex-col justify-start h-full pl-2 relative">
                 <div className="flex flex-col w-full justify-start">

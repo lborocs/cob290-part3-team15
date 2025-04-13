@@ -1,12 +1,15 @@
-import { useState,useEffect,React } from 'react';
+import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo.png';
+import axios from 'axios';
 
 import { MdOutlineChat } from "react-icons/md";
 import { MdOutlineGroups } from "react-icons/md";
 import { LuChartNoAxesCombined } from "react-icons/lu";
 
 import ProfileCard from '../accounts/ProfileCard.jsx'
+
+import { getSocket } from '../../socket';
 
 
 const Tab = (props) => {
@@ -32,6 +35,8 @@ const Tab = (props) => {
 const Navbar = (props) => {
     {/* This needs to be planned */}
     const navigate=useNavigate();
+    const [id, setID]= useState(0);
+
     const Tabs=[
         {Label:"Chat",Icon:<MdOutlineChat className="flex flex-1 w-full h-7 mb-2"/>,link:"/chat/",index:1},
         //{Label:"Teams",Icon:<MdOutlineGroups className="flex flex-1 w-full h-8 mb-2"/>,link:"/teams",index:2}, 
@@ -68,7 +73,7 @@ const Navbar = (props) => {
                 </div>
             </div>
             <div className="w-15 h-15 justify-end mb-2">
-                <ProfileCard displayBG="bg-accentOrange" id={30}/>
+                <ProfileCard displayBG="bg-accentOrange" id={props.userID} status={props.status}/>
             </div>
         </div>
     )
