@@ -14,6 +14,9 @@ function AnalyticsLanding({ user }) {
 
     // Check if the user leads any projects on page load
     useEffect(() => {
+
+        // Define and then call async effect function WITHIN useEffect
+        // Since useEffect has to return void so we need to discard the returned promise
         async function fetchLeader() {
             try {
                 const accessToken = localStorage.getItem('accessToken');

@@ -10,7 +10,7 @@ import TasksList from '../../components/analytics/TasksList';
 
 function Teamleader({ user, roleLabel }) {
   const [userData, setUserData] = useState({
-    userID: user.name,
+    userName: user.name,
     role: roleLabel
   });
 
@@ -48,7 +48,7 @@ function Teamleader({ user, roleLabel }) {
   return (
     <div className="grid grid-cols-12 grid-rows-7 gap-4 p-4 h-screen w-screen bg-primary">
       <WelcomeMessage
-        userID={userData.userID}
+        userName={userData.userName}
         role={userData.role}
       />
 
