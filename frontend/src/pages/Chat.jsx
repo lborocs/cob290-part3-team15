@@ -26,6 +26,9 @@ function Chat({ user }){
     const [sidebarVisible, setSidebarVisible] = useState(true);
     const activeTab="Chat"
 
+    //Sidebar
+    const containerRef = useRef(null);
+
     //Socket
     const [refresh,setRefresh] = useState(0)
 
@@ -100,9 +103,9 @@ function Chat({ user }){
             {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
             <div className="flex flex-1 relative">
                 {sidebarVisible ? 
-                <div className={`flex flex-col h-full fixed lg:static bg-backgroundOrange sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`} onContextMenu={HandleRightClick}> 
+                <div className={`flex flex-col h-full fixed lg:static bg-backgroundOrange sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`} onContextMenu={HandleRightClick} ref={containerRef}> 
                     {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
-                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh}/>
+                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} containerRef={containerRef}/>
                 </div>
                 :<></>}
                 

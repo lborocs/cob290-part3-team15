@@ -8,7 +8,7 @@ import CreateChat from './CreateChat.jsx';
 import ProfileCard from '../accounts/ProfileCard.jsx';
 import LeaveDropdown from './LeaveDropdown.jsx';
 
-const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
+const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,containerRef}) => {
 
   const [chats,setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -85,7 +85,8 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh}) => {
 
   const HandleRightClick = (event, chat) => {
     event.preventDefault();
-    setDropdownChat({target: chat.target, type: chat.type, position: {x: event.clientX, y:event.clientY}}); // Set the clicked on chat for the dropdown
+    const container = containerRef.current?.getBoundingClientRect();
+    setDropdownChat({target: chat.target, type: chat.type, position: {x: event.clientX-container.left, y:event.clientY-container.top}}); // Set the clicked on chat for the dropdown
   };
 
 
