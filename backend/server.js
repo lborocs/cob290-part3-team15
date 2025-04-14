@@ -50,20 +50,20 @@ io.on('connection', (socket) => {
         removeUser(socket.id);
         if(getConnectedCount(userId)===0){
             // Update user status to 'Offline' in the database asynchronously
-            await setStatus(userId,"Offline");
+            await setStatus(userId,"Offline",false);
         }
     });
 
     socket.on('requestStatus', async(userId) => {
         try {
-            await setStatus(userId,"Online");
+            await setStatus(userId,"Online",true);
         } catch (err) {
             console.error(err);
         }
     });
 });
 
-async function setStatus(userId,status) {
+async function setStatus(userId,status,loginAttempt) {
     var query="SELECT Status FROM users WHERE UserID=? LIMIT 1;";
     const values = [userId];
     var currentStatus = null;
@@ -104,7 +104,13 @@ async function setStatus(userId,status) {
                 console.error(err);
             } else {
                 if(status==="Online"||status==="Invisible"){
-                    selfStatusAlert(userId,substitutions[status]);
+                    if (loginAttempt && currentStatus==="Invisible"){
+                        selfStatusAlert(userId,substitutions[currentStatus]);
+                    }
+                    else{
+                        selfStatusAlert(userId,substitutions[status]);
+                    }
+                    
                 }
                 if((status==="Online"||status==="Offline"||status==="Invisible") && !(currentStatus===status)){
                     // Fetch users to alert (people who are in a chat with the user)
