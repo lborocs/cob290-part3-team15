@@ -84,6 +84,12 @@ async function setStatus(userId,status,loginAttempt) {
             return;
         }
 
+        // If this is a login attempt, Online is a lower priority than Invisible
+        if (loginAttempt && currentStatus==="Invisible"){
+            status="Invisible";
+            return;
+        }
+
         // Update the user's status in the database
         if (status==="Offline"){
             query = "UPDATE users SET Status='Offline' WHERE UserID=? AND Status NOT IN ('Invisible','Offline')";
@@ -104,13 +110,7 @@ async function setStatus(userId,status,loginAttempt) {
                 console.error(err);
             } else {
                 if(status==="Online"||status==="Invisible"){
-                    if (loginAttempt && currentStatus==="Invisible"){
-                        selfStatusAlert(userId,substitutions[currentStatus]);
-                    }
-                    else{
-                        selfStatusAlert(userId,substitutions[status]);
-                    }
-                    
+                    selfStatusAlert(userId,substitutions[status]);
                 }
                 if((status==="Online"||status==="Offline"||status==="Invisible") && !(currentStatus===status)){
                     // Fetch users to alert (people who are in a chat with the user)
