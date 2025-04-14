@@ -12,9 +12,10 @@ function LeaveDropdown({onClose, leaveFunction, position}){
     // Same as chat dropdown, using ref to detect clicks outside the dropdown
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            onClose(); // Call the onClose function to close the dropdown
-        }
+            // Check if the click is outside the dropdown and not on the modal
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target) && !event.target.closest(".modal-content")) { // Ignore clicks on the modal affecting the dropdown
+                onClose(); // Call the onClose function to close the dropdown
+            }
         };
 
         document.addEventListener("mousedown", handleClickOutside);
