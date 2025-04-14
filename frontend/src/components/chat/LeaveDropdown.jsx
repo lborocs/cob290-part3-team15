@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BsBoxArrowLeft } from "react-icons/bs";
 import DropdownList from "./DropdownList.jsx"; 
 function LeaveDropdown({onClose, leaveFunction, position}){
+    // Hiding / deleting chats modal
+    const [showLeaveModal, setShowLeaveModal] = useState(false);
     const items = ['Leave Chat'];
-    const componentsFunctions = [leaveFunction];
+    const componentsFunctions = [()=> setShowLeaveModal(true)]; // Function to call when item is clicked
     const icons = [<BsBoxArrowLeft className="text-red-500"/>];
     const dropdownRef = useRef(null); // Reference to the dropdown element
     // Same as chat dropdown, using ref to detect clicks outside the dropdown
@@ -20,9 +22,19 @@ function LeaveDropdown({onClose, leaveFunction, position}){
         };
     }, [onClose]);
 
+    function handleLeave(){
+        setShowLeaveModal(false); // Close the modal
+        leaveFunction(); // Call the leave function
+    }
+
     return (
-        <div ref={dropdownRef} style={{position: "absolute", top: position.y, left: position.x}}>
-          <DropdownList items={items} onClick={componentsFunctions} icons={icons} />
+        <div>
+            <div ref={dropdownRef} style={{position: "absolute", top: position.y, left: position.x}}>
+                <DropdownList items={items} onClick={componentsFunctions} icons={icons} />
+            </div>
+            {showLeaveModal && 
+                <LeaveModal open={showLeaveModal} onClose={() => showLeaveModal(false)} leaveFunction={handleLeave} />
+            }
         </div>
     );
 }
