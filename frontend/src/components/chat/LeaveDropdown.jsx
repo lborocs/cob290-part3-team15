@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BsBoxArrowLeft } from "react-icons/bs";
 import DropdownList from "./DropdownList.jsx"; 
+import LeaveModal from "./LeaveModal.jsx";
 function LeaveDropdown({onClose, leaveFunction, position}){
     // Hiding / deleting chats modal
     const [showLeaveModal, setShowLeaveModal] = useState(false);
@@ -33,7 +34,7 @@ function LeaveDropdown({onClose, leaveFunction, position}){
                 <DropdownList items={items} onClick={componentsFunctions} icons={icons} />
             </div>
             {showLeaveModal && 
-                <LeaveModal open={showLeaveModal} onClose={() => showLeaveModal(false)} leaveFunction={handleLeave} />
+                <LeaveModal open={showLeaveModal} onClose={() => setShowLeaveModal(false)} leaveFunction={handleLeave} />
             }
         </div>
     );
