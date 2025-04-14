@@ -257,8 +257,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Staff','[default profile icon here]','ABC123BCA!!!','Offline');
-INSERT INTO `users` VALUES (2,'John','Smith','Staff','[default profile icon here]','ABC123BCA!!!','Online');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Staff','[default profile icon here]','ABC123BCA!!!','Online');
+INSERT INTO `users` VALUES (2,'John','Smith','Staff','[default profile icon here]','ABC123BCA!!!','Invisible');
 INSERT INTO `users` VALUES (3,'Bill','Boomstick','Staff','[default profile icon here]','ABC123BCA!!!','Offline');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -272,4 +272,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-13 19:07:20
+-- Dump completed on 2025-04-14 23:33:27
