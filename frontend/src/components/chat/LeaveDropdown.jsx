@@ -24,18 +24,13 @@ function LeaveDropdown({onClose, leaveFunction, position}){
         };
     }, [onClose]);
 
-    function handleLeave(){
-        setShowLeaveModal(false); // Close the modal
-        leaveFunction(); // Call the leave function
-    }
-
     return (
         <div>
             <div ref={dropdownRef} style={{position: "absolute", top: position.y, left: position.x}}>
                 <DropdownList items={items} onClick={componentsFunctions} icons={icons} />
             </div>
             {showLeaveModal && 
-                <LeaveModal open={showLeaveModal} onClose={() => setShowLeaveModal(false)} leaveFunction={handleLeave} />
+                <LeaveModal open={showLeaveModal} onClose={() => setShowLeaveModal(false)} leaveFunction={leaveFunction} closeDropdown={onClose} />
             }
         </div>
     );

@@ -49,8 +49,8 @@ CREATE TABLE `active_chats` (
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
 INSERT INTO `active_chats` VALUES (1,1,'group_messages','2025-04-13 18:06:49');
-INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-04-13 18:06:54');
-INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-04-13 18:06:54');
+INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-04-14 22:58:46');
+INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-04-14 22:58:46');
 INSERT INTO `active_chats` VALUES (2,1,'group_messages','2025-04-13 18:06:49');
 INSERT INTO `active_chats` VALUES (3,1,'direct_messages','2025-03-24 06:58:29');
 /*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
@@ -100,7 +100,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,6 +129,7 @@ INSERT INTO `direct_messages` VALUES (19,1,2,'test','2025-04-12 15:04:29');
 INSERT INTO `direct_messages` VALUES (20,1,2,'What are we testing again','2025-04-12 18:18:58');
 INSERT INTO `direct_messages` VALUES (21,1,2,'I\'ve reported you for fraud btw','2025-04-12 18:54:01');
 INSERT INTO `direct_messages` VALUES (22,2,1,'oh okay nvm','2025-04-12 18:54:58');
+INSERT INTO `direct_messages` VALUES (23,1,2,'Testing that the leave modal is working and it seems good!!','2025-04-14 22:58:46');
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -272,4 +273,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-14 23:53:40
+-- Dump completed on 2025-04-15  0:00:13
