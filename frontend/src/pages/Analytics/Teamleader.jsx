@@ -6,6 +6,7 @@ import SearchBox from '../../components/analytics/SearchBox';
 import StatisticsFieldCarousel from '../../components/analytics/StatisticsFieldCarousel';
 import StatisticsFieldBottom from '../../components/analytics/StatisticsFieldBottom';
 import TasksList from '../../components/analytics/TasksList';
+import NavBar from '../../components/navigation/Navbar';
 
 
 function Teamleader({ user, roleLabel }) {
@@ -46,10 +47,14 @@ function Teamleader({ user, roleLabel }) {
   };
 
   return (
-    <div className="grid grid-cols-12 grid-rows-7 gap-4 p-4 h-screen w-screen bg-primary">
+    <div className="grid grid-cols-12 grid-rows-7 gap-4  h-screen w-screen bg-primary overflow-y-hidden overflow-x-hidden">
+      <div className="col-start-1 col-span-1 row-start-1 row-span-7">
+        <NavBar />
+      </div>
+      
       <WelcomeMessage
         userName={userData.userName}
-        role={userData.role}
+        roleLabel={userData.role}
       />
 
       <div className="col-span-4 row-start-1 col-start-6 self-end text-start text-2xl font-bold test-text flex items-center justify-between">
@@ -57,7 +62,7 @@ function Teamleader({ user, roleLabel }) {
         {selectedProject.title !== 'Overview' && (
           <button
             onClick={() => setSelectedProject({ title: 'Overview' })}
-            className="px-2 py-1 bg-secondary text-white rounded-md hover:bg-secondary-dark"
+            className="px-2 py-1 bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
           >
             Back to Overview
           </button>
@@ -86,7 +91,6 @@ function Teamleader({ user, roleLabel }) {
         <StatisticsFieldCarousel />
         <TasksList />
         <StatisticsFieldBottom />
-
       </div>
     </div>
   );

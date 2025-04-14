@@ -38,12 +38,17 @@ function AnalyticsLanding({ user }) {
 );
 
     return (
-        // TODO: Consider merging these into one page component and use state to change contents
-        <>
-            {isLeader && <Teamleader user={user} roleLabel={"Employee/Leader"}/>}
-            {user.role === "Employee" && <Employee user={user} roleLabel={"Employee"}/>}
-            {user.role === "Manager" && <Manager user={user} roleLabel={"Manager"}/>}
-        </>
+      <>
+        {isLeader ? (
+          <Teamleader user={user} roleLabel={"Employee/Leader"} />
+        ) : user.role === "Employee" ? (
+          <Employee user={user} roleLabel={"Employee"} />
+        ) : user.role === "Manager" ? (
+          <Manager user={user} roleLabel={"Manager"} />
+        ) : (
+          <div>No role assigned</div>
+        )}
+      </>
     );
 }
 
