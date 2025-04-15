@@ -1,8 +1,8 @@
 import {BsSend} from 'react-icons/bs';
-import { useState,useRef } from 'react';
+import { useState,useRef, useEffect } from 'react';
 import axios from "axios";
 
-function MessageBox({userID, selectedID, mode}) {
+function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMessage, editingMessage}) {
   const ref = useRef(null);
   // Initialize use state, which contains the initial state and the function to update the state
   const [message, setMessage] = useState("");
@@ -10,11 +10,38 @@ function MessageBox({userID, selectedID, mode}) {
   const handleMessageChange = (newMessage) => {
     setMessage(newMessage); // Updates the message state upon changing the text field
   }
-
+  useEffect(() => {
+    if (editing){
+      //If editing, set the message to the message being edited
+      setMessage(editingMessage.content);
+    }
+  },[editing, editingMessage]);
   // onSubmit function
   const onSubmit = async(e) => {
     e.preventDefault();
-    
+    if (editing){
+      if (message !== "" && message !== editingMessage.content) {
+        // If editing, make an API call to update the message
+        try {
+          // Make an api call to update the message content
+          const accessToken = localStorage.getItem('accessToken');
+          const headers = {headers: {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}}
+          const body = {id: editingMessage.messageID, content: message};
+          const response = await axios.put(`/api/chat/${mode}/updateMessage`, body, headers);
+          if (response?.data?.success) {
+            setEditing(false); // Set editing to false after submitting the message
+            setEditingMessage(null); // Clear the message being edited
+            setMessage(""); // Clear the message input field
+            ref.current.blur(); // Remove focus from the input field
+          } else {
+              console.error("Failed to update message");
+          }
+        } catch (error) {
+          console.error("Error updating message:", error);
+        }
+        return
+      }
+    }
     if (message===""){
       return
     }
