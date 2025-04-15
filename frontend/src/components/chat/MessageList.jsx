@@ -2,9 +2,8 @@ import Message from "./Message";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
+function MessageList({userID, selectedID, mode, refresh, messageContainerRef, setEditing, setEditingMessage, editingMessage}) {
   const [messages, setMessages] = useState([]);
-  
 
   const getMessages = async() => {
     //Actual API request
@@ -73,7 +72,7 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef}) {
   return (
     <div className="flex flex-col px-30">
         {messages.map((message) => (
-            <Message key={message.messageID} messageContent={message} userID={userID} mode={mode}/>
+            <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage}/>
         ))}
     </div>
   );

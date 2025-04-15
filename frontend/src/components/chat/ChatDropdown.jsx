@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { BsClipboard2Fill } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";
 import { BsFillTrashFill } from "react-icons/bs";
-function ChatDropdown({ sentByUser, onClose, SetOpenEditModal, message }) {
+function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMessage }) {
     const dropdownRef = useRef(null); // Reference to the dropdown element
 
     // Close dropdown when clicking outside
@@ -28,7 +28,8 @@ function ChatDropdown({ sentByUser, onClose, SetOpenEditModal, message }) {
     }
     
     const handleEditMessage = () => {
-      SetOpenEditModal(true); // Open the edit message modal
+      setEditing(true); // Set editing use state to true
+      setEditingMessage(message); // Set the message to be edited
       onClose(); // Close the dropdown when edit message is clicked
     }
     

@@ -48,10 +48,10 @@ CREATE TABLE `active_chats` (
 
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
-INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-03-24 05:18:26');
-INSERT INTO `active_chats` VALUES (1,3,'direct_messages','2025-03-24 06:58:29');
-INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-03-24 05:18:26');
-INSERT INTO `active_chats` VALUES (2,1,'group_messages','2025-03-23 23:55:26');
+INSERT INTO `active_chats` VALUES (1,1,'group_messages','2025-04-13 18:06:49');
+INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-04-14 22:58:46');
+INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-04-14 22:58:46');
+INSERT INTO `active_chats` VALUES (2,1,'group_messages','2025-04-13 18:06:49');
 INSERT INTO `active_chats` VALUES (3,1,'direct_messages','2025-03-24 06:58:29');
 /*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -100,7 +100,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,9 +117,19 @@ INSERT INTO `direct_messages` VALUES (5,1,3,'I send you the message!','2025-03-2
 INSERT INTO `direct_messages` VALUES (6,1,3,'You get message?','2025-03-23 23:27:28');
 INSERT INTO `direct_messages` VALUES (7,1,3,'I send you the message!','2025-03-23 23:37:05');
 INSERT INTO `direct_messages` VALUES (8,1,3,'Why no refresh','2025-03-23 23:37:24');
-INSERT INTO `direct_messages` VALUES (9,1,2,'Yo','2025-03-23 23:37:29');
+INSERT INTO `direct_messages` VALUES (9,1,2,'You\'re faking it...','2025-03-23 23:37:29');
 INSERT INTO `direct_messages` VALUES (10,2,1,'Test','2025-03-24 00:22:17');
 INSERT INTO `direct_messages` VALUES (11,2,1,'Hey don\'t you go hiding me','2025-03-24 05:13:42');
+INSERT INTO `direct_messages` VALUES (14,1,2,'What are you even testing?','2025-04-11 12:42:20');
+INSERT INTO `direct_messages` VALUES (15,1,2,'I\'m going to Asda by the way','2025-04-11 12:51:20');
+INSERT INTO `direct_messages` VALUES (16,1,2,'Sorry, i meant Lidl, i don\'t like Asda','2025-04-11 21:27:44');
+INSERT INTO `direct_messages` VALUES (17,2,1,'Hi just updating you on everything','2025-04-11 21:32:50');
+INSERT INTO `direct_messages` VALUES (18,2,1,'test','2025-04-12 14:57:06');
+INSERT INTO `direct_messages` VALUES (19,1,2,'test','2025-04-12 15:04:29');
+INSERT INTO `direct_messages` VALUES (20,1,2,'What are we testing again','2025-04-12 18:18:58');
+INSERT INTO `direct_messages` VALUES (21,1,2,'I\'ve reported you for fraud btw','2025-04-12 18:54:01');
+INSERT INTO `direct_messages` VALUES (22,2,1,'oh okay nvm','2025-04-12 18:54:58');
+INSERT INTO `direct_messages` VALUES (23,1,2,'Testing that the leave modal is working and it seems good!!','2025-04-14 22:58:46');
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +151,7 @@ CREATE TABLE `group_messages` (
   KEY `Group is Group` (`GroupID`),
   CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,6 +161,19 @@ CREATE TABLE `group_messages` (
 LOCK TABLES `group_messages` WRITE;
 /*!40000 ALTER TABLE `group_messages` DISABLE KEYS */;
 INSERT INTO `group_messages` VALUES (1,2,1,'Guys, It\'s official. I\'m a hater','2025-03-27 19:44:55');
+INSERT INTO `group_messages` VALUES (2,2,1,'Welcome back guys','2025-04-11 21:33:11');
+INSERT INTO `group_messages` VALUES (3,1,1,'huh','2025-04-12 12:03:10');
+INSERT INTO `group_messages` VALUES (4,2,1,'refresh','2025-04-12 14:56:46');
+INSERT INTO `group_messages` VALUES (5,2,1,'test','2025-04-12 14:56:53');
+INSERT INTO `group_messages` VALUES (6,1,1,'bug','2025-04-12 15:00:19');
+INSERT INTO `group_messages` VALUES (7,1,1,'test','2025-04-12 15:01:30');
+INSERT INTO `group_messages` VALUES (8,1,1,'fixed?','2025-04-12 15:04:57');
+INSERT INTO `group_messages` VALUES (9,1,1,'fixed','2025-04-12 15:05:07');
+INSERT INTO `group_messages` VALUES (10,1,1,'okay it\'s fixed now','2025-04-12 15:05:10');
+INSERT INTO `group_messages` VALUES (11,1,1,'test','2025-04-12 16:34:56');
+INSERT INTO `group_messages` VALUES (12,1,1,'testerrr','2025-04-12 18:12:36');
+INSERT INTO `group_messages` VALUES (13,2,1,'fixed huh?','2025-04-12 18:53:22');
+INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here','2025-04-13 09:40:43');
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -317,6 +340,7 @@ CREATE TABLE `users` (
   `Role` enum('Manager','Employee') NOT NULL DEFAULT 'Employee',
   `Icon` blob NOT NULL DEFAULT '[default profile icon here]',
   `PasswordHash` varchar(60) NOT NULL,
+  `Status` enum('Online','Offline','Invisible') NOT NULL DEFAULT 'Offline',
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
