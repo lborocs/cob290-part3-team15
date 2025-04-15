@@ -7,7 +7,7 @@ function Content({ message }) {
   return (
     <>
       <div className="text-left w-fit">
-          {message.content}
+          <p className="text-text">{message.content}</p>
       </div>
 
     </>
@@ -93,13 +93,13 @@ function OtherMessage({ message, refs, floatingStyles }) {
   };
 
   return(
-    <div className="max-w-3/4 text-base font-medium self-start">
+    <div className="max-w-3/4 text-base font-medium self-start relative">
       {message.showName &&
       <div className="w-fit">
-        {message.name}
+        <p className="text-text">{message.name}</p>
       </div>
       }
-      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={refs.setReference}>
+      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`} onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={refs.setReference}>
         <div className="text-left flex flex-col text-pretty break-all">
           {isHovered && (
             <MessageOptions sentByUser={false} 
@@ -118,6 +118,8 @@ function OtherMessage({ message, refs, floatingStyles }) {
         sentByUser={false}
         onClose = {closeDropdown}
         message={message} // Pass the message to the dropdown
+        setEditing={null}
+        setEditingMessage={null} // Pass the setMessage function to the options
         refs={refs}
         floatingStyles={floatingStyles}
       />

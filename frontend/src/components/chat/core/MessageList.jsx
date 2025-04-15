@@ -88,7 +88,7 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
   
   
   return (
-    <div className="flex flex-col px-30" ref={boundaryRef} >
+    <div className="flex flex-col mx-30" ref={boundaryRef} >
         {messages.map((message) => (
             <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef}/>
         ))}
