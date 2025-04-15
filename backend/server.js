@@ -23,11 +23,13 @@ app.use(cors(corsOptions));
 const chat = require("./routes/chat");
 const direct_messages = require("./routes/direct_messages");
 const group_messages = require("./routes/group_messages");
+const analytics = require("./routes/analytics")
 
 //Use Routes E.g. localhost:8080/chat/???
-app.use("/chat", chat);
+app.use('/chat', chat);
 app.use('/chat/direct_messages', direct_messages);
 app.use('/chat/group_messages', group_messages);
+app.use('/analytics', analytics)
 
 //I had to do this, this is the escape error now.
 app.get("/getTeapot", (req,res) => {

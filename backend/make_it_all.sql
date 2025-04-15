@@ -234,6 +234,99 @@ INSERT INTO `groups` VALUES (1,'The Haters',2);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `project_users`
+--
+
+DROP TABLE IF EXISTS `project_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `project_users` (
+  `ProjectID` int(11) NOT NULL,
+  `AssigneeID` int(11) NOT NULL,
+  PRIMARY KEY (`ProjectID`,`AssigneeID`),
+  KEY `AssigneeUserID` (`AssigneeID`),
+  CONSTRAINT `AssigneeUserID` FOREIGN KEY (`AssigneeID`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `UserProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `projects` (`ProjectID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `project_users`
+--
+
+LOCK TABLES `project_users` WRITE;
+/*!40000 ALTER TABLE `project_users` DISABLE KEYS */;
+INSERT INTO `project_users` VALUES (1,1);
+INSERT INTO `project_users` VALUES (1,3);
+/*!40000 ALTER TABLE `project_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `projects`
+--
+
+DROP TABLE IF EXISTS `projects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `projects` (
+  `ProjectID` int(11) NOT NULL AUTO_INCREMENT,
+  `LeaderID` int(11) NOT NULL,
+  `Title` varchar(64) NOT NULL,
+  `Priority` enum('Low','Medium','High') DEFAULT NULL,
+  `StartDate` date DEFAULT NULL,
+  `Deadline` date DEFAULT NULL,
+  PRIMARY KEY (`ProjectID`),
+  KEY `LeaderID` (`LeaderID`),
+  CONSTRAINT `LeaderID` FOREIGN KEY (`LeaderID`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `projects`
+--
+
+LOCK TABLES `projects` WRITE;
+/*!40000 ALTER TABLE `projects` DISABLE KEYS */;
+INSERT INTO `projects` VALUES (1,3,'Make More Boomsticks','High','2025-04-12','2025-08-18');
+/*!40000 ALTER TABLE `projects` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tasks`
+--
+
+DROP TABLE IF EXISTS `tasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tasks` (
+  `TaskID` int(11) NOT NULL AUTO_INCREMENT,
+  `ProjectID` int(11) NOT NULL,
+  `AssigneeID` int(11) NOT NULL,
+  `Title` varchar(64) NOT NULL,
+  `Priority` enum('Low','Medium','High') NOT NULL,
+  `HoursRequired` int(11) DEFAULT NULL,
+  `StartDate` date DEFAULT NULL,
+  `Deadline` date DEFAULT NULL,
+  PRIMARY KEY (`TaskID`),
+  KEY `AssigneeID` (`AssigneeID`),
+  KEY `ProjectID` (`ProjectID`),
+  CONSTRAINT `AssigneeID` FOREIGN KEY (`AssigneeID`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `projects` (`ProjectID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tasks`
+--
+
+LOCK TABLES `tasks` WRITE;
+/*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
+INSERT INTO `tasks` VALUES (1,1,3,'Boomstick Procurement','High',20,'2025-04-12','2025-04-19');
+INSERT INTO `tasks` VALUES (2,1,1,'Polish Boomsticks','Medium',10,'2025-04-17','2025-04-22');
+/*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -244,7 +337,7 @@ CREATE TABLE `users` (
   `UserID` int(11) NOT NULL AUTO_INCREMENT,
   `Forename` varchar(64) NOT NULL,
   `Surname` varchar(64) NOT NULL,
-  `Role` enum('Manager','Staff') NOT NULL DEFAULT 'Staff',
+  `Role` enum('Manager','Employee') NOT NULL DEFAULT 'Employee',
   `Icon` blob NOT NULL DEFAULT '[default profile icon here]',
   `PasswordHash` varchar(60) NOT NULL,
   `Status` enum('Online','Offline','Invisible') NOT NULL DEFAULT 'Offline',
@@ -258,9 +351,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Staff','[default profile icon here]','ABC123BCA!!!','Online');
-INSERT INTO `users` VALUES (2,'John','Smith','Staff','[default profile icon here]','ABC123BCA!!!','Invisible');
-INSERT INTO `users` VALUES (3,'Bill','Boomstick','Staff','[default profile icon here]','ABC123BCA!!!','Offline');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!');
+INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!');
+INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -273,4 +366,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-15  0:00:13
+-- Dump completed on 2025-04-15 14:40:16
