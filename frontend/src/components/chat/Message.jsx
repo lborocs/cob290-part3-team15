@@ -93,13 +93,13 @@ function OtherMessage({ message, refs, floatingStyles }) {
   };
 
   return(
-    <div className="max-w-3/4 text-base font-medium self-start" ref={refs.setReference}>
+    <div className="max-w-3/4 text-base font-medium self-start">
       {message.showName &&
       <div className="w-fit">
         {message.name}
       </div>
       }
-      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
+      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={refs.setReference}>
         <div className="text-left flex flex-col text-pretty break-all">
           {isHovered && (
             <MessageOptions sentByUser={false} 
@@ -136,8 +136,8 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
 
   //Refs for modal handling
   const { refs, floatingStyles } = useFloating({
-    middleware: [offset(8), flip(), shift({ boundary: boundaryRef.current, padding: 8 })],
-    placement: 'bottom-start',
+    middleware: [offset(0), flip(), shift({ boundary: boundaryRef.current, padding: 8 })],
+    placement: 'top-end',
   });
 
   const sentByUser = parseInt(messageContent.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
