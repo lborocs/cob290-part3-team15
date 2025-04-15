@@ -4,7 +4,7 @@ import DropdownItem from './DropdownItem';
 function DropdownList({ items, onClick, icons, refs, floatingStyles }) {
   return (
     <div
-    className="w-auto absolute bg-white rounded-lg p-2 z-50 border border-gray-300" ref={refs.setFloating} style={floatingStyles}>
+    className="w-auto absolute bg-white rounded-lg p-2 z-50 border border-gray-300" {...(refs?.setFloating ? { ref: refs.setFloating } : {})} {...(floatingStyles ? { style: floatingStyles } : {})}>
         {/* Goes through each item in the list and maps items to a key value*/}
         {items.map((item, index) => (
             <DropdownItem 
