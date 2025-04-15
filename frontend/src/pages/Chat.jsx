@@ -6,10 +6,10 @@ import { BsArrowBarLeft, BsX } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
 import { useState,useEffect,useRef } from 'react';
  
-import MessageList from '../components/chat/MessageList.jsx';
-import MessageBox from '../components/chat/MessageBox.jsx';
+import MessageList from '../components/chat/core/MessageList.jsx';
+import MessageBox from '../components/chat/core/MessageBox.jsx';
 
-import Sidebar from '../components/chat/Sidebar.jsx';
+import Sidebar from '../components/chat/core/Sidebar.jsx';
 import Navbar from '../components/navigation/Navbar.jsx';
 import Auth from "../components/login/Auth.jsx";
 

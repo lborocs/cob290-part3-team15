@@ -1,4 +1,4 @@
-import Message from "./Message";
+import Message from "../Message";
 import axios from "axios";
 import { useState, useEffect } from "react";
 

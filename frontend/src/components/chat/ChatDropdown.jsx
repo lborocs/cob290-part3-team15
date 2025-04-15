@@ -55,9 +55,9 @@ function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMess
       : [<BsClipboard2Fill/>];
 
     return (
-        <div ref={dropdownRef}>
-          <DropdownList items={items} onClick={componentsFunctions} icons={icons} />
-        </div>
+        <>
+          <DropdownList items={items} onClick={componentsFunctions} icons={icons} ref={dropdownRef}/>
+        </>
     );
 }
 
