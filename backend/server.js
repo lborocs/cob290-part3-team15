@@ -3,14 +3,18 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const server = require('http').createServer(app);
+//Custom Exports
+const { authenticateSocket } = require("./exports/authenticate");
 const { setIo, addUser, removeUser, selfStatusAlert,getConnectedCount,getUserId, otherStatusAlert} = require('./exports/socket');
-const jwt = require('jsonwebtoken');
+//IO Definition
 const io = require('socket.io')(server, {cors: {origin: [process.env.IP || "http://localhost:5173"]}});
 setIo(io);
+io.use(authenticateSocket);
+
 const port = process.env.PORT || 8080;
 const database = require("./config/database");
 
-// Label the Clients so appropriate clients get told there's an update
+//Connected Client Storage
 const connectedClients = {};
 
 //Cross Origin Error Prevention
@@ -42,13 +46,11 @@ app.post("/postTeapot", (req,res) => {
 
 io.on('connection', (socket) => {
     // Listen for when a user sets their user ID (you should send this from the frontend on connection)
-    socket.on('setUserId', async(userId) => {
-        addUser(userId, socket.id);
-    });
+    const userId = socket.user.userID;
+    addUser(userId, socket.id);
 
     // Clean up when the user disconnects
     socket.on('disconnect', async() => {
-        userId= getUserId(socket.id);
         removeUser(socket.id);
         if(getConnectedCount(userId)===0){
             // Update user status to 'Offline' in the database asynchronously
@@ -56,7 +58,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('requestStatus', async(userId) => {
+    socket.on('requestStatus', async() => {
         try {
             await setStatus(userId,"Online",true);
         } catch (err) {

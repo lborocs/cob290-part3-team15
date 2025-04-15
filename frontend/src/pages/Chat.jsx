@@ -20,6 +20,8 @@ function Chat({ user }){
     // Editing
     const [editing, setEditing] = useState(false);
     const [editingMessage, setEditingMessage] = useState(null); // Store the message being edited (also needs to be passed down the hierarchy)
+    //Edit Refresh Variables
+    const [editedValue,setEditedValue]=useState(null);
 
     //Navbar
     const [selectable,setSelectable] = useState(windowWidth<1024);
@@ -92,14 +94,19 @@ function Chat({ user }){
             socket.on('selfStatus', (data) => {
                 setPersonalStatus(data?.status);
             });
-            socket.on('otherStatus', (data) => {
+            socket.on('otherStatus', (data) => { //REWORK NEEDED
                 setRefresh(previous => previous + 1);
             });
     
-            socket.on('newMessage', (data) => {
+            socket.on('newMessage', (data) => { //NOTE - This is suitable, a lot of data needs to be double checked here
                 setRefresh(previous => previous + 1);
             });
-            socket.emit('setUserId', userID);
+
+            socket.on('editMessage', (data) => { //NOTE - If the active message list is the one being edited.. AND ONLY in this situation refresh. Include a timestamp to make it "unique" each time
+                if (data?.targetID===selectedID && data?.targetID!==null && data?.type===mode) { 
+                    setEditedValue(data);
+                }
+            });
             socket.emit('requestStatus', userID);
         }
     
@@ -128,7 +135,7 @@ function Chat({ user }){
                     <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div>
                     <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage}/>
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
                         {editing && (
                             <div className="w-full bg-transparent text-black justify-center text-left rounded-lg px-30 z-5">

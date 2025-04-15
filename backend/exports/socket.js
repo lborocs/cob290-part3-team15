@@ -41,6 +41,18 @@ const alertMessage = (userId) => {
     }
 };
 
+// Ping a user on all active devices
+const alertEdit = (userId,targetID,messageID,type,content) => {
+    if (connectedClients[userId]) {
+        connectedClients[userId].forEach(socketId => {
+            io.to(socketId).emit('editMessage', {targetID:targetID,messageID:messageID,type:type,content:content,timestamp: new Date()});
+        });
+        console.log(`Pinged user ${userId} on ${connectedClients[userId].length} devices.`);
+    } else {
+        console.log(`User ${userId} is not connected.`);
+    }
+};
+
 // Ping a user about their own status (Cross-client)
 const selfStatusAlert = (userId,status) => {
     if (connectedClients[userId]) {
@@ -87,4 +99,4 @@ const getUserId = (socketId) => {
 }
 
 
-module.exports = { setIo, getConnectedClients, addUser, removeUser,alertMessage,isEmpty,selfStatusAlert,otherStatusAlert,getConnectedCount,getUserId};
+module.exports = { setIo, getConnectedClients, addUser, removeUser,alertMessage,alertEdit,isEmpty,selfStatusAlert,otherStatusAlert,getConnectedCount,getUserId};
