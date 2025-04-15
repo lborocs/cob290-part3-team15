@@ -1,9 +1,11 @@
 import Message from "../Message";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function MessageList({userID, selectedID, mode, refresh, messageContainerRef, setEditing, setEditingMessage, editingMessage, editedValue}) {
   const [messages, setMessages] = useState([]);
+
+  const boundaryRef = useRef(null); 
 
   const getMessages = async() => {
     //Actual API request
@@ -86,9 +88,9 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
   
   
   return (
-    <div className="flex flex-col px-30">
+    <div className="flex flex-col px-30" ref={boundaryRef} >
         {messages.map((message) => (
-            <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage}/>
+            <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef}/>
         ))}
     </div>
   );

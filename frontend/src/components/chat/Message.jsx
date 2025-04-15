@@ -1,6 +1,8 @@
 import MessageOptions from './MessageOptions.jsx';
 import { useState } from 'react';
 import ChatDropdown from './ChatDropdown.jsx';
+import { useFloating, offset, flip, shift } from '@floating-ui/react';
+
 function Content({ message }) {
   return (
     <>
@@ -12,7 +14,7 @@ function Content({ message }) {
   );
 }
 
-function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage }) {
+function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, refs, floatingStyles}) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
   const HandleHover = (e) => {
@@ -37,7 +39,8 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   
   //console.log("Editing Message ID:", editingMessage?.messageID);
   return(
-    <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} max-w-3/4 my-2 rounded-lg border border-2 border-accentGreen/80 px-4 py-2 text-base font-medium self-end bg-accentGreen/50 relative`}onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick}>
+    <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} max-w-3/4 my-2 rounded-lg border border-2 border-accentGreen/80 px-4 py-2 text-base font-medium self-end bg-accentGreen/50 relative`} 
+    onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={refs.setReference}>
       <div className="self-start text-pretty break-all">
         {isHovered && (
           <MessageOptions sentByUser={true} 
@@ -45,6 +48,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
           message={message} // Pass the message to the options
           setEditing={setEditing} // Pass the setMessage function to the options
           setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
+          setIsDropdownOpen={setIsDropdownOpen}
           />
         )}
         <Content message={message}/>
@@ -56,6 +60,8 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
           message={message} // Pass the message to the dropdown
           setEditing={setEditing}
           setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
+          refs={refs} 
+          floatingStyles={floatingStyles}
         />
       )}
       
@@ -63,7 +69,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   )
 }
 
-function OtherMessage({ message }) {
+function OtherMessage({ message, refs, floatingStyles }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
   const HandleHover = (e) => {
@@ -87,7 +93,7 @@ function OtherMessage({ message }) {
   };
 
   return(
-    <div className="max-w-3/4 text-base font-medium self-start">
+    <div className="max-w-3/4 text-base font-medium self-start" ref={refs.setReference}>
       {message.showName &&
       <div className="w-fit">
         {message.name}
@@ -99,6 +105,9 @@ function OtherMessage({ message }) {
             <MessageOptions sentByUser={false} 
             isHoveredComment={isHovered} 
             message={message} // Pass the message to the options
+            setEditing={null}
+            setEditingMessage={null}
+            setIsDropdownOpen={setIsDropdownOpen}
             />
           )}
           <Content message={message}/>
@@ -109,6 +118,8 @@ function OtherMessage({ message }) {
         sentByUser={false}
         onClose = {closeDropdown}
         message={message} // Pass the message to the dropdown
+        refs={refs}
+        floatingStyles={floatingStyles}
       />
       )}
     </div>
@@ -120,12 +131,22 @@ function OtherMessage({ message }) {
 
 
 
-function Message({ messageContent , userID , mode, setEditing, setEditingMessage, editingMessage }) {
+function Message({ messageContent , userID , mode, setEditing, setEditingMessage, editingMessage, boundaryRef }) {
   //const [message,setMessage]=useState(messageContent);
+
+  //Refs for modal handling
+  const { refs, floatingStyles } = useFloating({
+    middleware: [offset(8), flip(), shift({ boundary: boundaryRef.current, padding: 8 })],
+    placement: 'bottom-start',
+  });
+
   const sentByUser = parseInt(messageContent.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
   return (
     <>
-      {sentByUser ? <SelfMessage message={messageContent} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage}/> : <OtherMessage message={messageContent}/>}
+      {sentByUser ? 
+      <SelfMessage message={messageContent} mode={mode} 
+      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} refs={refs} floatingStyles={floatingStyles}/> 
+      : <OtherMessage message={messageContent} refs={refs} floatingStyles={floatingStyles}/>}
     </>
   );
 }
