@@ -111,7 +111,12 @@ function Chat({ user }){
         }
     
         return () => {
-            disconnectSocket();
+            socket.off('selfStatus');
+            socket.off('otherStatus');
+            socket.off('newMessage');
+            socket.off('editMessage');
+            disconnectSocket(); //Disconnects when not on /chat or /analytics
+
         };
     }, []);
 
