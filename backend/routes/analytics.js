@@ -21,4 +21,28 @@ router.get("/getLedProjects",authenticateToken,(req,res) => {
     });
 });
 
+// Get the hours of work completed by a given user x weeks ago
+router.get("/getUserWeeklyHours",authenticateToken,(req,res) => {
+    const query=`SELECT
+                             SUM(IF(AssigneeID = ?
+                                        AND DATEDIFF(CURDATE(), CompletionDate) >= ?
+                                        AND DATEDIFF(CURDATE(), CompletionDate) < ?
+                                        AND tasks.Status = 'Completed',
+                                    HoursRequired, 0)
+                             ) as hours
+                         FROM
+                             tasks`;
+
+    const target = req.query.target;
+    const week = req.query.week;
+
+    const newestCutoff = week * 7
+    const oldestCutoff = newestCutoff + 7
+
+    const values = [target,newestCutoff,oldestCutoff];
+    database.query(query, values, (err, results) => {
+        res.send({results: results})
+    });
+});
+
 module.exports = router;

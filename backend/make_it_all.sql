@@ -303,16 +303,17 @@ CREATE TABLE `tasks` (
   `ProjectID` int(11) NOT NULL,
   `AssigneeID` int(11) NOT NULL,
   `Title` varchar(64) NOT NULL,
+  `Status` enum('Not Started','In Progress','Completed') NOT NULL DEFAULT 'Not Started',
   `Priority` enum('Low','Medium','High') NOT NULL,
   `HoursRequired` int(11) DEFAULT NULL,
-  `StartDate` date DEFAULT NULL,
   `Deadline` date DEFAULT NULL,
+  `CompletionDate` date DEFAULT NULL,
   PRIMARY KEY (`TaskID`),
   KEY `AssigneeID` (`AssigneeID`),
   KEY `ProjectID` (`ProjectID`),
   CONSTRAINT `AssigneeID` FOREIGN KEY (`AssigneeID`) REFERENCES `users` (`UserID`),
   CONSTRAINT `ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `projects` (`ProjectID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -321,8 +322,9 @@ CREATE TABLE `tasks` (
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-INSERT INTO `tasks` VALUES (1,1,3,'Boomstick Procurement','High',20,'2025-04-12','2025-04-19');
-INSERT INTO `tasks` VALUES (2,1,1,'Polish Boomsticks','Medium',10,'2025-04-17','2025-04-22');
+INSERT INTO `tasks` VALUES (1,1,3,'Boomstick Procurement','Completed','High',20,'2025-04-19','2025-04-12');
+INSERT INTO `tasks` VALUES (2,1,1,'Polish Boomsticks','Not Started','Medium',10,'2025-04-22',NULL);
+INSERT INTO `tasks` VALUES (3,1,3,'test','Completed','Low',50,'2025-04-19','2025-04-02');
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -353,7 +355,7 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Offline');
 INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Invisible');
-INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','Offline');
+INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','Online');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -366,4 +368,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-16 17:09:30
+-- Dump completed on 2025-04-16 19:00:15

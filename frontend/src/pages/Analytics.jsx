@@ -40,6 +40,30 @@ function AnalyticsLanding({ user }) {
             }
             }
         fetchLeader();
+
+        // TODO: Remove this test function once actual stats are implemented
+        // Test function to demonstrate working user contribution API request
+        async function fetchContribution() {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+
+                let hourArr = []
+
+                // Get the user's hours in the past 4 weeks
+                for (let i=0; i<4; i++) {
+                    const response = await axios.get(`/api/analytics/getUserWeeklyHours?target=${user.userID}&week=${i}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+                    if (response?.data?.results) {
+                        hourArr.push(response.data.results[0].hours)
+                    }
+                }
+
+                console.log(hourArr)
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
+        fetchContribution();
     }, []
   );
 
