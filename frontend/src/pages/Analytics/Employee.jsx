@@ -49,7 +49,7 @@ function Employee({ user, roleLabel }) {
       <div className="grid grid-cols-12 grid-rows-7 gap-4 p-4 h-screen w-screen bg-primary">
         <WelcomeMessage
             userName={userData.userName}
-            role={userData.role}
+            roleLabel={userData.role}
         />
 
         <div className="col-span-4 row-start-1 col-start-6 self-end text-start text-2xl font-bold test-text flex items-center justify-between">
