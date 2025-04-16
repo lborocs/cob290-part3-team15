@@ -338,7 +338,7 @@ CREATE TABLE `users` (
   `Forename` varchar(64) NOT NULL,
   `Surname` varchar(64) NOT NULL,
   `Role` enum('Manager','Employee') NOT NULL DEFAULT 'Employee',
-  `Icon` blob NOT NULL DEFAULT '[default profile icon here]',
+  `Icon` blob,
   `PasswordHash` varchar(60) NOT NULL,
   `Status` enum('Online','Offline','Invisible') NOT NULL DEFAULT 'Offline',
   PRIMARY KEY (`UserID`)

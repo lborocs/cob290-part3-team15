@@ -1,18 +1,19 @@
 import { io } from 'socket.io-client';
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = "http://localhost:8080";
+const URL = "/socket.io";
 let socket = null
 
 export const connectSocket = () => {
-    if (!socket && window.location.pathname.startsWith("/chat")) {
-        socket = io(URL);
+    const accessToken = localStorage.getItem('accessToken');
+    if (!socket) {
+        socket = io({auth: {token: accessToken},path:"/socket.io"});
         console.log("Socket connected on /chat");
     }
 };
 
 export const disconnectSocket = () => {
-    if (socket) {
+    if (socket && !(window.location.pathname.startsWith("/chat")|| window.location.pathname.startsWith("/analytics"))) {
         socket.disconnect();
         socket = null;
         console.log("Socket disconnected");

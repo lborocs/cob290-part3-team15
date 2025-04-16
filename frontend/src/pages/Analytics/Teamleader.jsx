@@ -6,7 +6,6 @@ import SearchBox from '../../components/analytics/SearchBox';
 import StatisticsFieldCarousel from '../../components/analytics/StatisticsFieldCarousel';
 import StatisticsFieldBottom from '../../components/analytics/StatisticsFieldBottom';
 import TasksList from '../../components/analytics/TasksList';
-import NavBar from '../../components/navigation/Navbar';
 
 
 function Teamleader({ user, roleLabel }) {
@@ -48,10 +47,6 @@ function Teamleader({ user, roleLabel }) {
 
   return (
     <div className="grid grid-cols-12 grid-rows-7 gap-4  h-screen w-screen bg-primary overflow-y-hidden overflow-x-hidden">
-      <div className="col-start-1 col-span-1 row-start-1 row-span-7">
-        <NavBar />
-      </div>
-      
       <WelcomeMessage
         userName={userData.userName}
         roleLabel={userData.role}

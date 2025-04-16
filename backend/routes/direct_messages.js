@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
-const { io,connectedClients,alertMessage } = require('../exports/socket');
+const { io,connectedClients,alertMessage,alertEdit } = require('../exports/socket');
 const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
@@ -96,10 +96,19 @@ router.put("/updateMessage",authenticateToken,(req,res) => {
     const values = [content,messageID,id];
     database.query(query, values, err => {
         if (err) {
-            console.error(err);
             return res.status(500).json({ error: "Failed to update message" });
         }
-        res.status(200).json({ success: true, message: "Message updated successfully" });
+        //Get Target user ID
+        const getTargetQuery = "SELECT Recipient FROM direct_messages WHERE MessageID=? AND Sender=?";
+        database.query(getTargetQuery, [messageID,id], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: "Failed to retrieve target user" });
+            }
+            const targetID = results[0].Recipient;
+            alertEdit(targetID,id,messageID,"direct_messages",content);
+            alertEdit(id,targetID,messageID,"direct_messages",content);
+            return res.status(200).json({ success: true, message: "Message updated successfully" });
+        });
     });
 });
 

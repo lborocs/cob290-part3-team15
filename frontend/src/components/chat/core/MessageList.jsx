@@ -1,9 +1,11 @@
-import Message from "./Message";
+import Message from "../Message";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-function MessageList({userID, selectedID, mode, refresh, messageContainerRef, setEditing, setEditingMessage, editingMessage}) {
+function MessageList({userID, selectedID, mode, refresh, messageContainerRef, setEditing, setEditingMessage, editingMessage, editedValue}) {
   const [messages, setMessages] = useState([]);
+
+  const boundaryRef = useRef(null); 
 
   const getMessages = async() => {
     //Actual API request
@@ -52,27 +54,40 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
     }
   }
 
+  const editValue = () => {
+    //Find message with corresponding messageID and modify the content
+    const updatedMessages = messages.map((message) => {
+      if (message.messageID === editedValue.messageID) {
+        return { ...message, content: editedValue.content };
+      }
+      return message;
+    });
+    setMessages(updatedMessages);
+  }
+
   //Onload
   useEffect(()=>{
     getMessages();
   }, [selectedID,mode])
 
-  //Refresh handler
+  //Full Refresh handler
   useEffect(()=>{
     getNewMessages();
   }, [refresh])
 
+  //Edit Refresh handler
+  useEffect(()=>{
+    editValue();
+  }, [editedValue])
+
   useEffect(()=>{
     if (messageContainerRef.current) messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-  }, [messages])
-
-
-  
+  }, [messages])  
   
   return (
-    <div className="flex flex-col px-30">
+    <div className="flex flex-col mx-30" ref={boundaryRef}>
         {messages.map((message) => (
-            <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage}/>
+            <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef}/>
         ))}
     </div>
   );

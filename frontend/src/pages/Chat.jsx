@@ -6,10 +6,10 @@ import { BsArrowBarLeft, BsX } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
 import { useState,useEffect,useRef } from 'react';
  
-import MessageList from '../components/chat/MessageList.jsx';
-import MessageBox from '../components/chat/MessageBox.jsx';
+import MessageList from '../components/chat/core/MessageList.jsx';
+import MessageBox from '../components/chat/core/MessageBox.jsx';
 
-import Sidebar from '../components/chat/Sidebar.jsx';
+import Sidebar from '../components/chat/core/Sidebar.jsx';
 import Navbar from '../components/navigation/Navbar.jsx';
 import Auth from "../components/login/Auth.jsx";
 
@@ -20,6 +20,8 @@ function Chat({ user }){
     // Editing
     const [editing, setEditing] = useState(false);
     const [editingMessage, setEditingMessage] = useState(null); // Store the message being edited (also needs to be passed down the hierarchy)
+    //Edit Refresh Variables
+    const [editedValue,setEditedValue]=useState(null);
 
     //Navbar
     const [selectable,setSelectable] = useState(windowWidth<1024);
@@ -92,21 +94,50 @@ function Chat({ user }){
             socket.on('selfStatus', (data) => {
                 setPersonalStatus(data?.status);
             });
-            socket.on('otherStatus', (data) => {
+            socket.on('otherStatus', (data) => { //REWORK NEEDED
                 setRefresh(previous => previous + 1);
             });
     
-            socket.on('newMessage', (data) => {
+            socket.on('newMessage', (data) => { //NOTE - This is suitable, a lot of data needs to be double checked here
                 setRefresh(previous => previous + 1);
             });
-            socket.emit('setUserId', userID);
+
+            socket.on('editMessage', (data) => { //NOTE - If the active message list is the one being edited.. AND ONLY in this situation refresh. Include a timestamp to make it "unique" each time
+                attemptToSetEditedValue(data);
+            });
             socket.emit('requestStatus', userID);
         }
     
         return () => {
-            disconnectSocket();
+            socket.off('selfStatus');
+            socket.off('otherStatus');
+            socket.off('newMessage');
+            socket.off('editMessage');
+            disconnectSocket(); //Disconnects when not on /chat or /analytics
+
         };
     }, []);
+
+
+    //EDITED MESSAGE SECTION 
+
+    //ITS STATIC... I HAVE TO USE REFERENCES.....
+    const selectedIDRef = useRef();
+    const modeRef = useRef();
+
+    useEffect(() => {
+        selectedIDRef.current = selectedID;
+    }, [selectedID]);
+
+    useEffect(() => {
+        modeRef.current = mode;
+    }, [mode]);
+
+    const attemptToSetEditedValue = (data) => {
+        if (data.targetID===selectedIDRef.current && data.targetID!==null && data.type===modeRef.current) { 
+            setEditedValue(data);
+        }
+    }
 
     return(
         //Full container
@@ -124,11 +155,11 @@ function Chat({ user }){
                 :<></>}
                 
                 {/*Main Chat Area*/}
-                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative`}>
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative`} onContextMenu={HandleRightClick}>
                     <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div>
                     <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage}/>
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
                         {editing && (
                             <div className="w-full bg-transparent text-black justify-center text-left rounded-lg px-30 z-5">

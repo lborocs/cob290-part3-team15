@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
-const { io,connectedClients,alertMessage } = require('../exports/socket');
+const { io,connectedClients,alertMessage,alertEdit } = require('../exports/socket');
 const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
@@ -132,7 +132,23 @@ router.put("/updateMessage",authenticateToken,(req,res) => {
           console.error(err);
           return res.status(500).json({ error: "Failed to update message" });
       }
-      res.status(200).json({ success: true, message: "Message updated successfully" });
+      //Get all group members to ping them for updates
+      const groupUserQuery = "SELECT UserID,GroupID FROM group_users WHERE GroupID=(SELECT GroupID FROM group_messages WHERE messageID=?)"
+      const groupUserQueryValues=[messageID]
+      database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+        if (err){
+          return res.status(500).json({ error: "Failed to refresh correctly" });
+        }
+        else if (results.length===0){
+          return res.status(403).json({ error: "Group not found or has no members" });
+        }
+        for (let i=0;i<results.length;i++){
+          const groupID = results[i].GroupID;
+          const userID = results[i].UserID;
+          alertEdit(userID,groupID,messageID,"group_messages",content);
+        }
+        return res.status(200).json({ success: true, message: "Message updated successfully" });
+      });
   });
 });
 
