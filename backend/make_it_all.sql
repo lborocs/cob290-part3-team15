@@ -338,7 +338,7 @@ CREATE TABLE `users` (
   `Forename` varchar(64) NOT NULL,
   `Surname` varchar(64) NOT NULL,
   `Role` enum('Manager','Employee') NOT NULL DEFAULT 'Employee',
-  `Icon` blob,
+  `Icon` blob DEFAULT NULL,
   `PasswordHash` varchar(60) NOT NULL,
   `Status` enum('Online','Offline','Invisible') NOT NULL DEFAULT 'Offline',
   PRIMARY KEY (`UserID`)
@@ -366,4 +366,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-15 14:40:16
+-- Dump completed on 2025-04-16 18:09:58
