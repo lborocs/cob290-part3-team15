@@ -8,6 +8,7 @@ import { MdOutlineGroups } from "react-icons/md";
 import { LuChartNoAxesCombined } from "react-icons/lu";
 
 import ProfileCard from '../accounts/ProfileCard.jsx'
+import StatusDropdown from '../chat/StatusDropdown.jsx';
 
 import { getSocket } from '../../socket';
 
@@ -47,7 +48,7 @@ const Navbar = (props) => {
     const HandleRightClick = (event) => {
         event.preventDefault();
     };
-
+    console.log(props)
     return (
         <div className="flex relative flex-col h-full items-center bg-accentOrange w-[72px] min-w-[72px] z-10 border-r-1 border-blackFaded overflow-hidden justify-between" onContextMenu={HandleRightClick}>
             <div className="flex flex-col w-full h-full min-h-80 relative items-center">
@@ -72,9 +73,10 @@ const Navbar = (props) => {
                     ))}
                 </div>
             </div>
-            <div className="w-15 h-15 justify-end mb-2">
+            <button className="w-15 h-15 justify-end mb-2">
                 <ProfileCard displayBG="bg-accentOrange" id={props.userID} status={props.status}/>
-            </div>
+                {/* <StatusDropdown/> */}
+            </button>
         </div>
     )
 }
