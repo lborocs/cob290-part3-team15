@@ -103,9 +103,7 @@ function Chat({ user }){
             });
 
             socket.on('editMessage', (data) => { //NOTE - If the active message list is the one being edited.. AND ONLY in this situation refresh. Include a timestamp to make it "unique" each time
-                if (data?.targetID===selectedID && data?.targetID!==null && data?.type===mode) { 
-                    setEditedValue(data);
-                }
+                attemptToSetEditedValue(data);
             });
             socket.emit('requestStatus', userID);
         }
@@ -119,6 +117,27 @@ function Chat({ user }){
 
         };
     }, []);
+
+
+    //EDITED MESSAGE SECTION 
+
+    //ITS STATIC... I HAVE TO USE REFERENCES.....
+    const selectedIDRef = useRef();
+    const modeRef = useRef();
+
+    useEffect(() => {
+        selectedIDRef.current = selectedID;
+    }, [selectedID]);
+
+    useEffect(() => {
+        modeRef.current = mode;
+    }, [mode]);
+
+    const attemptToSetEditedValue = (data) => {
+        if (data.targetID===selectedIDRef.current && data.targetID!==null && data.type===modeRef.current) { 
+            setEditedValue(data);
+        }
+    }
 
     return(
         //Full container

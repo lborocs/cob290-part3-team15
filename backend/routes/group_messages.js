@@ -142,8 +142,10 @@ router.put("/updateMessage",authenticateToken,(req,res) => {
         else if (results.length===0){
           return res.status(403).json({ error: "Group not found or has no members" });
         }
-        for (const row of groupUserQueryValues) {
-          alertEdit(row.UserID,row.GroupID,messageID,"group_messages",content);
+        for (let i=0;i<results.length;i++){
+          const groupID = results[i].GroupID;
+          const userID = results[i].UserID;
+          alertEdit(userID,groupID,messageID,"group_messages",content);
         }
         return res.status(200).json({ success: true, message: "Message updated successfully" });
       });

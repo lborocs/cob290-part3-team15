@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = "http://localhost:8080";
+const URL = "/socket.io";
 let socket = null
 
 export const connectSocket = () => {
