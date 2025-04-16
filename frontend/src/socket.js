@@ -7,7 +7,7 @@ let socket = null
 export const connectSocket = () => {
     const accessToken = localStorage.getItem('accessToken');
     if (!socket) {
-        socket = io(URL,{auth: {token: accessToken}});
+        socket = io({auth: {token: accessToken},path:"/socket.io"});
         console.log("Socket connected on /chat");
     }
 };
