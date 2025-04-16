@@ -1,10 +1,9 @@
 import DropdownList from "./DropdownList";
-// Found that useRef can be used to reference a div element and check if the click is outside of it
 import { useEffect, useRef } from "react";
 import { BsClipboard2Fill } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";
 import { BsFillTrashFill } from "react-icons/bs";
-function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMessage }) {
+function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMessage,refs,floatingStyles }) {
     const dropdownRef = useRef(null); // Reference to the dropdown element
 
     // Close dropdown when clicking outside
@@ -55,9 +54,9 @@ function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMess
       : [<BsClipboard2Fill/>];
 
     return (
-        <div ref={dropdownRef}>
-          <DropdownList items={items} onClick={componentsFunctions} icons={icons} />
-        </div>
+        <>
+          <DropdownList items={items} onClick={componentsFunctions} icons={icons} refs={refs} floatingStyles={floatingStyles}/>
+        </>
     );
 }
 

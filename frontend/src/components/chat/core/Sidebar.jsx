@@ -4,9 +4,9 @@ import { MdClose } from "react-icons/md";
 import { MdGroup } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 
-import CreateChat from './CreateChat.jsx';
-import ProfileCard from '../accounts/ProfileCard.jsx';
-import LeaveDropdown from './LeaveDropdown.jsx';
+import CreateChat from '../CreateChat.jsx';
+import ProfileCard from '../../accounts/ProfileCard.jsx';
+import LeaveDropdown from '../LeaveDropdown.jsx';
 
 const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,containerRef}) => {
 
