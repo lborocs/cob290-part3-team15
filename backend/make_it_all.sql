@@ -48,10 +48,10 @@ CREATE TABLE `active_chats` (
 
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
-INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-03-24 05:18:26');
-INSERT INTO `active_chats` VALUES (1,3,'direct_messages','2025-03-24 06:58:29');
-INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-03-24 05:18:26');
-INSERT INTO `active_chats` VALUES (2,1,'group_messages','2025-03-23 23:55:26');
+INSERT INTO `active_chats` VALUES (1,1,'group_messages','2025-04-13 18:06:49');
+INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-04-14 22:58:46');
+INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-04-14 22:58:46');
+INSERT INTO `active_chats` VALUES (2,1,'group_messages','2025-04-13 18:06:49');
 INSERT INTO `active_chats` VALUES (3,1,'direct_messages','2025-03-24 06:58:29');
 /*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -100,7 +100,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,14 +112,24 @@ LOCK TABLES `direct_messages` WRITE;
 INSERT INTO `direct_messages` VALUES (1,2,1,'I have done my job','2025-03-16 19:41:24');
 INSERT INTO `direct_messages` VALUES (2,1,2,'What is your job?','2025-03-16 20:02:27');
 INSERT INTO `direct_messages` VALUES (3,2,1,'I do work','2025-03-17 02:02:58');
-INSERT INTO `direct_messages` VALUES (4,1,2,'No you don\'t','2025-03-23 21:50:24');
+INSERT INTO `direct_messages` VALUES (4,1,2,'No you don\'t!','2025-03-23 21:50:24');
 INSERT INTO `direct_messages` VALUES (5,1,3,'I send you the message!','2025-03-23 23:26:33');
 INSERT INTO `direct_messages` VALUES (6,1,3,'You get message?','2025-03-23 23:27:28');
 INSERT INTO `direct_messages` VALUES (7,1,3,'I send you the message!','2025-03-23 23:37:05');
 INSERT INTO `direct_messages` VALUES (8,1,3,'Why no refresh','2025-03-23 23:37:24');
-INSERT INTO `direct_messages` VALUES (9,1,2,'Yo','2025-03-23 23:37:29');
+INSERT INTO `direct_messages` VALUES (9,1,2,'You\'re faking it...','2025-03-23 23:37:29');
 INSERT INTO `direct_messages` VALUES (10,2,1,'Test','2025-03-24 00:22:17');
 INSERT INTO `direct_messages` VALUES (11,2,1,'Hey don\'t you go hiding me','2025-03-24 05:13:42');
+INSERT INTO `direct_messages` VALUES (14,1,2,'What are you even testing?','2025-04-11 12:42:20');
+INSERT INTO `direct_messages` VALUES (15,1,2,'I\'m going to Asda by the way','2025-04-11 12:51:20');
+INSERT INTO `direct_messages` VALUES (16,1,2,'Sorry, i meant Lidl, i don\'t like Asda','2025-04-11 21:27:44');
+INSERT INTO `direct_messages` VALUES (17,2,1,'Hi just updating you on everything','2025-04-11 21:32:50');
+INSERT INTO `direct_messages` VALUES (18,2,1,'test','2025-04-12 14:57:06');
+INSERT INTO `direct_messages` VALUES (19,1,2,'test','2025-04-12 15:04:29');
+INSERT INTO `direct_messages` VALUES (20,1,2,'What are we testing again','2025-04-12 18:18:58');
+INSERT INTO `direct_messages` VALUES (21,1,2,'I\'ve reported you for fraud btw','2025-04-12 18:54:01');
+INSERT INTO `direct_messages` VALUES (22,2,1,'oh okay nvm','2025-04-12 18:54:58');
+INSERT INTO `direct_messages` VALUES (23,1,2,'Testing that the leave modal is working and it seems good!!','2025-04-14 22:58:46');
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +151,7 @@ CREATE TABLE `group_messages` (
   KEY `Group is Group` (`GroupID`),
   CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,6 +161,19 @@ CREATE TABLE `group_messages` (
 LOCK TABLES `group_messages` WRITE;
 /*!40000 ALTER TABLE `group_messages` DISABLE KEYS */;
 INSERT INTO `group_messages` VALUES (1,2,1,'Guys, It\'s official. I\'m a hater','2025-03-27 19:44:55');
+INSERT INTO `group_messages` VALUES (2,2,1,'Welcome back guys','2025-04-11 21:33:11');
+INSERT INTO `group_messages` VALUES (3,1,1,'huh','2025-04-12 12:03:10');
+INSERT INTO `group_messages` VALUES (4,2,1,'refresh','2025-04-12 14:56:46');
+INSERT INTO `group_messages` VALUES (5,2,1,'test','2025-04-12 14:56:53');
+INSERT INTO `group_messages` VALUES (6,1,1,'bug','2025-04-12 15:00:19');
+INSERT INTO `group_messages` VALUES (7,1,1,'test','2025-04-12 15:01:30');
+INSERT INTO `group_messages` VALUES (8,1,1,'fixed?','2025-04-12 15:04:57');
+INSERT INTO `group_messages` VALUES (9,1,1,'fixed','2025-04-12 15:05:07');
+INSERT INTO `group_messages` VALUES (10,1,1,'okay it\'s fixed now','2025-04-12 15:05:10');
+INSERT INTO `group_messages` VALUES (11,1,1,'test','2025-04-12 16:34:56');
+INSERT INTO `group_messages` VALUES (12,1,1,'testerrr','2025-04-12 18:12:36');
+INSERT INTO `group_messages` VALUES (13,2,1,'fixed huh?','2025-04-12 18:53:22');
+INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here','2025-04-13 09:40:43');
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,6 +234,101 @@ INSERT INTO `groups` VALUES (1,'The Haters',2);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `project_users`
+--
+
+DROP TABLE IF EXISTS `project_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `project_users` (
+  `ProjectID` int(11) NOT NULL,
+  `AssigneeID` int(11) NOT NULL,
+  PRIMARY KEY (`ProjectID`,`AssigneeID`),
+  KEY `AssigneeUserID` (`AssigneeID`),
+  CONSTRAINT `AssigneeUserID` FOREIGN KEY (`AssigneeID`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `UserProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `projects` (`ProjectID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `project_users`
+--
+
+LOCK TABLES `project_users` WRITE;
+/*!40000 ALTER TABLE `project_users` DISABLE KEYS */;
+INSERT INTO `project_users` VALUES (1,1);
+INSERT INTO `project_users` VALUES (1,3);
+/*!40000 ALTER TABLE `project_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `projects`
+--
+
+DROP TABLE IF EXISTS `projects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `projects` (
+  `ProjectID` int(11) NOT NULL AUTO_INCREMENT,
+  `LeaderID` int(11) NOT NULL,
+  `Title` varchar(64) NOT NULL,
+  `Priority` enum('Low','Medium','High') DEFAULT NULL,
+  `StartDate` date DEFAULT NULL,
+  `Deadline` date DEFAULT NULL,
+  PRIMARY KEY (`ProjectID`),
+  KEY `LeaderID` (`LeaderID`),
+  CONSTRAINT `LeaderID` FOREIGN KEY (`LeaderID`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `projects`
+--
+
+LOCK TABLES `projects` WRITE;
+/*!40000 ALTER TABLE `projects` DISABLE KEYS */;
+INSERT INTO `projects` VALUES (1,3,'Make More Boomsticks','High','2025-04-12','2025-08-18');
+/*!40000 ALTER TABLE `projects` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tasks`
+--
+
+DROP TABLE IF EXISTS `tasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tasks` (
+  `TaskID` int(11) NOT NULL AUTO_INCREMENT,
+  `ProjectID` int(11) NOT NULL,
+  `AssigneeID` int(11) NOT NULL,
+  `Title` varchar(64) NOT NULL,
+  `Status` enum('Not Started','In Progress','Completed') NOT NULL DEFAULT 'Not Started',
+  `Priority` enum('Low','Medium','High') NOT NULL,
+  `HoursRequired` int(11) DEFAULT NULL,
+  `Deadline` date DEFAULT NULL,
+  `CompletionDate` date DEFAULT NULL,
+  PRIMARY KEY (`TaskID`),
+  KEY `AssigneeID` (`AssigneeID`),
+  KEY `ProjectID` (`ProjectID`),
+  CONSTRAINT `AssigneeID` FOREIGN KEY (`AssigneeID`) REFERENCES `users` (`UserID`),
+  CONSTRAINT `ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `projects` (`ProjectID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tasks`
+--
+
+LOCK TABLES `tasks` WRITE;
+/*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
+INSERT INTO `tasks` VALUES (1,1,3,'Boomstick Procurement','Completed','High',20,'2025-04-19','2025-04-12');
+INSERT INTO `tasks` VALUES (2,1,1,'Polish Boomsticks','Not Started','Medium',10,'2025-04-22',NULL);
+INSERT INTO `tasks` VALUES (3,1,3,'test','Completed','Low',50,'2025-04-19','2025-04-02');
+/*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -221,9 +339,10 @@ CREATE TABLE `users` (
   `UserID` int(11) NOT NULL AUTO_INCREMENT,
   `Forename` varchar(64) NOT NULL,
   `Surname` varchar(64) NOT NULL,
-  `Role` enum('Manager','Staff') NOT NULL DEFAULT 'Staff',
-  `Icon` blob NOT NULL DEFAULT '[default profile icon here]',
+  `Role` enum('Manager','Employee') NOT NULL DEFAULT 'Employee',
+  `Icon` blob DEFAULT NULL,
   `PasswordHash` varchar(60) NOT NULL,
+  `Status` enum('Online','Offline','Invisible') NOT NULL DEFAULT 'Offline',
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -234,9 +353,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Staff','[default profile icon here]','ABC123BCA!!!');
-INSERT INTO `users` VALUES (2,'John','Smith','Staff','[default profile icon here]','ABC123BCA!!!');
-INSERT INTO `users` VALUES (3,'Bill','Boomstick','Staff','[default profile icon here]','ABC123BCA!!!');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Offline');
+INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Invisible');
+INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','Online');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -249,99 +368,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-28  1:11:59
-
-
-
-
-
-
-DROP TABLE IF EXISTS `projects`;
-
--- Project Table
-CREATE TABLE `project` (
-    `projectID` INT(11) NOT NULL AUTO_INCREMENT, 
-    `proj_name` VARCHAR(1024) NOT NULL, 
-    `proj_description` TEXT NOT NULL,
-    `team_leader` INT(11) NOT NULL,
-    PRIMARY KEY (`projectID`),
-    KEY `team_leader` (`team_leader`),
-    CONSTRAINT `fk_team_leader` FOREIGN KEY (`team_leader`) REFERENCES `users` (`UserID`) 
-        ON DELETE CASCADE 
-        ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-DROP TABLE IF EXISTS `project_members`;
-
--- Project Members Table
-CREATE TABLE `project_members` (
-    `projectID` INT(11) NOT NULL,
-    `UserID` INT(11) NOT NULL,
-    `role` ENUM('Employee', 'Team leader', 'Manager') NOT NULL DEFAULT 'Employee',
-    PRIMARY KEY (`projectID`, `UserID`),
-    CONSTRAINT `fk_project_members_project` FOREIGN KEY (`projectID`) REFERENCES `project` (`projectID`) 
-        ON DELETE CASCADE 
-        ON UPDATE CASCADE,
-    CONSTRAINT `fk_project_members_user` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) 
-        ON DELETE CASCADE 
-        ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-DROP TABLE IF EXISTS `tasks`;
-
--- Tasks Table
-CREATE TABLE `tasks` (
-    `taskID` INT(11) NOT NULL AUTO_INCREMENT,
-    `projectID` INT(11) NOT NULL,
-    `assigned_to` INT(11), 
-    `task_name` VARCHAR(255) NOT NULL,
-    `task_description` TEXT,
-    `status` ENUM('Pending', 'In Progress', 'Completed') NOT NULL DEFAULT 'Pending',
-    `priority` ENUM('Low', 'Medium', 'High') NOT NULL DEFAULT 'Medium',
-    `due_date` DATE,
-    PRIMARY KEY (`taskID`),
-    KEY `projectID` (`projectID`),
-    KEY `assigned_to` (`assigned_to`),
-    CONSTRAINT `fk_tasks_project` FOREIGN KEY (`projectID`) REFERENCES `project` (`projectID`) 
-        ON DELETE CASCADE 
-        ON UPDATE CASCADE,
-    CONSTRAINT `fk_tasks_user` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`UserID`) 
-        ON DELETE SET NULL 
-        ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-DROP TABLE IF EXISTS `list`;
-
-CREATE TABLE `list` (
-    `listID` INT AUTO_INCREMENT PRIMARY KEY, 
-    `user_ID` INT(11) NOT NULL,  -- Ensure this matches `users.email`
-    `list_title` VARCHAR(255) NOT NULL,
-    CONSTRAINT `fk_list_user` FOREIGN KEY (`user_ID`) REFERENCES `users`(`UserID`) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-DROP TABLE IF EXISTS `items`;
-
--- Items Table (Updated)
-CREATE TABLE `items` (
-    `item_ID` INT AUTO_INCREMENT PRIMARY KEY, 
-    `description` TEXT NOT NULL, 
-    `list_ID` INT NOT NULL, 
-    `completed` BOOLEAN DEFAULT FALSE,  
-    CONSTRAINT `fk_items_list` FOREIGN KEY (`list_ID`) REFERENCES `list`(`listID`) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-DROP TABLE IF EXISTS `user_tasks`;
-
--- User Tasks Table (Fixed)
-CREATE TABLE `user_tasks` (
-    `task_ID` INT NOT NULL,     
-    `employee_ID` INT(11) NOT NULL, 
-    PRIMARY KEY (`task_ID`, `employee_ID`),     
-    CONSTRAINT `fk_user_tasks_task` FOREIGN KEY (`task_ID`) REFERENCES `tasks`(`taskID`) 
-        ON DELETE CASCADE, 
-    CONSTRAINT `fk_user_tasks_user` FOREIGN KEY (`employee_ID`) REFERENCES `users`(`UserID`) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Dump completed on 2025-04-16 19:10:44

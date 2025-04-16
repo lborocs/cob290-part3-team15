@@ -17,7 +17,7 @@ function ProjectCard({ title, description, onClick }) {
       >
         <h2 className="text-lg font-semibold mb-0.5">{title}</h2>
         <p className={`text-xs text-gray-600 ${!isExpanded ? 'line-clamp-2' : ''}`}> {description} </p>
-        {description.length > 80 && (
+        {description.length > 50 && (
           <button
             className="text-blue-400 mt-1 text-xs"
             onClick={handleExpandClick}

@@ -11,7 +11,7 @@ function SearchBox({ projects, onProjectSelect }) {
   );
 
   return (
-    <div className="col-start-2 row-start-4 col-span-4 row-span-3 bg-secondary/40 rounded-3xl p-2 flex flex-col justify-start">
+    <div className="col-start-2 row-start-4 col-span-4 row-span-3 bg-secondary/40 rounded-3xl p-4 flex flex-col justify-start">
       <input
         type="text"
         placeholder="Search projects..."
@@ -20,7 +20,8 @@ function SearchBox({ projects, onProjectSelect }) {
         className="p-2 rounded-3xl border border-gray-300 mb-4"
       />
       <div
-        className="flex flex-wrap gap-4 overflow-y-auto"
+        className="flex flex-wrap gap-2 overflow-y-auto justify-between"
+
         style={{ maxHeight: '300px' }}
       >
         {filteredProjects.map(project => (
