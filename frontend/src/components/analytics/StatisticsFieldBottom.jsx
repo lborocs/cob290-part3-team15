@@ -65,7 +65,7 @@ function StatisticsFieldBottom() {
               handleBack();
               setSearchTerm(''); // Clear the search bar to reset
             }}
-            className="mb-4 p-2 bg-primary text-white rounded-lg"
+            className="mb-4 p-2 bg-primary text-black rounded-lg"
           >
             Back
           </button>
