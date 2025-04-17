@@ -8,16 +8,20 @@ function statusDropdown({onClose, refs, floatingStyles}) {
     
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            onClose(); // Call the onClose function to close the dropdown
-        }
+            const isClickOnButton = refs.reference.current && refs.reference.current.contains(event.target);
+            const isClickInsideDropdown = dropdownRef.current && dropdownRef.current.contains(event.target);
+
+            if (!isClickOnButton && !isClickInsideDropdown) {
+                // Close dropdown when clicking outside
+                onClose(false);
+            }
         };
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
         document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [onClose]);
+    }, [onClose, refs]);
 
     const handleOnline = () => {
         console.log('Online clicked'); // Placeholder for online status action
@@ -34,7 +38,7 @@ function statusDropdown({onClose, refs, floatingStyles}) {
     const icons = []
 
     return(
-        <div ref = {dropdownRef}>
+        <div ref = {dropdownRef} className="absolute">
             <DropdownList items={items} onClick={componentsFunctions} icons={icons} refs={refs} floatingStyles={floatingStyles}/>
         </div>
     )
