@@ -1,4 +1,4 @@
-import DropdownList from "./DropdownList";
+import DropdownList from "../chat/DropdownList";
 import { useEffect, useRef } from "react";
 function statusDropdown({onClose, refs, floatingStyles}) {
 

@@ -8,7 +8,7 @@ import { MdOutlineGroups } from "react-icons/md";
 import { LuChartNoAxesCombined } from "react-icons/lu";
 
 import ProfileCard from '../accounts/ProfileCard.jsx'
-import StatusDropdown from '../chat/StatusDropdown.jsx';
+import StatusDropdown from './StatusDropdown.jsx';
 
 import { getSocket } from '../../socket';
 
