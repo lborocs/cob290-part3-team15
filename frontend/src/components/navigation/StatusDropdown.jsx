@@ -33,9 +33,12 @@ function statusDropdown({onClose, refs, floatingStyles}) {
 
     const items = ['Online', 'Invisible'];
 
-    const componentsFunctions = []
+    const componentsFunctions = [handleOnline, handleInvisible]
 
-    const icons = []
+    const icons = [
+        <div className={`absolute w-4 h-4 rounded-full border-2 border-blackFaded bg-green-400`}></div>,
+        <div className={`absolute w-4 h-4 rounded-full border-2 border-blackFaded bg-gray-400`}></div>
+    ]
 
     return(
         <div ref = {dropdownRef} className="absolute">
