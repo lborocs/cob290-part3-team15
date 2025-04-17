@@ -13,7 +13,7 @@ function statusDropdown({onClose, refs, floatingStyles}) {
 
             if (!isClickOnButton && !isClickInsideDropdown) {
                 // Close dropdown when clicking outside
-                onClose(false);
+                onClose();
             }
         };
 
@@ -25,10 +25,12 @@ function statusDropdown({onClose, refs, floatingStyles}) {
 
     const handleOnline = () => {
         console.log('Online clicked'); // Placeholder for online status action
+        onClose();
     }
 
     const handleInvisible = () => {
         console.log('Invisible clicked'); // Placeholder for invisible status action
+        onClose();
     }
 
     const items = ['Online', 'Invisible'];
@@ -36,8 +38,8 @@ function statusDropdown({onClose, refs, floatingStyles}) {
     const componentsFunctions = [handleOnline, handleInvisible]
 
     const icons = [
-        <div className={`absolute w-4 h-4 rounded-full border-2 border-blackFaded bg-green-400`}></div>,
-        <div className={`absolute w-4 h-4 rounded-full border-2 border-blackFaded bg-gray-400`}></div>
+        <div className={`w-4 h-4 rounded-full border-2 border-blackFaded bg-green-400`}></div>,
+        <div className={`w-4 h-4 rounded-full border-2 border-blackFaded bg-gray-400`}></div>
     ]
 
     return(
