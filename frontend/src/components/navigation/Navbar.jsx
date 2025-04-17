@@ -12,6 +12,7 @@ import StatusDropdown from '../chat/StatusDropdown.jsx';
 
 import { getSocket } from '../../socket';
 
+import { useFloating, offset, flip, shift } from '@floating-ui/react';
 
 const Tab = (props) => {
     const handleNavigate = () => {
@@ -37,18 +38,27 @@ const Navbar = (props) => {
     {/* This needs to be planned */}
     const navigate=useNavigate();
     const [id, setID]= useState(0);
+    const [showStatusDropdown, setShowStatusDropdown] = useState(false);
 
     const Tabs=[
         {Label:"Chat",Icon:<MdOutlineChat className="flex flex-1 w-full h-7 mb-2"/>,link:"/chat/",index:1},
         //{Label:"Teams",Icon:<MdOutlineGroups className="flex flex-1 w-full h-8 mb-2"/>,link:"/teams",index:2}, 
         {Label:"Analytics",Icon:<LuChartNoAxesCombined className="flex flex-1 w-full h-7 mb-3"/>,link:"/analytics/",index:3}
     ]
+    // Similar to what's done in message.jsx for chat dropdown
+    const { refs, floatingStyles } = useFloating({
+        middleware: [offset(8), flip(), shift()],
+        placement: "top-end", // Position the dropdown above the button
+    });
 
     //Anti Right Click
     const HandleRightClick = (event) => {
         event.preventDefault();
     };
-    console.log(props)
+    const toggleStatusDropdown = () => {
+        setShowStatusDropdown((prev) => !prev);
+    }
+
     return (
         <div className="flex relative flex-col h-full items-center bg-accentOrange w-[72px] min-w-[72px] z-10 border-r-1 border-blackFaded overflow-hidden justify-between" onContextMenu={HandleRightClick}>
             <div className="flex flex-col w-full h-full min-h-80 relative items-center">
@@ -73,9 +83,11 @@ const Navbar = (props) => {
                     ))}
                 </div>
             </div>
-            <button className="w-15 h-15 justify-end mb-2">
+            <button className="w-15 h-15 justify-end mb-2" onClick={() => toggleStatusDropdown()} ref={refs.setReference}>
                 <ProfileCard displayBG="bg-accentOrange" id={props.userID} status={props.status}/>
-                {/* <StatusDropdown/> */}
+                {showStatusDropdown && (
+                    <StatusDropdown onClose={() => setShowStatusDropdown(false)} refs={refs} floatingStyles={floatingStyles}/>
+                )}
             </button>
         </div>
     )
