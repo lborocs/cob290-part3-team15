@@ -83,10 +83,10 @@ const Navbar = (props) => {
                     ))}
                 </div>
             </div>
-            <button className="w-15 h-15 justify-end mb-2" onClick={() => toggleStatusDropdown()} ref={refs.setReference}>
+            <button className="w-15 h-15 justify-end mb-2" onClick={toggleStatusDropdown} ref={refs.setReference}>
                 <ProfileCard displayBG="bg-accentOrange" id={props.userID} status={props.status}/>
                 {showStatusDropdown && (
-                    <StatusDropdown onClose={() => setShowStatusDropdown(false)} refs={refs} floatingStyles={floatingStyles}/>
+                    <StatusDropdown onClose={toggleStatusDropdown} refs={refs} floatingStyles={floatingStyles}/>
                 )}
             </button>
         </div>
