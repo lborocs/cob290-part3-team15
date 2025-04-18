@@ -1,7 +1,6 @@
 import DropdownList from "../chat/DropdownList";
 import { useEffect, useRef } from "react";
 function statusDropdown({onClose, refs, floatingStyles}) {
-    console.log(onClose)
     const dropdownRef = useRef(null); // Reference to the dropdown element
 
     // Close dropdown when clicking outside
