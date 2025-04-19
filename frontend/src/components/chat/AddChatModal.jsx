@@ -39,7 +39,7 @@ function AddChatModal({ open, onClose, userID }) {
     open && (
         <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-8 w-xl" accentColor="bg-orangeHover">
             {/* Header */}
-            <h3 className="text-2xl font-bold text-text mb-4 text-left w-full">Add People</h3>
+            <h3 className="text-2xl font-bold text-text mb-4 text-left w-full">{selectedPeople.length > 1 ? "Add Group" : "Add Person"}</h3>
 
             <div className="py-8 px-8 bg-accentOrange rounded-lg mx-auto shadow-sm w-full">
 
