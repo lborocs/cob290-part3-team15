@@ -1,4 +1,4 @@
-import Modal from "./Modal";
+import Modal from "../other/Modal";
 
 function LeaveModal ({open, onClose, leaveFunction, closeDropdown}) {
     const handleClose = () => {

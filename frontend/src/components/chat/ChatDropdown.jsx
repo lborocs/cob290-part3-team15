@@ -1,4 +1,4 @@
-import DropdownList from "./DropdownList";
+import DropdownList from "../other/DropdownList";
 import { useEffect, useRef } from "react";
 import { BsClipboard2Fill } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";

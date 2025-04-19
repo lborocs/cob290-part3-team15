@@ -1,4 +1,4 @@
-import DropdownItem from "../chat/DropdownItem";
+import DropdownItem from "../other/DropdownItem";
 import { useEffect, useRef } from "react";
 function statusDropdown({onClose, refs, floatingStyles, floatingProps}) {
     const dropdownRef = useRef(null); // Reference to the dropdown element

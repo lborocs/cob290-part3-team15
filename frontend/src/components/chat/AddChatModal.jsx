@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Modal from "./Modal.jsx";
+import Modal from "../other/Modal.jsx";
 import { BsChevronLeft, BsChevronRight, BsSearch } from "react-icons/bs";
 function AddChatModal({ open, onClose, userID }) {
     const [searchInput, setInput] = useState("");
