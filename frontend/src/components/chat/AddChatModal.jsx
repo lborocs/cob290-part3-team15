@@ -1,21 +1,15 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState,useRef } from "react";
 import Modal from "../other/Modal.jsx";
 import { BsChevronLeft, BsChevronRight, BsSearch } from "react-icons/bs";
+import axios from "axios";
+
 function AddChatModal({ open, onClose, userID }) {
     const [searchInput, setInput] = useState("");
     const [selectedPeople, setSelectedPeople] = useState([]);
 
-    const people = [
-        { id: 1, name: "Johnny Smith", color: "bg-green-400" },
-        { id: 2, name: "John Haymaker", color: "bg-purple-400" },
-        { id: 3, name: "Hugh Full-Stack", color: "bg-blue-400" },
-        { id: 4, name: "Tudor Stats", color: "bg-pink-400" },
-        { id: 5, name: "Toby Pi", color: "bg-yellow-400" },
-        { id: 6, name: "Nik Graph", color: "bg-red-400" },
-        { id: 7, name: "Jacob Bar", color: "bg-orange-400" },
-        { id: 8, name: "Ryan Message", color: "bg-teal-400" },
-        { id: 9, name: "Rogger Modal", color: "bg-gray-400" },
-    ];
+    const [people, setPeople] = useState([]); // Limited list of people
+    const [fullPeopleList, setFullPeopleList] = useState([]); // Full list of people
+    const searchRecords = useRef(new Map());
 
     // This function is just an if else for if the person is already selected or not, and does the opposite action
     const handleSelectPerson = (person) => {
@@ -32,23 +26,112 @@ function AddChatModal({ open, onClose, userID }) {
             setSelectedPeople([...selectedPeople.filter((p) => p.isSelected),{ ...person, isSelected: true },]);
         }
     };
-  
-    const handleSubmit = () => {
-      console.log("Selected People:", selectedPeople .filter((p) => p.isSelected)); // Log only the selected people
-      onClose();
-    };
 
-    const handleSearchInput = (e) => {
+    const handleSearchInput = async(e) => {
+        const before = searchInput.length;
+        const after = e.target.value.length;
         setInput(e.target.value);
-        // Move unselected people back to the unselected list
-        setSelectedPeople(selectedPeople.filter((p) => p.isSelected)); // Keep only selected people, i,.e isSelected is true
+        //30 people can be returned from getPeople in one instance, if it's maxed out then there COULD be more people to get
+        //10 people will be displayed at one time.
+
+        //Attempt to filter to 10 max people
+        var newFilteredList = fullPeopleList.filter((person) => person.name.toLowerCase().includes(e.target.value.toLowerCase())).slice(0, 10)
+
+        //If it didn't get 10 people, will need to reference other sources to see if there are more people to get
+        const shouldQuery = newFilteredList.length<10 && (before>after || (fullPeopleList.length==30 && after>before))
+        if (shouldQuery) {
+            const cachedResults = searchRecords.current.get(e.target.value);
+            //If there's no cached results, then we need to get the people from the Database
+            if (cachedResults===undefined){
+                const response=await getPeople(e.target.value)  || [];
+                if (response.length > 0) {
+                    searchRecords.current.set(e.target.value, response);
+                    newFilteredList = response.filter((person) => person.name.toLowerCase().includes(e.target.value)).slice(0, 10);
+                    setFullPeopleList(response);
+                } else {
+                    searchRecords.current.set(e.target.value, []);
+                }
+
+            }
+            //If there are cached results, use them instead of querying the database again
+            else{
+                newFilteredList = cachedResults
+                setFullPeopleList(cachedResults);
+            }
+        }
+
+        //Cache the filtered results
+        if (newFilteredList.length > 0) {
+            searchRecords.current.set(e.target.value, newFilteredList);
+        } 
+        else if (newFilteredList.length === 0) {
+            searchRecords.current.set(e.target.value, []);
+        }
+
+        setPeople(newFilteredList);
+        setSelectedPeople(selectedPeople.filter((p) => p.isSelected));
+
+        // Cleaning up cached results if the size exceeds 100
+        if (searchRecords.current.size > 100) {
+            const firstKey = searchRecords.current.keys().next().value;
+            searchRecords.current.delete(firstKey);
+        }
     }
+
+    const getPeople = async (query='') => {
+        try{
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axios.get(`/api/chat/getPeople?filter=${encodeURIComponent(query)}`,{headers: { Authorization: `Bearer ${accessToken}` }});
+            if (response?.data?.results){
+                return response.data.results;
+                }
+        }
+        catch (error) {}
+    }
+
+
+
+    // CREATE GROUP CHAT OR ADD DIRECT MESSAGE
+
+    const handleSubmit = () => {
+        const filtered=selectedPeople .filter((p) => p.isSelected); // Log only the selected people
+        const targets = filtered.map((p) => p.id);
+        if (targets.length > 1) {
+            addNewGroup(targets);
+        }
+        onClose();
+      };
+
+    const addNewGroup = async (targets) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axios.post('/api/chat/createGroup', { targets: targets, name: "New Group!"}, { headers: { Authorization: `Bearer ${accessToken}` } });
+            if (response?.data?.success) {
+                onClose();
+            }
+        } 
+        catch (error) {}
+    }
+
+
+    useEffect(() => {
+        const fetchPeople = async () => {
+            if (open) {
+                const response = await getPeople();
+                searchRecords.current.set('', response);
+                setFullPeopleList(response);
+                setPeople(response.slice(0, 10));
+            }
+        };
+    
+        fetchPeople();
+    }, [open]);
 
   return (
     open && (
         <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-8 w-xl" accentColor="bg-orangeHover">
             {/* Header */}
-            <h3 className="text-2xl font-bold text-text mb-4 text-left w-full select-none">{selectedPeople.length > 1 ? "Add Group" : "Add Person"}</h3>
+            <h3 className="text-2xl font-bold text-text mb-4 text-left w-full select-none">{selectedPeople.filter(p => p.isSelected).length > 1 ? "Add Group" : "Add Person"}</h3>
 
             <div className="py-8 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
                 <div className="w-full px-8">

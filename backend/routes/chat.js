@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
 const {authenticateToken} = require("../exports/authenticate");
+const { alertMessage } = require('../exports/socket');
 
 router.use(express.json()) // for parsing 'application/json'
 
@@ -126,5 +127,98 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
     }
 
 });
+
+router.get("/getNewPeople",authenticateToken,(req,res) => {
+    const id = req.user.userID;
+    const filter = req.query.filter;
+    const query=`SELECT users.UserID as id, CONCAT(Forename, ' ', Surname) as name
+                FROM users
+                LEFT JOIN active_chats ON users.UserID = active_chats.Target AND active_chats.UserID = ?
+                WHERE users.UserID != ?
+                AND active_chats.Target IS NULL
+                ${filter ? 'AND LOWER(CONCAT(Forename, " ", Surname)) LIKE LOWER(?)' : ''}
+                LIMIT 30`;
+
+    //Stop bad ID's 
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
+    }
+
+    const values = [id,id,`%${filter}%`];
+    database.query(query, values, (err, results) => {
+        res.send({results: results});
+    });
+});
+
+router.get("/getPeople",authenticateToken,(req,res) => {
+    const id = req.user.userID;
+    const filter = req.query.filter;
+    const query=`SELECT UserID as id, CONCAT(Forename, ' ', Surname) as name
+                FROM users
+                WHERE UserID != ?
+                ${filter ? 'AND LOWER(CONCAT(Forename, " ", Surname)) LIKE LOWER(?)' : ''}
+                LIMIT 30`;
+
+
+    //Stop bad ID's 
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
+    }
+
+    const values = [id,`%${filter}%`];
+    database.query(query, values, (err, results) => {
+        res.send({results: results});
+    });
+});
+
+router.post("/createGroup",authenticateToken,(req,res) => {
+    const createGroup = "INSERT INTO groups (Name,Owner) VALUES (?,?)";
+    const addUser = "INSERT INTO group_users (GroupID,UserID) VALUES (?,?)";
+    const addActiveChat = "INSERT INTO active_chats (UserID, Target, Type) VALUES (?, ?, 'group_messages') ON DUPLICATE KEY UPDATE LastUpdate = NOW();";
+    const id = req.user.userID;
+    const targets = req.body.targets;
+    const name = req.body.name;
+
+    //Stop bad inputs
+    if (isNaN(id) || targets.length<2 || name.length<1){
+        return res.status(400).json({ error: "Invalid input" });
+    }
+
+    const createGroupValues = [name,id];
+    database.query(createGroup, createGroupValues, (err, result) => {
+        if (!err) {
+            const groupId = result.insertId;
+            const usersToAdd = [id, ...targets];
+
+            for (let i=usersToAdd.length-1; i>=0; i--) {
+                const target = usersToAdd[i];
+                //Add user to group_users table
+                const addUserValues = [groupId, target];
+                database.query(addUser, addUserValues, (err) => {
+                    if (err) {
+                        return res.status(500).json({ error: "Error adding user to group" });
+                    }
+
+                    //Add all new users to active chats
+                    const addActiveChatValues = [target, groupId];
+                    database.query(addActiveChat, addActiveChatValues, (err) => {
+                        if (err) {
+                            return res.status(500).json({ error: "Error adding user to active chats" });
+                        }
+                        //Alert all users in the group about the new group
+                        alertMessage(target);
+                        if (i === 0) {
+                            return res.status(200).json({ success: "Group created successfully" });
+                        }
+                    });
+                });
+            }
+        }
+        else return res.status(500).json({ error: "Server rejected message" });
+    });
+});
+
+
+
 
 module.exports = router;
