@@ -9,7 +9,7 @@ import { LuChartNoAxesCombined } from "react-icons/lu";
 import ProfileCard from '../accounts/ProfileCard.jsx'
 import StatusDropdown from './StatusDropdown.jsx';
 
-import { useFloating, offset, flip, shift,limitShift,useClick,useDismiss,useInteractions } from '@floating-ui/react';
+import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate  } from '@floating-ui/react';
 
 const Tab = (props) => {
     const handleNavigate = () => {
@@ -54,17 +54,14 @@ const Navbar = (props) => {
                   }
                 })
             })],
-        placement: "top-end",
+        placement: "right-start",
+        whileElementsMounted: autoUpdate,
         open: showStatusDropdown,
         onOpenChange: setShowStatusDropdown,
 
     });
 
-    const click = useClick(context);
     const dismiss = useDismiss(context, {outsidePressEvent: "mousedown",});
-      
-
-    const {getReferenceProps, getFloatingProps} = useInteractions([click, dismiss]);
 
     //Anti Right Click
     const HandleRightClick = (event) => {
@@ -99,13 +96,13 @@ const Navbar = (props) => {
                     ))}
                 </div>
             </div>
-            <button className="w-15 h-15 justify-end mb-2" onClick={toggleStatusDropdown} ref={refs.setReference} {...getReferenceProps()}>
+            <button className="w-15 h-15 justify-end mb-2" onClick={toggleStatusDropdown} ref={refs.setReference}>
                 <ProfileCard displayBG="bg-accentOrange" id={props.userID} status={props.status}/>
             </button>
 
         </div>
         {showStatusDropdown && (
-            <StatusDropdown onClose={() => setShowStatusDropdown(false)} refs={refs} floatingStyles={floatingStyles} floatingProps={getFloatingProps()}/>
+            <StatusDropdown onClose={() => setShowStatusDropdown(false)} refs={refs} floatingStyles={floatingStyles}/>
         )}
         </>
         

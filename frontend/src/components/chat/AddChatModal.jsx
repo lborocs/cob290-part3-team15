@@ -29,7 +29,7 @@ function AddChatModal({ open, onClose, userID }) {
             );
         } else {
             // Add the person to the selectedPeople list with isSelected set to true
-            setSelectedPeople([...selectedPeople, { ...person, isSelected: true }]);
+            setSelectedPeople([...selectedPeople.filter((p) => p.isSelected),{ ...person, isSelected: true },]);
         }
     };
   
