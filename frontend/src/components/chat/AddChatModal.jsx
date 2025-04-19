@@ -51,6 +51,7 @@ function AddChatModal({ open, onClose, userID }) {
                         <BsSearch className="text-gray-200" />
                     </div>
                     {/* Selected People Section */}
+                    {selectedPeople.length > 0 && (
                     <div className="relative flex items-center mb-4 pl-4 pr-4">
                         {/* Left Scroll Button */}
                         <button
@@ -98,6 +99,7 @@ function AddChatModal({ open, onClose, userID }) {
                             <BsChevronRight />
                         </button>
                     </div>
+                    )}
                 </div>
                 {/* List of people */}
                 
