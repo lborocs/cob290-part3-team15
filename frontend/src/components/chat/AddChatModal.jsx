@@ -79,8 +79,10 @@ function AddChatModal({ open, onClose, userID }) {
                             >
                                 <span className="mr-2 flex flex-nowrap">{person.name}</span>
                                 <button
-                                    onClick={() =>
+                                    onClick={() => {
                                         setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id))
+                                        setUnselectedPeople([...unselectedPeople, person])
+                                        }
                                     }
                                     className="text-gray-500 hover:text-red-700 font-bold"
                                 >
