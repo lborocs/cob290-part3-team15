@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Modal from "./Modal.jsx";
+import { BsChevronLeft, BsChevronRight, BsSearch } from "react-icons/bs";
 function AddChatModal({ open, onClose, userID }) {
     const [searchInput, setInput] = useState("");
     const [selectedPeople, setSelectedPeople] = useState([]);
-  
+
     const people = [
         { id: 1, name: "Johnny Smith", color: "bg-green-400" },
         { id: 2, name: "John Haymaker", color: "bg-purple-400" },
@@ -15,12 +16,17 @@ function AddChatModal({ open, onClose, userID }) {
         { id: 8, name: "Ryan Message", color: "bg-teal-400" },
         { id: 9, name: "Rogger Modal", color: "bg-gray-400" },
     ];
-  
+
+    const [unselectedPeople, setUnselectedPeople] = useState(people); // Initially set unselected people to all people
+    
+    // This function is just an if else for if the person is already selected or not, and does the opposite action
     const handleSelectPerson = (person) => {
       if (selectedPeople.some((p) => p.id === person.id)) { // Check if the person is already selected or not
-        setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id));
+        setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id)); // Remove the person from the selected list
+        setUnselectedPeople([...unselectedPeople, person]); // Add the person to the unselected list
       } else {
         setSelectedPeople([...selectedPeople, person]); // Add the person from the selected list
+        setUnselectedPeople(unselectedPeople.filter((p) => p.id !== person.id)); // Remove the person from the unselected list
       }
     };
   
@@ -46,12 +52,78 @@ function AddChatModal({ open, onClose, userID }) {
                     placeholder="Search"
                     className="flex-grow bg-transparent outline-none text-gray-200 placeholder-gray-200"
                 />
-                
+                    <BsSearch className="text-gray-200" />
                 </div>
-                
+                {/* Selected People Section */}
+                <div className="relative flex items-center mb-4 pl-4 pr-4">
+                    {/* Left Scroll Button */}
+                    <button
+                        onClick={() => {
+                            const container = document.getElementById("selected-people-container");
+                            container.scrollLeft -= 150;
+                        }}
+                        className="absolute left-0 text-black"
+                    >
+                        <BsChevronLeft />
+                    </button>
+
+                    {/* Selected People Container */}
+                    <div
+                        id="selected-people-container"
+                        className="flex flex-nowrap items-center overflow-hidden"
+                    >
+                        {selectedPeople.map((person) => (
+                            <div
+                                key={person.id}
+                                className="flex flex-nowrap whitespace-nowrap bg-orangeHover text-text px-3 py-1 rounded-full shadow-sm"
+                            >
+                                <span className="mr-2 flex flex-nowrap">{person.name}</span>
+                                <button
+                                    onClick={() =>
+                                        setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id))
+                                    }
+                                    className="text-gray-500 hover:text-red-700 font-bold"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Right Scroll Button */}
+                    <button
+                        onClick={() => {
+                            const container = document.getElementById("selected-people-container");
+                            container.scrollLeft += 150;
+                        }}
+                        className="absolute right-0 text-black"
+                    >
+                        <BsChevronRight />
+                    </button>
+                </div>
                 {/* List of people */}
                 <div className="space-y-2 w-full max-h-40 overflow-y-auto">
-                {people
+                {/* For Selected People / Top Half */}
+                {selectedPeople
+                    .map((person) => (
+                        <div
+                            key={person.id}
+                            className="flex items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
+                        >
+                            <div
+                                className={`w-8 h-8 rounded-full ${person.color} mr-4`}
+                            ></div>
+                            <span className="font-bold px-2">{person.name}</span>
+                            <input
+                                type="checkbox"
+                                checked={selectedPeople.some((p) => p.id === person.id)}
+                                onChange={() => handleSelectPerson(person)}
+                                className="ml-auto w-5 h-5 cursor-pointer"
+                            />
+                        </div>
+                    ))}
+                {/* For Unselected People / Bottom Half */}
+                {unselectedPeople
                     .filter((person) =>
                         person.name.toLowerCase().includes(searchInput.toLowerCase())
                     )
