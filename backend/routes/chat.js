@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
-const { io,connectedClients,selfStatusAlert } = require('../exports/socket');
 const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
@@ -15,18 +14,6 @@ router.get("/getMessage",authenticateToken,(req,res) => {
         return res.status(400).json({ error: "Invalid ID" });
     }
 
-    const values = [id];
-    database.query(query, values, (err, results) => {
-        res.send({results: results});
-    });
-});
-
-router.get("/getStatus",authenticateToken,(req,res) => {
-    const query="SELECT UserID,Status FROM users WHERE UserID=? LIMIT 1;";
-    const id = req.user.userID;
-    if (isNaN(id)) {
-        return res.status(400).json({ error: "Invalid ID" });
-    }
     const values = [id];
     database.query(query, values, (err, results) => {
         res.send({results: results});

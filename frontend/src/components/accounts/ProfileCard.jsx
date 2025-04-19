@@ -7,7 +7,7 @@ const ProfileCard = ({ displayBG,type,id,status}) => {
   const [userIcon, setUserIcon] = useState(null);
   const statusColors = {
     Online: 'bg-green-400',
-    Occupied: 'bg-red-500',
+    DND: 'bg-red-400',
     Offline: 'bg-gray-400',
     Invisible: 'bg-gray-400',
     Away: 'bg-yellow-500',
@@ -17,7 +17,7 @@ const ProfileCard = ({ displayBG,type,id,status}) => {
   const colors = {
     blue : 'bg-blue-500/60',
     green : 'bg-green-500/60', 
-    red : 'bg-red-500/60',
+    red : 'bg-red-400/60',
     pink : 'bg-pink-500/40', 
     purple : 'bg-purple-500/40',
     gray : 'bg-gray-500/70',

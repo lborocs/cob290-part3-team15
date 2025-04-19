@@ -34,7 +34,7 @@ function Chat({ user }){
 
     //Socket
     const [refresh,setRefresh] = useState(0)
-    const [otherStatusRefresh,setOtherStatusRefresh] = useState(0)
+    const [otherStatus,setOtherStatus] = useState(null);
     const [personalStatus,setPersonalStatus] = useState("Offline");
 
     //Communication IDs
@@ -92,10 +92,11 @@ function Chat({ user }){
         // Setup listeners early, before any emit
         if (socket) {
             socket.on('selfStatus', (data) => {
+                if (!data || Object.keys(data).length === 0) return;
                 setPersonalStatus(data?.status);
             });
-            socket.on('otherStatus', (data) => { //REWORK NEEDED
-                setRefresh(previous => previous + 1);
+            socket.on('otherStatus', (data) => { 
+                setOtherStatus(data);
             });
     
             socket.on('newMessage', (data) => { //NOTE - This is suitable, a lot of data needs to be double checked here
@@ -105,7 +106,9 @@ function Chat({ user }){
             socket.on('editMessage', (data) => { //NOTE - If the active message list is the one being edited.. AND ONLY in this situation refresh. Include a timestamp to make it "unique" each time
                 attemptToSetEditedValue(data);
             });
-            socket.emit('requestStatus', userID);
+
+            socket.emit('requestStatus');
+            
         }
     
         return () => {
@@ -136,8 +139,7 @@ function Chat({ user }){
     const attemptToSetEditedValue = (data) => {
         if (data.targetID===selectedIDRef.current && data.targetID!==null && data.type===modeRef.current) { 
             setEditedValue(data);
-        }
-    }
+    }}
 
     return(
         //Full container
@@ -150,7 +152,7 @@ function Chat({ user }){
                 {sidebarVisible ? 
                 <div className={`flex flex-col h-full fixed lg:static bg-backgroundOrange sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`} onContextMenu={HandleRightClick} ref={containerRef}> 
                     {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
-                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} containerRef={containerRef}/>
+                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} statusUpdate={otherStatus} containerRef={containerRef}/>
                 </div>
                 :<></>}
                 

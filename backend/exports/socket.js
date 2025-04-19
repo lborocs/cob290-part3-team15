@@ -57,7 +57,7 @@ const alertEdit = (userId,targetID,messageID,type,content) => {
 const selfStatusAlert = (userId,status) => {
     if (connectedClients[userId]) {
         connectedClients[userId].forEach(socketId => {
-            io.to(socketId).emit('selfStatus', { message: `Pinged user ${userId} - Self Status!`,status:status});
+            io.to(socketId).emit('selfStatus', {status:status});
         });
         console.log(`Self Status Ping to user ${userId} on ${connectedClients[userId].length} devices.`);
     } else {
@@ -66,12 +66,12 @@ const selfStatusAlert = (userId,status) => {
 };
 
 // Ping all users who know the user about their status (Cross-client)
-const otherStatusAlert = (usersToPing,status)=> {
+const otherStatusAlert = (userId,usersToPing,status)=> {
     for (let i = 0; i < usersToPing.length; i++) {
         const pingUserId = usersToPing[i];
         if (connectedClients[pingUserId]) {
             connectedClients[pingUserId].forEach(socketId => {
-                io.to(socketId).emit('otherStatus', { message: `Pinged user ${pingUserId} - Other Status!`,status:status});
+                io.to(socketId).emit('otherStatus', {status:status,target:userId,timestamp: new Date()});
             });
             console.log(`Other Status Ping to user ${pingUserId} on ${connectedClients[pingUserId].length} devices.`);
         }
