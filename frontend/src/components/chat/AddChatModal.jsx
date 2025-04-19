@@ -17,16 +17,12 @@ function AddChatModal({ open, onClose, userID }) {
         { id: 9, name: "Rogger Modal", color: "bg-gray-400" },
     ];
 
-    const [unselectedPeople, setUnselectedPeople] = useState(people); // Initially set unselected people to all people
-    
     // This function is just an if else for if the person is already selected or not, and does the opposite action
     const handleSelectPerson = (person) => {
       if (selectedPeople.some((p) => p.id === person.id)) { // Check if the person is already selected or not
         setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id)); // Remove the person from the selected list
-        setUnselectedPeople([...unselectedPeople, person]); // Add the person to the unselected list
       } else {
         setSelectedPeople([...selectedPeople, person]); // Add the person from the selected list
-        setUnselectedPeople(unselectedPeople.filter((p) => p.id !== person.id)); // Remove the person from the unselected list
       }
     };
   
@@ -81,7 +77,6 @@ function AddChatModal({ open, onClose, userID }) {
                                     <button
                                         onClick={() => {
                                             setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id))
-                                            setUnselectedPeople([...unselectedPeople, person])
                                             }
                                         }
                                         className="text-gray-500 hover:text-red-700 font-bold"
@@ -121,13 +116,16 @@ function AddChatModal({ open, onClose, userID }) {
                             <input
                                 type="checkbox"
                                 onChange={() => handleSelectPerson(person)}
-                                checked={selectedPeople.some((p) => p.id === person.id)}
+                                checked={true}
                                 className="ml-auto w-5 h-5 cursor-pointer"
                             />
                         </label>
                     ))}
                 {/* For Unselected People / Bottom Half */}
-                {unselectedPeople
+                {people
+                    .filter((person) => 
+                        !selectedPeople.some((p) => p.id === person.id) // Filter out selected people
+                    )
                     .filter((person) =>
                         person.name.toLowerCase().includes(searchInput.toLowerCase())
                     )
@@ -143,7 +141,7 @@ function AddChatModal({ open, onClose, userID }) {
                             <input
                                 type="checkbox"
                                 onChange={() => handleSelectPerson(person)}
-                                checked={selectedPeople.some((p) => p.id === person.id)}
+                                checked={false}
                                 className="ml-auto w-5 h-5 cursor-pointer"
                             />
                         </label>
