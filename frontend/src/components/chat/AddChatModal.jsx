@@ -19,17 +19,30 @@ function AddChatModal({ open, onClose, userID }) {
 
     // This function is just an if else for if the person is already selected or not, and does the opposite action
     const handleSelectPerson = (person) => {
-      if (selectedPeople.some((p) => p.id === person.id)) { // Check if the person is already selected or not
-        setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id)); // Remove the person from the selected list
-      } else {
-        setSelectedPeople([...selectedPeople, person]); // Add the person from the selected list
-      }
+        const isAlreadyInList = selectedPeople.some((p) => p.id === person.id); // Check if the person is already in the selectedPeople list
+        if (isAlreadyInList) {
+            // Toggle the isSelected property
+            setSelectedPeople(
+                selectedPeople.map((p) =>
+                    p.id === person.id ? { ...p, isSelected: !p.isSelected } : p
+                )
+            );
+        } else {
+            // Add the person to the selectedPeople list with isSelected set to true
+            setSelectedPeople([...selectedPeople, { ...person, isSelected: true }]);
+        }
     };
   
     const handleSubmit = () => {
       console.log("Selected People:", selectedPeople);
       onClose();
     };
+
+    const handleSearchInput = (e) => {
+        setInput(e.target.value);
+        // Move unselected people back to the unselected list
+        setSelectedPeople(selectedPeople.filter((p) => p.isSelected)); // Keep only selected people, i,.e isSelected is true
+    }
 
   return (
     open && (
@@ -44,14 +57,14 @@ function AddChatModal({ open, onClose, userID }) {
                     <input
                         type="text"
                         value={searchInput}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={handleSearchInput}
                         placeholder="Search"
                         className="flex-grow bg-transparent outline-none text-gray-200 placeholder-gray-200"
                     />
                         <BsSearch className="text-gray-200" />
                     </div>
                     {/* Selected People Section */}
-                    {selectedPeople.length > 0 && (
+                    {false && (
                     <div className="relative flex items-center mb-4 pl-4 pr-4">
                         {/* Left Scroll Button */}
                         <button
@@ -118,7 +131,7 @@ function AddChatModal({ open, onClose, userID }) {
                             <input
                                 type="checkbox"
                                 onChange={() => handleSelectPerson(person)}
-                                checked={true}
+                                checked={person.isSelected}
                                 className="ml-auto w-5 h-5 cursor-pointer"
                             />
                         </label>
