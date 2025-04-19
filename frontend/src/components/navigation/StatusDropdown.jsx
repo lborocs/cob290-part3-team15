@@ -1,5 +1,7 @@
 import DropdownItem from "../other/DropdownItem";
 import { useEffect, useRef } from "react";
+import { getSocket } from '../../socket';
+
 function statusDropdown({onClose, refs, floatingStyles, floatingProps}) {
     const dropdownRef = useRef(null); // Reference to the dropdown element
 
@@ -24,22 +26,41 @@ function statusDropdown({onClose, refs, floatingStyles, floatingProps}) {
         };
     }, [onClose, refs]);*/
 
-    const handleOnline = () => {
-        console.log('Online clicked'); // Placeholder for online status action
+    const handleOnline = async() => {
+        const socket = getSocket();
+        socket.emit('updateStatus', 'Online');
         onClose();
     }
 
-    const handleInvisible = () => {
-        console.log('Invisible clicked'); // Placeholder for invisible status action
+    const handleInvisible = async() => {
+        const socket = getSocket();
+        socket.emit('updateStatus', 'Invisible');
+
         onClose();
     }
 
-    const items = ['Online', 'Invisible'];
+    const handleDND = async() => {
+        const socket = getSocket();
+        socket.emit('updateStatus', 'DND');
 
-    const componentsFunctions = [handleOnline, handleInvisible]
+        onClose();
+    }
+
+    const handleAway = async() => {
+        const socket = getSocket();
+        socket.emit('updateStatus', 'Away');
+
+        onClose();
+    }
+
+    const items = ['Online','Away','Do Not Disturb' ,'Invisible'];
+
+    const componentsFunctions = [handleOnline,handleAway,handleDND,handleInvisible]
 
     const icons = [
         <div className={`w-4 h-4 rounded-full border-2 border-blackFaded bg-green-400`}></div>,
+        <div className={`w-4 h-4 rounded-full border-2 border-blackFaded bg-yellow-500`}></div>,
+        <div className={`w-4 h-4 rounded-full border-2 border-blackFaded bg-red-400`}></div>,
         <div className={`w-4 h-4 rounded-full border-2 border-blackFaded bg-gray-400`}></div>
     ]
 

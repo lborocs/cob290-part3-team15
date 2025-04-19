@@ -49,9 +49,10 @@ function AnalyticsLanding({ user }) {
       // Setup listeners early, before any emit
       if (socket) {
           socket.on('selfStatus', (data) => {
-              setPersonalStatus(data?.status);
+            if (!data || Object.keys(data).length === 0) return;
+            setPersonalStatus(data?.status);
           });
-          socket.emit('requestStatus', userID);
+        socket.emit('requestStatus');
       }
       return () => {
           socket.off('selfStatus');

@@ -5,8 +5,8 @@ const URL = "/socket.io";
 let socket = null
 
 export const connectSocket = () => {
-    const accessToken = localStorage.getItem('accessToken');
     if (!socket) {
+        const accessToken = localStorage.getItem('accessToken');
         socket = io({auth: {token: accessToken},path:"/socket.io"});
         console.log("Socket connected on /chat");
     }

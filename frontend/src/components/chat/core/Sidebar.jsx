@@ -8,7 +8,7 @@ import CreateChat from '../CreateChat.jsx';
 import ProfileCard from '../../accounts/ProfileCard.jsx';
 import LeaveDropdown from '../LeaveDropdown.jsx';
 
-const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,containerRef}) => {
+const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpdate,containerRef}) => {
 
   const [chats,setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -75,7 +75,25 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,container
   useEffect(()=>{
     getChats();
   }, [refresh])
-  
+
+  //Status Update
+  useEffect(()=>{
+    if (!statusUpdate) return;
+    if (!statusUpdate?.target || !statusUpdate?.status) return;
+    const idToFind= statusUpdate?.target; 
+    const newStatus= statusUpdate?.status;
+    setChats((prevChats) => {
+      return prevChats.map(chat => {
+        // key is id-direct_messages
+        if (chat.target === idToFind && chat.type === "direct_messages") {
+          return { ...chat, status: newStatus };
+        }
+        else{console.log(chat.target ,"-", chat.type, " ", idToFind,"-", "direct_messages")}
+        return chat;
+      });
+    });
+  }, [statusUpdate])
+
   //Anti Right Click for dropdown
 
   // Close dropdown when clicking outside of it
