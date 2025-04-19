@@ -68,13 +68,13 @@ function AddChatModal({ open, onClose, userID }) {
                                 type="checkbox"
                                 checked={selectedPeople.some((p) => p.id === person.id)}
                                 onChange={() => handleSelectPerson(person)}
-                                className="ml-auto"
+                                className="ml-auto w-5 h-5 cursor-pointer"
                             />
                         </div>
                     ))}
                 </div>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end">  
                 <button onClick={handleSubmit} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
                     Add
                 </button>
