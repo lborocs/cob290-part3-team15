@@ -34,7 +34,7 @@ function AddChatModal({ open, onClose, userID }) {
     };
   
     const handleSubmit = () => {
-      console.log("Selected People:", selectedPeople);
+      console.log("Selected People:", selectedPeople .filter((p) => p.isSelected)); // Log only the selected people
       onClose();
     };
 
