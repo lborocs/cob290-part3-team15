@@ -150,8 +150,8 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
               </div>
               <div className="flex flex-1 flex-col justify-start h-full pl-2 relative">
                 <div className="flex flex-col w-full justify-start">
-                  <p className="font-extrabold text-text max-w-40 w-full text-[18px] text-left truncate">{chat.name}</p>
-                  <p className="font-normal text-text max-w-40 text-[16px] text-left truncate">{chat.content}</p>
+                  <p className="font-extrabold text-text group-hover:max-w-37 max-w-50 w-full text-[18px] text-left truncate">{chat.name}</p>
+                  <p className="font-normal text-text group-hover:max-w-37 max-w-50 text-[16px] text-left truncate">{chat.content}</p>
                   <p className="text-text text-sm absolute bottom-0 right-0 pr-2 pb-1 group-hover:hidden">{timeFormat(chat.timestamp)}</p>
                 </div>
               </div>
