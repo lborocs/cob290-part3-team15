@@ -152,28 +152,28 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
             query=`DELETE FROM active_chats WHERE UserID = ? AND Target = ?`;
             database.query(query, values, (err, results) => {
                 if (!err) {
-                    res.status(200).json({ success: "Person removed from active chats!" });
+                    return res.status(200).json({ success: "Person removed from active chats!" });
                 } else {
-                    res.status(400).json({ error: "Error removing chat instance" });
+                    return res.status(400).json({ error: "Error removing chat instance" });
                 }
             });
             break;
         }
         case "group_messages":{
             //Filler
-            query=`SELECT UserID from users WHERE UserID=?`;
-            values=[id]
+            query=`DELETE FROM group_users WHERE UserID=? AND GroupID=?`;
+            values=[id,target]
             database.query(query, values, (err, results) => {
                 if (!err) {
-                    res.status(200).json({ success: "Succesfully Left Group" });
+                    return res.status(200).json({ success: "Succesfully Left Group" });
                 } else {
-                    res.status(400).json({ error: "Error leaving group" });
+                    return res.status(400).json({ error: "Error leaving group" });
                 }
             });
+            break;
         }
         default:{
-            res.status(400).json({ error: "Invalid request type!" });
-            break;
+            return res.status(400).json({ error: "Invalid request type!" });
         }
     }
 
