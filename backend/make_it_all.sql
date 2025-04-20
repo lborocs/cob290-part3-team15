@@ -35,10 +35,8 @@ DROP TABLE IF EXISTS `active_chats`;
 CREATE TABLE `active_chats` (
   `UserID` int(11) NOT NULL,
   `Target` int(11) NOT NULL,
-  `Type` enum('direct_messages','group_messages') NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`UserID`,`Target`,`Type`),
-  CONSTRAINT `User is User` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE KEY `UserID` (`UserID`,`Target`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -48,12 +46,10 @@ CREATE TABLE `active_chats` (
 
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
-INSERT INTO `active_chats` VALUES (1,1,'group_messages','2025-04-13 18:06:49');
-INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-04-16 15:09:17');
-INSERT INTO `active_chats` VALUES (1,3,'direct_messages','2025-04-16 15:49:09');
-INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-04-16 15:09:17');
-INSERT INTO `active_chats` VALUES (2,1,'group_messages','2025-04-13 18:06:49');
-INSERT INTO `active_chats` VALUES (3,1,'direct_messages','2025-04-16 15:49:09');
+INSERT INTO `active_chats` VALUES (1,2,'2025-04-20 00:26:23');
+INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28');
+INSERT INTO `active_chats` VALUES (2,1,'2025-04-20 00:26:23');
+INSERT INTO `active_chats` VALUES (3,1,'2025-04-20 00:02:28');
 /*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -151,7 +147,7 @@ CREATE TABLE `group_messages` (
   KEY `Group is Group` (`GroupID`),
   CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +169,12 @@ INSERT INTO `group_messages` VALUES (10,1,1,'okay it\'s fixed now','2025-04-12 1
 INSERT INTO `group_messages` VALUES (11,1,1,'test','2025-04-12 16:34:56');
 INSERT INTO `group_messages` VALUES (12,1,1,'testerrr','2025-04-12 18:12:36');
 INSERT INTO `group_messages` VALUES (13,2,1,'fixed huh?','2025-04-12 18:53:22');
-INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here rn.','2025-04-13 09:40:43');
+INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here','2025-04-13 09:40:43');
+INSERT INTO `group_messages` VALUES (15,1,2,'Love it here','2025-04-20 00:01:36');
+INSERT INTO `group_messages` VALUES (16,1,2,'It\'s just so','2025-04-20 00:02:16');
+INSERT INTO `group_messages` VALUES (17,1,2,'Like cool','2025-04-20 00:02:24');
+INSERT INTO `group_messages` VALUES (18,1,2,'Sorry for spam','2025-04-20 00:28:48');
+INSERT INTO `group_messages` VALUES (19,1,3,'Does this work lol','2025-04-20 01:17:21');
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,8 +203,15 @@ CREATE TABLE `group_users` (
 LOCK TABLES `group_users` WRITE;
 /*!40000 ALTER TABLE `group_users` DISABLE KEYS */;
 INSERT INTO `group_users` VALUES (1,1);
+INSERT INTO `group_users` VALUES (1,2);
+INSERT INTO `group_users` VALUES (1,3);
 INSERT INTO `group_users` VALUES (2,1);
+INSERT INTO `group_users` VALUES (2,2);
+INSERT INTO `group_users` VALUES (2,3);
 INSERT INTO `group_users` VALUES (3,1);
+INSERT INTO `group_users` VALUES (3,3);
+INSERT INTO `group_users` VALUES (4,2);
+INSERT INTO `group_users` VALUES (4,3);
 /*!40000 ALTER TABLE `group_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,10 +226,11 @@ CREATE TABLE `groups` (
   `GroupID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(64) NOT NULL,
   `Owner` int(11) NOT NULL,
+  `LastUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`GroupID`),
   KEY `Group Owner` (`Owner`),
   CONSTRAINT `Group Owner` FOREIGN KEY (`Owner`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -230,7 +239,9 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'The Haters',2);
+INSERT INTO `groups` VALUES (1,'The Haters',2,'2025-04-20 00:02:24');
+INSERT INTO `groups` VALUES (2,'The Lovers',3,'2025-04-20 00:28:48');
+INSERT INTO `groups` VALUES (3,'New Group!',1,'2025-04-20 01:17:21');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -339,12 +350,12 @@ CREATE TABLE `users` (
   `Forename` varchar(64) NOT NULL,
   `Surname` varchar(64) NOT NULL,
   `Role` enum('Manager','Employee') NOT NULL DEFAULT 'Employee',
-  `Icon` blob NOT NULL DEFAULT '[default profile icon here]',
+  `Icon` blob DEFAULT NULL,
   `PasswordHash` varchar(60) NOT NULL,
   `Status` enum('Online','Offline','Invisible','DND','Away') NOT NULL DEFAULT 'Offline',
   `SavedStatus` enum('Online','DND','Away') NOT NULL DEFAULT 'Online',
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -353,9 +364,10 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Online','Online');
-INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Invisible','Online');
-INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','DND','DND');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Offline','Away');
+INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (4,'Faker','Realman','Employee','[default profile icon here]','12A','Offline','Online');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -368,4 +380,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-19  8:25:07
+-- Dump completed on 2025-04-20  2:25:11

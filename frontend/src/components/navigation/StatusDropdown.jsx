@@ -2,29 +2,7 @@ import DropdownItem from "../other/DropdownItem";
 import { useEffect, useRef } from "react";
 import { getSocket } from '../../socket';
 
-function statusDropdown({onClose, refs, floatingStyles, floatingProps}) {
-    const dropdownRef = useRef(null); // Reference to the dropdown element
-
-
-    // (Depricated, Handled with floating-ui)
-    // Close dropdown when clicking outside
-    /*
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            const isClickOnButton = refs.reference.current && refs.reference.current.contains(event.target);
-            const isClickInsideDropdown = dropdownRef.current && dropdownRef.current.contains(event.target);
-
-            if (!isClickOnButton && !isClickInsideDropdown) {
-                // Close dropdown when clicking outside
-                onClose();
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [onClose, refs]);*/
+function statusDropdown({onClose, refs, floatingStyles}) {
 
     const handleOnline = async() => {
         const socket = getSocket();
@@ -65,7 +43,7 @@ function statusDropdown({onClose, refs, floatingStyles, floatingProps}) {
     ]
 
     return(
-        <div className="w-auto absolute bg-white rounded-lg p-2 z-50 border border-gray-300" ref={refs.setFloating} style={floatingStyles} {...floatingProps}>
+        <div className="w-auto absolute bg-white rounded-lg p-2 z-50 border border-gray-300" ref={refs.setFloating} style={floatingStyles} >
                 {/* Goes through each item in the list and maps items to a key value*/}
                 {items.map((item, index) => (
                     <DropdownItem 
