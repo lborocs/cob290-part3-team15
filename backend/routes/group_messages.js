@@ -67,8 +67,6 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
     //Group Membership / Refresh information
     const groupUserQuery = "SELECT UserID FROM group_users WHERE GroupID=?"
     const groupUserQueryValues=[group]
-    const activeChatQuery = "INSERT INTO active_chats (UserID, Target, Type) VALUES (?, ?, 'group_messages') ON DUPLICATE KEY UPDATE LastUpdate = NOW();";
-    var activeChat=[]
 
     //Check If the user is allowed to send messages
     database.query(presenceQuery, presenceValues, (err, results) =>{
@@ -90,19 +88,24 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
                 //Fetch Group members to ping them for updates
                 database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
                   if (err){
-                    res.status(500).json({ error: "Failed to refresh correctly" });
+                    return res.status(500).json({ error: "Failed to refresh correctly" });
                   }
                   else if (results.length===0){
-                    res.status(403).json({ error: "Group not found or has no members" });
+                    return res.status(403).json({ error: "Group not found or has no members" });
                   }
                   else{
                     //Ping everyone in the group for updates
-                    results.forEach((row) => {
-                      activeChat = [row.UserID, group];
-                      database.query(activeChatQuery, activeChat, () => {});
-                      alertMessage(row.UserID);
+                    const timestampRefreshQuery = "UPDATE groups SET LastUpdate=NOW() WHERE GroupID=?;"
+                    const timestampRefreshValues=[group]
+                    database.query(timestampRefreshQuery,timestampRefreshValues,err=>{
+                      if (err){
+                        return res.status(500).json({ error: "Failed to refresh correctly" });
+                      }
+                      results.forEach((row) => {
+                        alertMessage(row.UserID);
+                      });
+                      res.status(200).json({ success: "Message sent successfully" });
                     });
-                    res.status(200).json({ success: "Message sent successfully" });
                   }
                 }) 
             }

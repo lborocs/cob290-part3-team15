@@ -41,7 +41,7 @@ async function setStatus(userId,status,loginAttempt) {
         expectedStatus=status;
         // Update the user's status in the database
         if (status==="Offline"){
-            query = "UPDATE users SET Status='Offline' WHERE UserID=? AND Status NOT IN ('Offline')";
+            query = "UPDATE users SET Status='Offline' WHERE UserID=? AND Status NOT IN ('Offline','Invisible')";
         }
         else if (status==="Online"){
             query = "UPDATE users SET Status='Online',SavedStatus='Online' WHERE UserID=? AND Status NOT IN ('Online')";
@@ -71,9 +71,9 @@ async function setStatus(userId,status,loginAttempt) {
             }
             if(!(currentStatus===expectedStatus)){
                 // Fetch users to alert (people who are in a chat with the user)
-                const usersToAlertQuery= "SELECT UserID FROM active_chats WHERE Target=? AND Type='direct_messages'";
-                var usersToAlert =[];
-                database.query(usersToAlertQuery, [userId], (err, results) => {
+                const usersToAlertQuery= "SELECT UserID FROM active_chats WHERE Target=?";
+                var usersToAlert =[userId];
+                database.query(usersToAlertQuery, usersToAlert, (err, results) => {
                     if (err) {
                         console.error(err);
                         return;

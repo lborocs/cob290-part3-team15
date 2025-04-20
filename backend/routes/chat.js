@@ -22,7 +22,7 @@ router.get("/getMessage",authenticateToken,(req,res) => {
 });
 
 router.get("/getChats",authenticateToken,(req,res) => {
-    const query=`SELECT 
+    /*const query=`SELECT 
                 CASE 
                     WHEN active_chats.Type = 'direct_messages' THEN CONCAT(users.Forename, ' ', users.Surname)
                     WHEN active_chats.Type = 'group_messages' THEN groups.Name
@@ -70,7 +70,58 @@ router.get("/getChats",authenticateToken,(req,res) => {
                 ON gm.GroupID = active_chats.Target 
                 AND active_chats.Type = 'group_messages'
                 AND gm.rn = 1
-            WHERE active_chats.UserID = ? ORDER BY active_chats.LastUpdate DESC`;
+            WHERE active_chats.UserID = ? ORDER BY active_chats.LastUpdate DESC`;*/
+
+
+    const query=`SELECT 
+                        CONCAT(users.Forename, ' ', users.Surname) AS name,
+                        active_chats.Target AS target,
+                        'direct_messages' AS type,
+                        users.status AS status,
+                        active_chats.LastUpdate AS timestamp,
+                        dm.Content AS content
+                    FROM active_chats
+                    LEFT JOIN users 
+                        ON users.UserID = active_chats.Target 
+                    LEFT JOIN (
+                        SELECT 
+                            dm.Content,
+                            dm.Sender,
+                            dm.Recipient,
+                            dm.Timestamp,
+                            ROW_NUMBER() OVER (
+                                PARTITION BY LEAST(dm.Sender, dm.Recipient), GREATEST(dm.Sender, dm.Recipient) 
+                                ORDER BY dm.Timestamp DESC
+                            ) AS rn
+                        FROM direct_messages dm
+                    ) AS dm 
+                        ON (
+                            (dm.Sender = active_chats.UserID AND dm.Recipient = active_chats.Target) OR 
+                            (dm.Recipient = active_chats.UserID AND dm.Sender = active_chats.Target)
+                        )
+                        AND dm.rn = 1
+                    WHERE active_chats.UserID = ? 
+
+                    UNION
+
+                    SELECT 
+                        g.Name AS name,
+                        g.GroupID AS target,
+                        'group_messages' AS type,
+                        NULL AS status,
+                        g.LastUpdate AS timestamp,
+                        gm.Content AS content
+                    FROM groups g
+                    JOIN group_users gu ON gu.GroupID = g.GroupID
+                    LEFT JOIN group_messages gm 
+                        ON gm.GroupID = g.GroupID
+                        AND gm.Timestamp = (
+                            SELECT MAX(Timestamp)
+                            FROM group_messages
+                            WHERE GroupID = g.GroupID
+                        )
+                    WHERE gu.UserID = ?
+                    ORDER BY timestamp DESC;`;
     const id = req.user.userID;
 
     //Stop bad ID's 
@@ -78,7 +129,7 @@ router.get("/getChats",authenticateToken,(req,res) => {
         return res.status(400).json({ error: "Error with login instance, please log back in!" });
     }
 
-    const values = [id];
+    const values = [id,id];
     database.query(query, values, (err, results) => {
         res.send({results: results});
     });
@@ -98,7 +149,7 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
     switch (type) {
         
         case "direct_messages":{
-            query=`DELETE FROM active_chats WHERE UserID = ? AND Target = ? AND Type = ?;`;
+            query=`DELETE FROM active_chats WHERE UserID = ? AND Target = ?`;
             database.query(query, values, (err, results) => {
                 if (!err) {
                     res.status(200).json({ success: "Person removed from active chats!" });

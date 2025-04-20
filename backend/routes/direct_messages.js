@@ -63,7 +63,7 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
     database.query(query, values, err =>{
         if (!err) {
             //Update the active chat list
-            const activeChatQuery = "INSERT INTO active_chats (UserID, Target, Type) VALUES (?, ?, 'direct_messages') ON DUPLICATE KEY UPDATE LastUpdate = NOW();";
+            const activeChatQuery = "INSERT INTO active_chats (UserID, Target) VALUES (?, ?) ON DUPLICATE KEY UPDATE LastUpdate = NOW();";
             const activeChat1 = [id, target];
             const activeChat2 = [target, id];
             database.query(activeChatQuery, activeChat1, () => {});
