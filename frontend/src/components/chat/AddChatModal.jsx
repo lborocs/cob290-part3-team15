@@ -2,6 +2,7 @@ import React, { use, useEffect, useState,useRef } from "react";
 import Modal from "../other/Modal.jsx";
 import { BsChevronLeft, BsChevronRight, BsSearch } from "react-icons/bs";
 import axios from "axios";
+import { FaUser } from "react-icons/fa";
 
 function AddChatModal({ open, onClose, userID }) {
     const [searchInput, setInput] = useState("");
@@ -10,6 +11,15 @@ function AddChatModal({ open, onClose, userID }) {
     const [people, setPeople] = useState([]); // Limited list of people
     const [fullPeopleList, setFullPeopleList] = useState([]); // Full list of people
     const searchRecords = useRef(new Map());
+
+    const colors = {
+        blue : 'bg-blue-500/60',
+        green : 'bg-green-500/60', 
+        red : 'bg-red-400/60',
+        pink : 'bg-pink-500/40', 
+        purple : 'bg-purple-500/40',
+        gray : 'bg-gray-500/70',
+    }
 
     // This function is just an if else for if the person is already selected or not, and does the opposite action
     const handleSelectPerson = (person) => {
@@ -208,8 +218,8 @@ function AddChatModal({ open, onClose, userID }) {
                             className="flex w-full items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
                         >
                             <div
-                                className={`w-8 h-8 rounded-full ${person.color} mr-4`}
-                            ></div>
+                                className={`flex flex-col w-8 h-8 rounded-full items-center ${colors[Object.keys(colors)[person.id % Object.keys(colors).length]]} mr-4`}
+                            ><FaUser className="h-full h-full text-white" /></div>
                             <span className="font-bold px-2">{person.name}</span>
                             <input
                                 type="checkbox"
@@ -233,8 +243,8 @@ function AddChatModal({ open, onClose, userID }) {
                             className="flex w-full items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
                         >
                             <div
-                                className={`w-8 h-8 rounded-full ${person.color} mr-4`}
-                            ></div>
+                                className={`flex flex-col w-8 h-8 rounded-full items-center ${colors[Object.keys(colors)[person.id % Object.keys(colors).length]]} mr-4`}
+                            ><FaUser className="h-full h-full text-white" /></div>
                             <span className="font-bold px-2">{person.name}</span>
                             <input
                                 type="checkbox"

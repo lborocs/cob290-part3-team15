@@ -161,14 +161,28 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
         }
         case "group_messages":{
             //Filler
-            query=`DELETE FROM group_users WHERE UserID=? AND GroupID=?`;
-            values=[id,target]
-            database.query(query, values, (err, results) => {
-                if (!err) {
-                    return res.status(200).json({ success: "Succesfully Left Group" });
-                } else {
-                    return res.status(400).json({ error: "Error leaving group" });
+            const groupSizeQuery=`SELECT COUNT(*) as count FROM group_users WHERE GroupID=?`;
+            database.query(groupSizeQuery, [target], (err, results) => {
+                if (err) {
+                    return res.status(500).json({ error: "Error checking group size" });
                 }
+                const groupSize = results[0].count;
+                if (groupSize <= 2) {
+                    // If the group size is 2 or less, the result would be 1 or less, so delete the group
+                    query=`DELETE FROM group_users WHERE GroupID=?`;
+                    values=[target]
+                }
+                else{
+                    query=`DELETE FROM group_users WHERE UserID=? AND GroupID=?`;
+                    values=[id,target]
+                }
+                database.query(query, values, (err, results) => {
+                    if (!err) {
+                        return res.status(200).json({ success: "Succesfully Left Group" });
+                    } else {
+                        return res.status(400).json({ error: "Error leaving group" });
+                    }
+                });
             });
             break;
         }

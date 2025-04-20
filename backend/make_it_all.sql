@@ -97,7 +97,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,8 +126,6 @@ INSERT INTO `direct_messages` VALUES (19,1,2,'test','2025-04-12 15:04:29');
 INSERT INTO `direct_messages` VALUES (20,1,2,'What are we testing again','2025-04-12 18:18:58');
 INSERT INTO `direct_messages` VALUES (21,1,2,'I\'ve reported you for fraud btw.','2025-04-12 18:54:01');
 INSERT INTO `direct_messages` VALUES (22,2,1,'oh okay nvm ;-;','2025-04-12 18:54:58');
-INSERT INTO `direct_messages` VALUES (23,1,3,'AAA','2025-04-20 00:02:28');
-INSERT INTO `direct_messages` VALUES (24,2,1,'can you go away','2025-04-20 00:26:23');
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +172,7 @@ INSERT INTO `group_messages` VALUES (13,2,1,'fixed huh?','2025-04-12 18:53:22');
 INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here','2025-04-13 09:40:43');
 INSERT INTO `group_messages` VALUES (15,1,2,'Love it here','2025-04-20 00:01:36');
 INSERT INTO `group_messages` VALUES (16,1,2,'It\'s just so','2025-04-20 00:02:16');
-INSERT INTO `group_messages` VALUES (17,1,1,'Like cool','2025-04-20 00:02:24');
+INSERT INTO `group_messages` VALUES (17,1,2,'Like cool','2025-04-20 00:02:24');
 INSERT INTO `group_messages` VALUES (18,1,2,'Sorry for spam','2025-04-20 00:28:48');
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -360,7 +358,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Online','Online');
 INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Offline','Away');
 INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','Offline','Online');
 INSERT INTO `users` VALUES (4,'Faker','Realman','Employee','[default profile icon here]','','Offline','Online');
@@ -376,4 +374,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-20  1:35:18
+-- Dump completed on 2025-04-20  1:57:28
