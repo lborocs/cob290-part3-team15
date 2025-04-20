@@ -34,6 +34,8 @@ function Chat({ user }){
 
     //Socket
     const [refresh,setRefresh] = useState(0)
+    const [newNotification,setNewNotification] = useState(0);
+    const [messagesLoaded,setMessagesLoaded]= useState(null);
     const [otherStatus,setOtherStatus] = useState(null);
     const [personalStatus,setPersonalStatus] = useState("Offline");
 
@@ -107,6 +109,10 @@ function Chat({ user }){
                 attemptToSetEditedValue(data);
             });
 
+            socket.on('notification', (data) => { 
+                attemptToSetNotification(data);
+            }); 
+
             socket.emit('requestStatus');
             
         }
@@ -116,6 +122,7 @@ function Chat({ user }){
             socket.off('otherStatus');
             socket.off('newMessage');
             socket.off('editMessage');
+            socket.off('notification');
             disconnectSocket(); //Disconnects when not on /chat or /analytics
 
         };
@@ -141,11 +148,23 @@ function Chat({ user }){
             setEditedValue(data);
     }}
 
+    const attemptToSetNotification = (data) => {
+        if (data.target===selectedIDRef.current && data.target!==null && data.type===modeRef.current){
+            console.log("HI")
+        }
+        else{
+            console.log(data)
+            console.log(selectedIDRef.current)
+            console.log(modeRef.current)
+            setNewNotification(previous => previous+1);
+        }
+    }
+
     return(
         //Full container
         <div className="flex h-screen w-screen relative">
             {/*Leftmost Sidebar (For tab switching) : Never changes */}
-            <Navbar userID = {userID} selectable={selectable} isSelected={sidebarVisible} setIsSelected={setSidebarVisible} activeTab={activeTab} status={personalStatus}/>
+            <Navbar userID = {userID} selectable={selectable} isSelected={sidebarVisible} setIsSelected={setSidebarVisible} activeTab={activeTab} status={personalStatus} newNotification={newNotification} refreshNotifications={messagesLoaded}/>
 
             {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
             <div className="flex flex-1 relative">
@@ -161,7 +180,8 @@ function Chat({ user }){
                     <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div>
                     <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} 
+                            messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
                         {editing && (
                             <div className="w-full bg-transparent text-black justify-center text-left rounded-lg px-30 z-5">

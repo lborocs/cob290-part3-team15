@@ -261,7 +261,7 @@ router.post("/createGroup",authenticateToken,(req,res) => {
                     if (err) {
                         return res.status(500).json({ error: "Error adding user to group" });
                     }
-                    alertMessage(target);
+                    alertMessage(target,groupId,`You have been added to ${name}`,'group_messages');
                     if (i === 0) {
                         return res.status(200).json({ success: "Group created successfully" });
                     }
@@ -272,7 +272,40 @@ router.post("/createGroup",authenticateToken,(req,res) => {
     });
 });
 
+router.get("/getNotifications",authenticateToken,(req,res) => {
+    //Notification is LastRead < LastUpdate
+    const query=`SELECT (
+    SELECT COUNT(*)
+    FROM direct_messages dm
+    JOIN active_chats ac 
+      ON (
+        (dm.Sender = ac.Target AND dm.Recipient = ac.UserID) 
+        OR 
+        (dm.Recipient = ac.Target AND dm.Sender = ac.UserID))
+    WHERE ac.UserID = ?
+      AND (ac.LastRead IS NULL OR dm.Timestamp > ac.LastRead)) +
+    (SELECT COUNT(*)
+    FROM group_messages gm
+    JOIN group_users gu ON gm.GroupID = gu.GroupID
+    WHERE gu.UserID = ?
+      AND (gu.LastRead IS NULL OR gm.Timestamp > gu.LastRead)
+    ) AS totalUnread;`
 
+    const id = req.user.userID;
+    //Stop bad ID's
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
+    }
+
+    const values = [id,id];
+    database.query(query, values, (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: "Error fetching notifications" });
+        }
+        const totalUnread = results[0].totalUnread;
+        res.send({results: totalUnread});
+    });
+})
 
 
 module.exports = router;

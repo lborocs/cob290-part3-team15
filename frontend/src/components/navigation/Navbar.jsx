@@ -9,7 +9,9 @@ import { LuChartNoAxesCombined } from "react-icons/lu";
 import ProfileCard from '../accounts/ProfileCard.jsx'
 import StatusDropdown from './StatusDropdown.jsx';
 
-import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate  } from '@floating-ui/react';
+import { getSocket } from '../../socket.js';
+
+import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate} from '@floating-ui/react';
 
 const Tab = (props) => {
     const handleNavigate = () => {
@@ -27,6 +29,9 @@ const Tab = (props) => {
         onClick={(e) => handleNavigate(props.label)}>
             {props.icon}
             <p className="absolute w-full bottom-[6px]">{props.label}</p>
+            {props.notificationCount > 0 && props.label=="Chat" && (
+                <div className={`absolute top-1 right-0 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white ${ props.notificationCount<99? "text-[12px]" : "text-[9px]"}`}>{ props.notificationCount<99? props.notificationCount : "99+"}</div>
+            )}
         </button>
     )
 }
@@ -36,6 +41,7 @@ const Navbar = (props) => {
     const navigate=useNavigate();
     const [id, setID]= useState(0);
     const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+    const [notificationCount, setNotificationCount] = useState(0);
 
     const Tabs=[
         {Label:"Chat",Icon:<MdOutlineChat className="flex flex-1 w-full h-7 mb-2"/>,link:"/chat/",index:1},
@@ -60,6 +66,36 @@ const Navbar = (props) => {
         onOpenChange: setShowStatusDropdown,
 
     });
+
+    const getNotifications = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const headers = {headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}`}};
+            const response = await axios.get(`/api/chat/getNotifications`, headers);
+            if (response?.data?.results) {
+                setNotificationCount(response.data.results);
+            } else {
+                setNotificationCount(0);
+            }
+        } catch (error) {
+            setNotificationCount(0);
+        }
+    }
+
+
+
+    useEffect(() => {
+        getNotifications();
+    }, []);
+
+    useEffect(() => {
+        setNotificationCount(prev => prev + 1)
+    }, [props.newNotification]);
+
+    useEffect(() => {
+        getNotifications();
+    }, [props.refreshNotifications]);
+
 
     const dismiss = useDismiss(context, {outsidePressEvent: "mousedown",});
 
@@ -91,7 +127,8 @@ const Navbar = (props) => {
                             selectable={props.selectable} 
                             isSelected={props.isSelected} 
                             setIsSelected={props.setIsSelected} 
-                            isActive={props.activeTab===tab.Label}/>
+                            isActive={props.activeTab===tab.Label}
+                            notificationCount={tab.Label=="Chat"?notificationCount:0}/>
                         </div>
                     ))}
                 </div>

@@ -30,10 +30,11 @@ const removeUser = (socketId) => {
 };
 
 // Ping a user on all active devices
-const alertMessage = (userId) => {
+const alertMessage = (userId,target,message,type) => {
+    notificationAlert(userId,target,message,type);
     if (connectedClients[userId]) {
         connectedClients[userId].forEach(socketId => {
-            io.to(socketId).emit('newMessage', { message: `Pinged user ${userId}!` });
+            io.to(socketId).emit('newMessage', {message:"New Message!"});
         });
         console.log(`Pinged user ${userId} on ${connectedClients[userId].length} devices.`);
     } else {
@@ -64,6 +65,14 @@ const selfStatusAlert = (userId,status) => {
         console.log(`User ${userId} is not connected.`);
     }
 };
+
+const notificationAlert = (userId,target,message,type) => {
+    if (connectedClients[userId]) {
+        connectedClients[userId].forEach(socketId => {
+            io.to(socketId).emit('notification', { message: message, target:target, type:type });
+        });
+    }
+} 
 
 // Ping all users who know the user about their status (Cross-client)
 const otherStatusAlert = (userId,usersToPing,status)=> {

@@ -2,7 +2,7 @@ import Message from "../Message";
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 
-function MessageList({userID, selectedID, mode, refresh, messageContainerRef, setEditing, setEditingMessage, editingMessage, editedValue}) {
+function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,messageContainerRef, setEditing, setEditingMessage, editingMessage, editedValue}) {
   const [messages, setMessages] = useState([]);
 
   const boundaryRef = useRef(null); 
@@ -14,6 +14,7 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
 
       const response = await axios.get(`/api/chat/${mode}/getMessages?target=${selectedID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
       if (response?.data?.results){
+        setMessagesLoaded(Date.now());
         // Hide name if back-to-back messages are from the same user
         const messagesWithShowName = response.data.results.map((message, index, arr) => {
           const showName = (index === 0 || message.user !== arr[index - 1].user || message.user === userID);

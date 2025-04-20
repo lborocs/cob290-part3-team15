@@ -23,6 +23,9 @@ function Analytics({ user }) {
 
     const [selectedProject, setSelectedProject] = useState({ title: 'Overview' });
 
+    //Socket
+    const [newNotification,setNewNotification] = useState(0)
+
     const [projects, setProjects] = useState([
         { id: 1, title: 'Project Alpha', description: 'A project focused on alpha testing new features.' },
         { id: 2, title: 'Beta Build', description: 'A beta version of our upcoming product release.' },
@@ -72,21 +75,25 @@ function Analytics({ user }) {
       const socket = getSocket();
       // Setup listeners early, before any emit
       if (socket) {
-          socket.on('selfStatus', (data) => {
+        socket.on('selfStatus', (data) => {
             if (!data || Object.keys(data).length === 0) return;
             setPersonalStatus(data?.status);
-          });
+        });
+        socket.on('notification', (data) => { 
+            setNewNotification(previous => previous+1);
+        }); 
         socket.emit('requestStatus');
       }
       return () => {
           socket.off('selfStatus');
+          socket.off('notification');
           disconnectSocket(); //Disconnects when not on /chat or /analytics
       };
   }, []);
 
     return (
       <div className="flex h-screen w-screen">
-        <Navbar userID = {userID} selectable={selectable} isSelected={null} setIsSelected={null} activeTab={activeTab} status={personalStatus}/>
+        <Navbar userID = {userID} selectable={selectable} isSelected={null} setIsSelected={null} activeTab={activeTab} status={personalStatus} newNotification={newNotification}/>
       <div className="grid grid-cols-12 grid-rows-7 gap-4  h-screen w-screen bg-primary overflow-y-hidden overflow-x-hidden">
           <WelcomeMessage
               userName={user.name}
