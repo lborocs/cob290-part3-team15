@@ -145,7 +145,7 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
         return res.status(400).json({ error: "Error with login instance, please log back in!" });
     }
 
-    var values = [id,target,type];
+    var values = [id,target];
     switch (type) {
         
         case "direct_messages":{
@@ -174,7 +174,6 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
                 }
                 else{
                     query=`DELETE FROM group_users WHERE UserID=? AND GroupID=?`;
-                    values=[id,target]
                 }
                 database.query(query, values, (err, results) => {
                     if (!err) {
@@ -239,7 +238,6 @@ router.get("/getPeople",authenticateToken,(req,res) => {
 router.post("/createGroup",authenticateToken,(req,res) => {
     const createGroup = "INSERT INTO groups (Name,Owner) VALUES (?,?)";
     const addUser = "INSERT INTO group_users (GroupID,UserID) VALUES (?,?)";
-    const addActiveChat = "INSERT INTO active_chats (UserID, Target, Type) VALUES (?, ?, 'group_messages') ON DUPLICATE KEY UPDATE LastUpdate = NOW();";
     const id = req.user.userID;
     const targets = req.body.targets;
     const name = req.body.name;
@@ -263,19 +261,10 @@ router.post("/createGroup",authenticateToken,(req,res) => {
                     if (err) {
                         return res.status(500).json({ error: "Error adding user to group" });
                     }
-
-                    //Add all new users to active chats
-                    const addActiveChatValues = [target, groupId];
-                    database.query(addActiveChat, addActiveChatValues, (err) => {
-                        if (err) {
-                            return res.status(500).json({ error: "Error adding user to active chats" });
-                        }
-                        //Alert all users in the group about the new group
-                        alertMessage(target);
-                        if (i === 0) {
-                            return res.status(200).json({ success: "Group created successfully" });
-                        }
-                    });
+                    alertMessage(target);
+                    if (i === 0) {
+                        return res.status(200).json({ success: "Group created successfully" });
+                    }
                 });
             }
         }

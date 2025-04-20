@@ -147,7 +147,7 @@ CREATE TABLE `group_messages` (
   KEY `Group is Group` (`GroupID`),
   CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,6 +174,7 @@ INSERT INTO `group_messages` VALUES (15,1,2,'Love it here','2025-04-20 00:01:36'
 INSERT INTO `group_messages` VALUES (16,1,2,'It\'s just so','2025-04-20 00:02:16');
 INSERT INTO `group_messages` VALUES (17,1,2,'Like cool','2025-04-20 00:02:24');
 INSERT INTO `group_messages` VALUES (18,1,2,'Sorry for spam','2025-04-20 00:28:48');
+INSERT INTO `group_messages` VALUES (19,1,3,'Does this work lol','2025-04-20 01:17:21');
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -203,10 +204,14 @@ LOCK TABLES `group_users` WRITE;
 /*!40000 ALTER TABLE `group_users` DISABLE KEYS */;
 INSERT INTO `group_users` VALUES (1,1);
 INSERT INTO `group_users` VALUES (1,2);
+INSERT INTO `group_users` VALUES (1,3);
 INSERT INTO `group_users` VALUES (2,1);
 INSERT INTO `group_users` VALUES (2,2);
+INSERT INTO `group_users` VALUES (2,3);
 INSERT INTO `group_users` VALUES (3,1);
+INSERT INTO `group_users` VALUES (3,3);
 INSERT INTO `group_users` VALUES (4,2);
+INSERT INTO `group_users` VALUES (4,3);
 /*!40000 ALTER TABLE `group_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -225,7 +230,7 @@ CREATE TABLE `groups` (
   PRIMARY KEY (`GroupID`),
   KEY `Group Owner` (`Owner`),
   CONSTRAINT `Group Owner` FOREIGN KEY (`Owner`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -236,6 +241,7 @@ LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
 INSERT INTO `groups` VALUES (1,'The Haters',2,'2025-04-20 00:02:24');
 INSERT INTO `groups` VALUES (2,'The Lovers',3,'2025-04-20 00:28:48');
+INSERT INTO `groups` VALUES (3,'New Group!',1,'2025-04-20 01:17:21');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -358,10 +364,10 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Online','Online');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Offline','Online');
 INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Offline','Away');
 INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','Offline','Online');
-INSERT INTO `users` VALUES (4,'Faker','Realman','Employee','[default profile icon here]','','Offline','Online');
+INSERT INTO `users` VALUES (4,'Faker','Realman','Employee','[default profile icon here]','12A','Offline','Online');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -374,4 +380,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-20  1:57:28
+-- Dump completed on 2025-04-20  2:25:11
