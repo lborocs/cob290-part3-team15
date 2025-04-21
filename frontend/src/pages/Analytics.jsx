@@ -23,10 +23,7 @@ function Analytics({ user }) {
     const [selectedProject, setSelectedProject] = useState({ title: 'Overview' });
 
     const [projects, setProjects] = useState([
-        { id: 1, title: 'Project Alpha', description: 'A project focused on alpha testing new features.' },
-        { id: 2, title: 'Beta Build', description: 'A beta version of our upcoming product release.' },
-        { id: 3, title: 'Gamma Initiative', description: 'An initiative to explore gamma ray applications.' },
-        { id: 4, title: 'Delta Task', description: 'A task force dedicated to delta process improvements.' },
+        { id: 1, title: 'Project Alpha', description: 'A project focused on alpha testing new features.' }
     ]);
 
     const [statistics, setStatistics] = useState([
@@ -41,12 +38,14 @@ function Analytics({ user }) {
 
     useEffect(() => {
 
-        // Check if the user leads any projects on page load
-        async function fetchLeader() {
+
+        async function analyticsOnLoad() {
+
             try {
                 const accessToken = localStorage.getItem('accessToken');
 
-                const response = await axios.get(`/api/analytics/getUserLedProjects?target=${user.userID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+                // Check if the user leads any projects on page load
+                let response = await axios.get(`/api/analytics/getUserLedProjects?target=${user.userID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
                 if (response?.data?.results) {
                     // Set role to team leader if the user leads any projects
                     if (response.data.results.length !== 0) {
@@ -56,12 +55,26 @@ function Analytics({ user }) {
                         setRoleLabel(user.role);
                     }
                 }
+
+
+
+                // Get projects on page load
+                let filter = "all"
+
+                if (user.role !== "Manager") {
+                    filter = user.userID;
+                }
+
+                response = await axios.get(`/api/analytics/getProjects?filter=${filter}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+                if (response?.data?.results) {
+                    setProjects(response.data.results);
+                }
             }
-            catch {
-                // Empty as we log errors in the request response
+            catch (error) {
+                console.log(error);
             }
         }
-        fetchLeader();
+        analyticsOnLoad();
 
         // TODO: Remove below test function once actual stats are implemented
         // Test function to demonstrate working user and project contribution API requests
