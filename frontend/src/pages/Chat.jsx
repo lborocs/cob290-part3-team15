@@ -12,6 +12,7 @@ import MessageBox from '../components/chat/core/MessageBox.jsx';
 import Sidebar from '../components/chat/core/Sidebar.jsx';
 import Navbar from '../components/navigation/Navbar.jsx';
 import Auth from "../components/login/Auth.jsx";
+import Header from '../components/chat/MessageHeader.jsx';
 
 function Chat({ user }){
     const messageContainerRef = useRef(null);
@@ -31,6 +32,7 @@ function Chat({ user }){
     //Sidebar
     const containerRef = useRef(null);
 
+    const [chatName, setName] = useState('');
 
     //Socket
     const [refresh,setRefresh] = useState(0)
@@ -171,13 +173,14 @@ function Chat({ user }){
                 {sidebarVisible ? 
                 <div className={`flex flex-col h-full fixed lg:static bg-backgroundOrange sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`} onContextMenu={HandleRightClick} ref={containerRef}> 
                     {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
-                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} statusUpdate={otherStatus} containerRef={containerRef}/>
+                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} statusUpdate={otherStatus} containerRef={containerRef} setName={setName}/>
                 </div>
                 :<></>}
                 
                 {/*Main Chat Area*/}
                 <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative`} onContextMenu={HandleRightClick}>
-                    <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div>
+                    {/* <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div> */}
+                    <Header name={chatName} mode={mode} selectedID={selectedID} />
                     <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} 
