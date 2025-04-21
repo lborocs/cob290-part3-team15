@@ -242,10 +242,10 @@ DROP TABLE IF EXISTS `project_users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `project_users` (
   `ProjectID` int(11) NOT NULL,
-  `AssigneeID` int(11) NOT NULL,
-  PRIMARY KEY (`ProjectID`,`AssigneeID`),
-  KEY `AssigneeUserID` (`AssigneeID`),
-  CONSTRAINT `AssigneeUserID` FOREIGN KEY (`AssigneeID`) REFERENCES `users` (`UserID`),
+  `UserID` int(11) NOT NULL,
+  PRIMARY KEY (`ProjectID`,`UserID`),
+  KEY `AssigneeUserID` (`UserID`),
+  CONSTRAINT `AssigneeUserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`),
   CONSTRAINT `UserProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `projects` (`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -258,6 +258,16 @@ LOCK TABLES `project_users` WRITE;
 /*!40000 ALTER TABLE `project_users` DISABLE KEYS */;
 INSERT INTO `project_users` VALUES (1,1);
 INSERT INTO `project_users` VALUES (1,3);
+INSERT INTO `project_users` VALUES (2,1);
+INSERT INTO `project_users` VALUES (2,9);
+INSERT INTO `project_users` VALUES (2,10);
+INSERT INTO `project_users` VALUES (3,1);
+INSERT INTO `project_users` VALUES (3,3);
+INSERT INTO `project_users` VALUES (3,12);
+INSERT INTO `project_users` VALUES (4,3);
+INSERT INTO `project_users` VALUES (4,7);
+INSERT INTO `project_users` VALUES (4,8);
+INSERT INTO `project_users` VALUES (4,11);
 /*!40000 ALTER TABLE `project_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -275,6 +285,7 @@ CREATE TABLE `projects` (
   `Priority` enum('Low','Medium','High') DEFAULT NULL,
   `StartDate` date DEFAULT NULL,
   `Deadline` date DEFAULT NULL,
+  `Description` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`ProjectID`),
   KEY `LeaderID` (`LeaderID`),
   CONSTRAINT `LeaderID` FOREIGN KEY (`LeaderID`) REFERENCES `users` (`UserID`)
@@ -287,10 +298,10 @@ CREATE TABLE `projects` (
 
 LOCK TABLES `projects` WRITE;
 /*!40000 ALTER TABLE `projects` DISABLE KEYS */;
-INSERT INTO `projects` VALUES (1,3,'Project Alpha','High','2025-04-12','2025-08-18');
-INSERT INTO `projects` VALUES (2,10,'Project Beta','Medium','2025-02-08','2025-12-11');
-INSERT INTO `projects` VALUES (3,12,'Project Gamma','Low','2025-04-21','2025-05-07');
-INSERT INTO `projects` VALUES (4,7,'Project Delta','Medium','2025-06-12','2025-09-18');
+INSERT INTO `projects` VALUES (1,3,'Project Alpha','High','2025-04-12','2025-08-18','A project focused on alpha testing new features.');
+INSERT INTO `projects` VALUES (2,10,'Project Beta','Medium','2025-02-08','2025-12-11','A beta version of our upcoming product release.');
+INSERT INTO `projects` VALUES (3,12,'Project Gamma','Low','2025-04-21','2025-05-07','An initiative to explore gamma ray applications.');
+INSERT INTO `projects` VALUES (4,7,'Project Delta','Medium','2025-06-12','2025-09-18','A task force dedicated to delta process improvements.');
 /*!40000 ALTER TABLE `projects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -341,7 +352,7 @@ INSERT INTO `tasks` VALUES (12,3,1,'Gamma Task 4','Not Started','Low',2,'2025-04
 INSERT INTO `tasks` VALUES (13,4,3,'Delta Task 1','Not Started','High',30,'2025-06-26',NULL,'2025-03-21');
 INSERT INTO `tasks` VALUES (14,4,3,'Delta Task 2','Not Started','Medium',12,'2025-04-30','2025-04-21','2025-04-11');
 INSERT INTO `tasks` VALUES (15,4,11,'Delta Task 3','Not Started','Low',20,'2025-06-18',NULL,'2025-04-21');
-INSERT INTO `tasks` VALUES (16,4,7,'Delta Task 4','Not Started','Medium',15,'2025-07-10',NULL,'2025-05-15');
+INSERT INTO `tasks` VALUES (16,4,8,'Delta Task 4','Not Started','Medium',15,'2025-07-10',NULL,'2025-05-15');
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -392,4 +403,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-21 15:02:31
+-- Dump completed on 2025-04-21 15:29:40
