@@ -15,7 +15,6 @@ import StatisticsFieldBottom from "../components/analytics/StatisticsFieldBottom
 
 function Analytics({ user }) {
     const navigate = useNavigate();
-    const userID = user.userID;
     const [roleLabel, setRoleLabel] = useState("Employee");
     const selectable = false;
     const activeTab="Analytics";
@@ -47,7 +46,7 @@ function Analytics({ user }) {
             try {
                 const accessToken = localStorage.getItem('accessToken');
 
-                const response = await axios.get(`/api/analytics/getLedProjects`, {headers: { Authorization: `Bearer ${accessToken}` }});
+                const response = await axios.get(`/api/analytics/getUserLedProjects?target=${user.userID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
                 if (response?.data?.results) {
                     // Set role to team leader if the user leads any projects
                     if (response.data.results.length !== 0) {
@@ -70,11 +69,14 @@ function Analytics({ user }) {
             try {
                 const accessToken = localStorage.getItem('accessToken');
 
-                let userHourArr = []
-                let projectHourArr = []
-                let scopeHourArr = []
+                let userHourArr = [];
+                let projectHourArr = [];
+                let scopeHourArr = [];
 
-                // Get the user and project hours in the past 4 weeks
+                // Get tasks assigned to user
+                const tasksResponse = await axios.get(`/api/analytics/getUserTasks?target=${user.userID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+
+                // Get user, project, scope hours in the past 4 weeks
                 for (let weeksAgo=3; weeksAgo>=0; weeksAgo--) {
                     const userResponse = await axios.get(`/api/analytics/getUserWeeklyHours?target=${user.userID}&week=${weeksAgo}`, {headers: { Authorization: `Bearer ${accessToken}` }});
                     if (userResponse?.data?.results) {
@@ -90,16 +92,19 @@ function Analytics({ user }) {
                     }
                 }
 
-                console.log("User hours")
-                console.log(userHourArr)
-                console.log("Project hours")
-                console.log(projectHourArr)
-                console.log("Scope hours")
-                console.log(scopeHourArr)
-
+                if (tasksResponse?.data?.results) {
+                    console.log("User tasks");
+                    console.log(tasksResponse.data.results);
+                }
+                console.log("User hours");
+                console.log(userHourArr);
+                console.log("Project hours");
+                console.log(projectHourArr);
+                console.log("Scope hours");
+                console.log(scopeHourArr);
             }
             catch (error) {
-                console.log(error)
+                console.log(error);
             }
         }
         fetchContribution();
@@ -111,7 +116,7 @@ function Analytics({ user }) {
             socket.on('selfStatus', (data) => {
               setPersonalStatus(data?.status);
             });
-            socket.emit('requestStatus', userID);
+            socket.emit('requestStatus', user.userID);
         }
         return () => {
             socket.off('selfStatus');
@@ -121,7 +126,7 @@ function Analytics({ user }) {
 
     return (
       <div className="flex h-screen w-screen">
-        <Navbar userID = {userID} selectable={selectable} isSelected={null} setIsSelected={null} activeTab={activeTab} status={personalStatus}/>
+        <Navbar userID = {user.userID} selectable={selectable} isSelected={null} setIsSelected={null} activeTab={activeTab} status={personalStatus}/>
           <div className="grid grid-cols-12 grid-rows-7 gap-4  h-screen w-screen bg-primary overflow-y-hidden overflow-x-hidden">
               <WelcomeMessage
                   userName={user.name}
