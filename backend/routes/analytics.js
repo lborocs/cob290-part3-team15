@@ -5,6 +5,22 @@ const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
 
+// Get the full details of all projects or all projects assigned to a user
+router.get("/getProjects",authenticateToken,(req,res) => {
+    let query=`SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description' FROM projects as p`;
+    const filter = req.query.filter;
+    let values = [];
+
+    if (filter !== "all") {
+        query += ` WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID=? AND pu.ProjectID=p.ProjectID)`;
+        values = [filter];
+    }
+
+    database.query(query, values, (err, results) => {
+        res.send({results: results});
+    });
+});
+
 // Get the IDs of all projects led by a user
 router.get("/getUserLedProjects",authenticateToken,(req,res) => {
     const query=`SELECT ProjectID FROM projects WHERE projects.LeaderID=?`;
