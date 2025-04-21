@@ -308,12 +308,13 @@ CREATE TABLE `tasks` (
   `HoursRequired` int(11) DEFAULT NULL,
   `Deadline` date DEFAULT NULL,
   `CompletionDate` date DEFAULT NULL,
+  `CreationDate` date NOT NULL DEFAULT curdate(),
   PRIMARY KEY (`TaskID`),
   KEY `AssigneeID` (`AssigneeID`),
   KEY `ProjectID` (`ProjectID`),
   CONSTRAINT `AssigneeID` FOREIGN KEY (`AssigneeID`) REFERENCES `users` (`UserID`),
   CONSTRAINT `ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `projects` (`ProjectID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -322,9 +323,10 @@ CREATE TABLE `tasks` (
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-INSERT INTO `tasks` VALUES (1,1,3,'Boomstick Procurement','Completed','High',20,'2025-04-19','2025-04-12');
-INSERT INTO `tasks` VALUES (2,1,1,'Polish Boomsticks','Not Started','Medium',10,'2025-04-22',NULL);
-INSERT INTO `tasks` VALUES (3,1,3,'test','Completed','Low',50,'2025-04-19','2025-04-02');
+INSERT INTO `tasks` VALUES (1,1,3,'Boomstick Procurement','Completed','High',20,'2025-04-19','2025-04-12','2025-04-01');
+INSERT INTO `tasks` VALUES (2,1,1,'Polish Boomsticks','Not Started','Medium',10,'2025-04-22',NULL,'2025-04-01');
+INSERT INTO `tasks` VALUES (3,1,3,'test','Completed','Low',50,'2025-04-19','2025-04-02','2025-04-01');
+INSERT INTO `tasks` VALUES (4,1,1,'test2','Completed','Medium',15,'2025-04-24','2025-04-18','2025-04-16');
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -353,9 +355,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Offline');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Online');
 INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Invisible');
-INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','Online');
+INSERT INTO `users` VALUES (3,'Bill','Boomstick','Employee','[default profile icon here]','ABC123BCA!!!','Offline');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -368,4 +370,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-16 19:10:44
+-- Dump completed on 2025-04-21 14:03:36

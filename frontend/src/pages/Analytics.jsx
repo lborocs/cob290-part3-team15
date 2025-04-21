@@ -56,32 +56,47 @@ function Analytics({ user }) {
                     else {
                         setRoleLabel(user.role);
                     }
-                    comsole.log("role")
                 }
             }
-            catch (error) {
+            catch {
                 // Empty as we log errors in the request response
             }
         }
         fetchLeader();
 
-        // TODO: Remove this test function once actual stats are implemented
-        // Test function to demonstrate working user contribution API request
+        // TODO: Remove below test function once actual stats are implemented
+        // Test function to demonstrate working user and project contribution API requests
         async function fetchContribution() {
             try {
                 const accessToken = localStorage.getItem('accessToken');
 
-                let hourArr = []
+                let userHourArr = []
+                let projectHourArr = []
+                let scopeHourArr = []
 
-                // Get the user's hours in the past 4 weeks
-                for (let i=0; i<4; i++) {
-                    const response = await axios.get(`/api/analytics/getUserWeeklyHours?target=${user.userID}&week=${i}`, {headers: { Authorization: `Bearer ${accessToken}` }});
-                    if (response?.data?.results) {
-                        hourArr.push(response.data.results[0].hours)
+                // Get the user and project hours in the past 4 weeks
+                for (let weeksAgo=3; weeksAgo>=0; weeksAgo--) {
+                    const userResponse = await axios.get(`/api/analytics/getUserWeeklyHours?target=${user.userID}&week=${weeksAgo}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+                    if (userResponse?.data?.results) {
+                        userHourArr.push(userResponse.data.results[0].hours)
+                    }
+                    const projectResponse = await axios.get(`/api/analytics/getProjectWeeklyHours?target=1&week=${weeksAgo}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+                    if (projectResponse?.data?.results) {
+                        projectHourArr.push(projectResponse.data.results[0].hours)
+                    }
+                    const scopeResponse = await axios.get(`/api/analytics/getProjectWeeklyScope?target=1&week=${weeksAgo}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+                    if (scopeResponse?.data?.results) {
+                        scopeHourArr.push(scopeResponse.data.results[0].hours)
                     }
                 }
 
-                console.log(hourArr)
+                console.log("User hours")
+                console.log(userHourArr)
+                console.log("Project hours")
+                console.log(projectHourArr)
+                console.log("Scope hours")
+                console.log(scopeHourArr)
+
             }
             catch (error) {
                 console.log(error)
