@@ -127,13 +127,13 @@ function Analytics({ user }) {
     return (
       <div className="flex h-screen w-screen">
         <Navbar userID = {user.userID} selectable={selectable} isSelected={null} setIsSelected={null} activeTab={activeTab} status={personalStatus}/>
-          <div className="grid grid-cols-12 grid-rows-7 gap-4  h-screen w-screen bg-primary overflow-y-hidden overflow-x-hidden">
+          <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
               <WelcomeMessage
                   userName={user.name}
                   roleLabel={roleLabel}
               />
 
-              <div className="col-span-4 row-start-1 col-start-6 self-end text-start text-2xl font-bold test-text flex items-center justify-between">
+              <div className="lg:col-span-4 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-between">
                   <span>{selectedProject.title}</span>
                   {selectedProject.title !== 'Overview' && (
                       <button
@@ -145,8 +145,8 @@ function Analytics({ user }) {
                   )}
               </div>
 
-              <div className="col-start-2 row-start-3 col-span-4">
-                  <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="col-start-2 row-start-3 col-span-4 w-full">
+                  <div className="grid grid-cols-3 gap-4 mt-4 w-full">
                       {statistics.map(stat => (
                           <QuickStatistics
                               key={stat.id}
@@ -160,13 +160,23 @@ function Analytics({ user }) {
               <SearchBox
                   projects={projects}
                   onProjectSelect={handleProjectSelect}
-                  className="col-start-2 row-start-3"
               />
 
-              <div className="col-start-6 row-start-2 col-span-6 row-span-5 rounded-3xl grid grid-cols-6 grid-rows-4 gap-4">
-                  <StatisticsFieldCarousel />
-                  <TasksList />
-                  <StatisticsFieldBottom />
+              <div className="lg:col-start-6 lg:row-start-2 lg:col-span-6 lg:row-span-5 rounded-3xl lg:grid lg:grid-cols-6 lg:grid-rows-4 flex flex-col gap-4 w-full">
+                {/*Is this hacky? Absolutely, does it make more sense on mobile to see tasks first? Absolutely. */}
+                  {window.innerWidth >= 1024 ? (
+                      <>
+                        <TasksList />
+                        <StatisticsFieldCarousel />
+                        <StatisticsFieldBottom />
+                      </>
+                  ) : (
+                      <>
+                        <StatisticsFieldCarousel />
+                        <TasksList />
+                        <StatisticsFieldBottom />
+                      </>
+                  )}
               </div>
           </div>
       </div>
