@@ -177,19 +177,11 @@ function Analytics({ user }) {
 
               <div className="lg:col-start-6 lg:row-start-2 lg:col-span-6 lg:row-span-5 rounded-3xl lg:grid lg:grid-cols-6 lg:grid-rows-4 flex flex-col gap-4 w-full">
                 {/*Is this hacky? Absolutely, does it make more sense on mobile to see tasks first? Absolutely. */}
-                  {window.innerWidth >= 1024 ? (
-                      <>
-                        <TasksList />
-                        <StatisticsFieldCarousel />
-                        <StatisticsFieldBottom />
-                      </>
-                  ) : (
-                      <>
-                        <StatisticsFieldCarousel />
-                        <TasksList />
-                        <StatisticsFieldBottom />
-                      </>
-                  )}
+                <>
+                    <StatisticsFieldCarousel />
+                    <TasksList />
+                    <StatisticsFieldBottom />
+                </>
               </div>
           </div>
       </div>

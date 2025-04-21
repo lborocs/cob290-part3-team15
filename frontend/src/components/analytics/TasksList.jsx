@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import TaskCard from './TaskCard';
 
 function TasksList() {
   const [tasks] = useState([
@@ -33,11 +34,7 @@ function TasksList() {
     new Date(a.dueDate) - new Date(b.dueDate)
   );
 
-  const priorityClasses = {
-    high: 'bg-red-100 text-red-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    low: 'bg-green-100 text-green-800'
-  };
+  
 
   return (
     <div className='flex flex-col p-6 bg-secondary/40 rounded-3xl col-span-2 row-span-4'>
@@ -61,22 +58,7 @@ function TasksList() {
       <div className="flex flex-col gap-3 overflow-y-auto flex-grow pb-1 scroll-pb-3">
         {sortedTasks.length > 0 ? (
           sortedTasks.map(task => (
-            <div key={task.id} className="p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h4 className="font-medium text-sm text-gray-900">{task.title}</h4>
-                  <p className="text-xs text-gray-600">{task.project}</p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className={`px-2 py-1 text-xs rounded-full ${priorityClasses[task.priority]}`}>
-                    {task.priority}
-                  </span>
-                  <span className="text-xs text-gray-600 mt-1">
-                    Due: {new Date(task.dueDate).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </div>
+            <TaskCard task={task}/>
           ))
         ) : (
           <p className="text-gray-500 text-center py-4">No tasks found</p>
