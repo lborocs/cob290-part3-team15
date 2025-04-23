@@ -2,6 +2,7 @@ import MessageOptions from './MessageOptions.jsx';
 import { useState } from 'react';
 import ChatDropdown from './ChatDropdown.jsx';
 import { useFloating, offset, flip, shift } from '@floating-ui/react';
+import HideMessageModal from './HideMessageModal.jsx';
 
 function Content({ message }) {
   return (
@@ -17,6 +18,8 @@ function Content({ message }) {
 function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, refs, floatingStyles}) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
+  const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the modal
+  const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
   const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
       SetisHovered(true)
@@ -24,6 +27,16 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
     else if (e.type === 'mouseleave'){
       SetisHovered(false)
     }
+  };
+
+  const openHideModal = () => {
+    setMessageToHide(message); // Set the message to be hidden
+    setIsHideModalOpen(true); // Open the modal
+  };
+
+  const closeHideModal = () => {
+    setMessageToHide(null); // Clear the message
+    setIsHideModalOpen(false); // Close the modal
   };
 
   //Anti Right Click
@@ -62,9 +75,19 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
           setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
           refs={refs} 
           floatingStyles={floatingStyles}
+          openHideModal={openHideModal} // Pass the openHideModal function to the dropdown
         />
       )}
-      
+      {
+        isHideModalOpen && (
+        <HideMessageModal
+          open={isHideModalOpen}
+          onClose={closeHideModal}
+          message={messageToHide}
+        />
+        )
+      }
+        
     </div>
   )
 }

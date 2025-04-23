@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { BsClipboard2Fill } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";
 import { BsFillTrashFill } from "react-icons/bs";
-function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMessage,refs,floatingStyles }) {
+function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMessage,refs,floatingStyles, openHideModal }) {
     const dropdownRef = useRef(null); // Reference to the dropdown element
 
     // Close dropdown when clicking outside
@@ -33,8 +33,7 @@ function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMess
     }
     
     const handleDeleteMessage = () => {
-      // Put function to delete message here
-      console.log('Delete message clicked'); 
+      openHideModal(); // Open the hide message modal 
       onClose(); // Close the dropdown when delete message is clicked
     }
     // List parameters to be passed to the DropdownList component
