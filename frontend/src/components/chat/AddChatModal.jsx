@@ -7,6 +7,7 @@ import { FaUser } from "react-icons/fa";
 function AddChatModal({ open, onClose, userID }) {
     const [searchInput, setInput] = useState("");
     const [selectedPeople, setSelectedPeople] = useState([]);
+    const [isGroupMode, setIsGroupMode] = useState(false); // State to track if group mode is enabled
 
     const [people, setPeople] = useState([]); // Limited list of people
     const [fullPeopleList, setFullPeopleList] = useState([]); // Full list of people
@@ -138,7 +139,73 @@ function AddChatModal({ open, onClose, userID }) {
     }, [open]);
 
   return (
-    open && (
+    <>
+    {/* If the modal is open and group mode is disabled, i.e initially, show this modal */}
+    {!isGroupMode && (
+        <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-8 w-xl" accentColor="bg-orangeHover">
+            {/* Header */}
+            <h3 className="text-2xl font-bold text-text mb-4 text-left w-full select-none">{"Add Person"}</h3>
+
+            <div className="py-8 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
+                <div className="w-full px-8">
+                    {/* Search Bar */}
+                    <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
+                    <input
+                        type="text"
+                        value={searchInput}
+                        onChange={handleSearchInput}
+                        placeholder="Search"
+                        className="flex-grow bg-transparent outline-none text-gray-200 placeholder-gray-200"
+                    />
+                        <BsSearch className="text-gray-200" />
+                    </div>
+                </div>
+
+                {/* List of people */}
+                
+                <div className="space-y-2 px-8 w-full max-h-40 overflow-y-auto">
+                {/* For Selected People / Top Half */}
+                {selectedPeople
+                    .map((person) => (
+                        <label
+                            key={person.id}
+                            className="flex w-full items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
+                            onClick={() => console.log(person.name)}
+                        >
+                            <div
+                                className={`flex flex-col w-8 h-8 rounded-full items-center ${colors[Object.keys(colors)[person.id % Object.keys(colors).length]]} mr-4`}
+                            ><FaUser className="h-full h-full text-white" /></div>
+                            <span className="font-bold px-2">{person.name}</span>
+                        </label>
+                    ))}
+                {/* For Unselected People / Bottom Half */}
+                {people
+                    .filter((person) => 
+                        !selectedPeople.some((p) => p.id === person.id) // Filter out selected people
+                    )
+                    .filter((person) =>
+                        person.name.toLowerCase().includes(searchInput.toLowerCase())
+                    )
+                    .map((person) => (
+                        <label
+                            key={person.id}
+                            className="flex w-full items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
+                            onClick={() => console.log(person.name)}
+                        >
+                            <div
+                                className={`flex flex-col w-8 h-8 rounded-full items-center ${colors[Object.keys(colors)[person.id % Object.keys(colors).length]]} mr-4`}
+                            ><FaUser className="h-full h-full text-white" /></div>
+                            <span className="font-bold px-2">{person.name}</span>
+                        </label>
+                    ))}
+                </div>
+            </div>
+        </Modal>
+    )}
+        
+
+    {/* If the modal is open and group mode is enabled, show this modal */}
+    {open && isGroupMode && (
         <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-8 w-xl" accentColor="bg-orangeHover">
             {/* Header */}
             <h3 className="text-2xl font-bold text-text mb-4 text-left w-full select-none">{selectedPeople.filter(p => p.isSelected).length > 1 ? "Add Group" : "Add Person"}</h3>
@@ -156,56 +223,6 @@ function AddChatModal({ open, onClose, userID }) {
                     />
                         <BsSearch className="text-gray-200" />
                     </div>
-                    {/* Selected People Section */}
-                    {false && (
-                    <div className="relative flex items-center mb-4 pl-4 pr-4">
-                        {/* Left Scroll Button */}
-                        <button
-                            onClick={() => {
-                                const container = document.getElementById("selected-people-container");
-                                container.scrollLeft -= 150;
-                            }}
-                            className="absolute left-0 text-black"
-                        >
-                            <BsChevronLeft />
-                        </button>
-
-                        {/* Selected People Container */}
-                        <div
-                            id="selected-people-container"
-                            className="flex flex-nowrap items-center overflow-hidden"
-                        >
-                            {selectedPeople.map((person) => (
-                                <div
-                                    key={person.id}
-                                    className="flex flex-nowrap whitespace-nowrap bg-orangeHover text-text px-3 py-1 rounded-full shadow-sm"
-                                >
-                                    <span className="mr-2 flex flex-nowrap">{person.name}</span>
-                                    <button
-                                        onClick={() => {
-                                            setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id))
-                                            }
-                                        }
-                                        className="text-gray-500 hover:text-red-700 font-bold"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Right Scroll Button */}
-                        <button
-                            onClick={() => {
-                                const container = document.getElementById("selected-people-container");
-                                container.scrollLeft += 150;
-                            }}
-                            className="absolute right-0 text-black"
-                        >
-                            <BsChevronRight />
-                        </button>
-                    </div>
-                    )}
                 </div>
                 {/* List of people */}
                 
@@ -262,7 +279,8 @@ function AddChatModal({ open, onClose, userID }) {
                 </button>
             </div>
         </Modal>
-    )
+    )}
+    </>
   );
 }
 
