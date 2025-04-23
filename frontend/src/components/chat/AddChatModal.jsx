@@ -143,10 +143,10 @@ function AddChatModal({ open, onClose, userID }) {
     {/* If the modal is open and group mode is disabled, i.e initially, show this modal */}
     {open && !isGroupMode && (
         <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-3 px-3 w-xl" accentColor="bg-orangeHover">
-            {/* Header */}
-            <h3 className="text-2xl font-bold text-text mb-3 text-left w-full select-none">Add Person</h3>
-
-            <div className="py-5 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
+            <div className="pt-5"></div>
+            <div className="py-3 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
+                {/* Header */}
+                <h3 className="px-4 text-2xl font-bold text-text mb-3 text-left w-full select-none">Add Person</h3>
                 <div className="w-full px-4">
                     {/* Search Bar */}
                     <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
@@ -200,8 +200,8 @@ function AddChatModal({ open, onClose, userID }) {
                     ))}
                 </div>
             </div>
-            <div className="flex items-center justify-center">  
-                <button onClick={() => setIsGroupMode(true)} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
+            <div className="flex items-center justify-center w-full">  
+                <button onClick={() => setIsGroupMode(true)} className=" w-[40%] mt-4 px-2 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
                     Create group
                 </button>
             </div>
@@ -212,10 +212,11 @@ function AddChatModal({ open, onClose, userID }) {
     {/* If the modal is open and group mode is enabled, show this modal */}
     {open && isGroupMode && (
         <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-3 px-3 w-xl" accentColor="bg-orangeHover">
-            {/* Header */}
-            <h3 className="text-2xl font-bold text-text mb-3 text-left w-full select-none">{selectedPeople.filter(p => p.isSelected).length > 1 ? "Create Group" : "Add People"}</h3>
+            <div className="pt-5"></div>
+            <div className="py-3 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
+                {/* Header */}
+                <h3 className="px-4 text-2xl font-bold text-text mb-3 text-left w-full select-none">Add People</h3>
 
-            <div className="py-5 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
                 <div className="w-full px-4">
                     {/* Search Bar */}
                     <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
@@ -278,18 +279,18 @@ function AddChatModal({ open, onClose, userID }) {
                     ))}
                 </div>
             </div>
-            <span className="flex justify-between">
+            <span className="flex justify-between w-full">
                 {/* Back Button */}
-                <div className="flex justify-start">
+                <div className="flex justify-start w-[40%]">
                     <button
                         onClick={() => setIsGroupMode(false)} // Switch back to DM layer
-                        className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg"
+                        className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full"
                     >
                         Back
                     </button>
                 </div>
-                <div className="flex justify-end">  
-                    <button onClick={handleSubmit} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
+                <div className="flex justify-end w-[40%]">  
+                    <button onClick={handleSubmit} className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full">
                         {selectedPeople.filter(p => p.isSelected).length > 1 ? "Create Group" : "Start Chat"}
                     </button>
                 </div>
