@@ -141,13 +141,13 @@ function AddChatModal({ open, onClose, userID }) {
   return (
     <>
     {/* If the modal is open and group mode is disabled, i.e initially, show this modal */}
-    {!isGroupMode && (
-        <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-8 w-xl" accentColor="bg-orangeHover">
+    {open && !isGroupMode && (
+        <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-3 px-3 w-xl" accentColor="bg-orangeHover">
             {/* Header */}
-            <h3 className="text-2xl font-bold text-text mb-4 text-left w-full select-none">{"Add Person"}</h3>
+            <h3 className="text-2xl font-bold text-text mb-3 text-left w-full select-none">Add Person</h3>
 
-            <div className="py-8 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
-                <div className="w-full px-8">
+            <div className="py-5 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
+                <div className="w-full px-4">
                     {/* Search Bar */}
                     <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
                     <input
@@ -163,7 +163,7 @@ function AddChatModal({ open, onClose, userID }) {
 
                 {/* List of people */}
                 
-                <div className="space-y-2 px-8 w-full max-h-40 overflow-y-auto">
+                <div className="space-y-2 px-4 w-full max-h-40 overflow-y-auto">
                 {/* For Selected People / Top Half */}
                 {selectedPeople
                     .map((person) => (
@@ -211,12 +211,12 @@ function AddChatModal({ open, onClose, userID }) {
 
     {/* If the modal is open and group mode is enabled, show this modal */}
     {open && isGroupMode && (
-        <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-8 w-xl" accentColor="bg-orangeHover">
+        <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-3 px-3 w-xl" accentColor="bg-orangeHover">
             {/* Header */}
-            <h3 className="text-2xl font-bold text-text mb-4 text-left w-full select-none">{selectedPeople.filter(p => p.isSelected).length > 1 ? "Add Group" : "Add Person"}</h3>
+            <h3 className="text-2xl font-bold text-text mb-3 text-left w-full select-none">{selectedPeople.filter(p => p.isSelected).length > 1 ? "Create Group" : "Add People"}</h3>
 
-            <div className="py-8 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
-                <div className="w-full px-8">
+            <div className="py-5 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
+                <div className="w-full px-4">
                     {/* Search Bar */}
                     <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
                     <input
@@ -231,7 +231,7 @@ function AddChatModal({ open, onClose, userID }) {
                 </div>
                 {/* List of people */}
                 
-                <div className="space-y-2 px-8 w-full max-h-40 overflow-y-auto">
+                <div className="space-y-2 px-4 w-full max-h-40 overflow-y-auto">
                 {/* For Selected People / Top Half */}
                 {selectedPeople
                     .map((person) => (
@@ -290,7 +290,7 @@ function AddChatModal({ open, onClose, userID }) {
                 </div>
                 <div className="flex justify-end">  
                     <button onClick={handleSubmit} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
-                        Add
+                        {selectedPeople.filter(p => p.isSelected).length > 1 ? "Create Group" : "Start Chat"}
                     </button>
                 </div>
             </span>
