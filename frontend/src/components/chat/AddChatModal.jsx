@@ -200,6 +200,11 @@ function AddChatModal({ open, onClose, userID }) {
                     ))}
                 </div>
             </div>
+            <div className="flex justify-end">  
+                <button onClick={() => setIsGroupMode(true)} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
+                    New group
+                </button>
+            </div>
         </Modal>
     )}
         
@@ -273,11 +278,22 @@ function AddChatModal({ open, onClose, userID }) {
                     ))}
                 </div>
             </div>
-            <div className="flex justify-end">  
-                <button onClick={handleSubmit} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
-                    Add
-                </button>
-            </div>
+            <span className="flex justify-between">
+                {/* Back Button */}
+                <div className="flex justify-start">
+                    <button
+                        onClick={() => setIsGroupMode(false)} // Switch back to DM layer
+                        className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg"
+                    >
+                        Back
+                    </button>
+                </div>
+                <div className="flex justify-end">  
+                    <button onClick={handleSubmit} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
+                        Add
+                    </button>
+                </div>
+            </span>
         </Modal>
     )}
     </>
