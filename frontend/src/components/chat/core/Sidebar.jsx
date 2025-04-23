@@ -7,12 +7,14 @@ import { FaSearch } from "react-icons/fa";
 import CreateChat from '../CreateChat.jsx';
 import ProfileCard from '../../accounts/ProfileCard.jsx';
 import LeaveDropdown from '../LeaveDropdown.jsx';
-
+import LeaveModal from '../LeaveModal.jsx';
 const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpdate,containerRef}) => {
 
   const [chats,setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [dropdownChat, setDropdownChat] = useState(null); // Stores the chat for the dropdown
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [chatToLeave, setChatToLeave] = useState(null); // Stores the chat to leave
   const filteredChats = chats.filter(chat =>
     chat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -158,13 +160,17 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
             </button>
 
             {/*Hover stuff*/}
-            <button className="flex h-full w-10 text-text justify-center hidden group-hover:block items-center" onClick={() => {deleteChat(chat.target,chat.type)}}><MdClose className="w-8 h-8"/></button>
+            <button className="flex h-full w-10 text-text justify-center hidden group-hover:block items-center" onClick={() => {setChatToLeave (chat); setShowLeaveModal(true);}}><MdClose className="w-8 h-8"/></button>
             {dropdownChat?.target == chat.target && dropdownChat?.type == chat.type && ( // Dropdown menu for right click options
-              <LeaveDropdown onClose={closeDropdown} leaveFunction={() => {deleteChat(chat.target,chat.type)}} position={dropdownChat.position}/>
+              <LeaveDropdown onClose={closeDropdown} leaveFunction={() => {deleteChat(chat.target,chat.type)}} position={dropdownChat.position} setShowLeaveModal={setShowLeaveModal}/>
+              
             )}
           </div>
         ))}
       </div>
+      {showLeaveModal && chatToLeave && ( // Leave chat modal
+        <LeaveModal open={showLeaveModal} onClose={() => {setShowLeaveModal(false); setChatToLeave(null)}} leaveFunction={() => {deleteChat(chatToLeave.target,chatToLeave.type)}} closeDropdown={closeDropdown}/>
+      )}
 
       <div className="flex flex-col mt-4"></div> {/*Bottom Area, basically just padding atp*/}
     </>
