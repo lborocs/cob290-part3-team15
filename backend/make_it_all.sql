@@ -47,7 +47,6 @@ CREATE TABLE `active_chats` (
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
 INSERT INTO `active_chats` VALUES (1,2,'2025-04-20 00:26:23');
-INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28');
 INSERT INTO `active_chats` VALUES (2,1,'2025-04-20 00:26:23');
 INSERT INTO `active_chats` VALUES (3,1,'2025-04-20 00:02:28');
 /*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
@@ -380,4 +379,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-23 20:55:47
+-- Dump completed on 2025-04-23 21:12:45

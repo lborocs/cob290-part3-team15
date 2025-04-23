@@ -200,9 +200,9 @@ function AddChatModal({ open, onClose, userID }) {
                     ))}
                 </div>
             </div>
-            <div className="flex justify-end">  
+            <div className="flex items-center justify-center">  
                 <button onClick={() => setIsGroupMode(true)} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
-                    New group
+                    Create group
                 </button>
             </div>
         </Modal>
