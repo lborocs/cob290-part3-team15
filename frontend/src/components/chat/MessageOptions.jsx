@@ -6,7 +6,7 @@ function MessageOptions({sentByUser, isHoveredComment, message, setEditing, setE
     
     const HandleMouseEnterEdit = () => {
         SetIsHoveredEdit(true); // Sets hover state to true when mouse enters
-      };
+    };
     
     const HandleMouseLeaveEdit = () => {
         SetIsHoveredEdit(false); // Opposite of the above
@@ -14,10 +14,6 @@ function MessageOptions({sentByUser, isHoveredComment, message, setEditing, setE
 
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
-      };
-
-    const closeDropdown = () => {
-        setIsDropdownOpen(false); // Close the dropdown
     };
 
     return (
