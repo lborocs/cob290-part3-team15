@@ -1,5 +1,5 @@
 import MessageOptions from './MessageOptions.jsx';
-import { useState } from 'react';
+import { use, useRef, useState, useEffect } from 'react';
 import ChatDropdown from './ChatDropdown.jsx';
 import { useFloating, offset, flip, shift } from '@floating-ui/react';
 import HideMessageModal from './HideMessageModal.jsx';
@@ -15,11 +15,12 @@ function Content({ message }) {
   );
 }
 
-function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, refs, floatingStyles}) {
+function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, refs, floatingStyles, isDropdownOpen, toggleDropdown }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
   const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the modal
   const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
+  const dropdownRef = useRef(null); // Reference for dropdown
+
   const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
       SetisHovered(true)
@@ -42,13 +43,33 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   //Anti Right Click
   const HandleRightClick = (event) => {
     event.preventDefault();
-    setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
+    // Stop the propagation so mousedown doesn't interfere
+    event.stopPropagation();
+    toggleDropdown();
   };
 
-  // Close dropdown when clicking outside of it
   const closeDropdown = () => { // Copied from message options
-    setIsDropdownOpen(false); // Close the dropdown
+    toggleDropdown(); // Close the dropdown
   };
+  
+  // Close dropdown when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+       if (event.button == 2) return; // Ignore right click
+
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setTimeout(() => {
+          closeDropdown();
+        }, 10); // Call the onClose function to close the dropdown
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isDropdownOpen]);
+  
+
   
   //console.log("Editing Message ID:", editingMessage?.messageID);
   return(
@@ -61,12 +82,13 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
           message={message} // Pass the message to the options
           setEditing={setEditing} // Pass the setMessage function to the options
           setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
-          setIsDropdownOpen={setIsDropdownOpen}
+          setIsDropdownOpen={toggleDropdown}
           />
         )}
         <Content message={message}/>
       </div>
       {isDropdownOpen && ( // Dropdown menu for right click options
+        <span ref={dropdownRef}>
         <ChatDropdown
           sentByUser={true}
           onClose = {closeDropdown}
@@ -77,6 +99,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
           floatingStyles={floatingStyles}
           openHideModal={openHideModal} // Pass the openHideModal function to the dropdown
         />
+        </span>
       )}
       {
         isHideModalOpen && (
@@ -92,9 +115,9 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   )
 }
 
-function OtherMessage({ message, refs, floatingStyles }) {
+function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDropdown }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Default is not open and checks if the dropdown is open
+  const dropdownRef = useRef(null); // Reference for dropdown
   const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
       SetisHovered(true)
@@ -107,13 +130,26 @@ function OtherMessage({ message, refs, floatingStyles }) {
   //Anti Right Click
   const HandleRightClick = (event) => {
     event.preventDefault();
-    setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility, i.e from open to close and vice versa
+    toggleDropdown();
   };
 
   // Close dropdown when clicking outside of it
-  const closeDropdown = () => { // Copied from message options
-    setIsDropdownOpen(false); // Close the dropdown
+  const closeDropdown = () => {
+    toggleDropdown();
   };
+
+  // Close dropdown when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        closeDropdown(); // Call the onClose function to close the dropdown
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, []);
 
   return(
     <div className="max-w-3/4 text-base font-medium self-start relative">
@@ -130,22 +166,24 @@ function OtherMessage({ message, refs, floatingStyles }) {
             message={message} // Pass the message to the options
             setEditing={null}
             setEditingMessage={null}
-            setIsDropdownOpen={setIsDropdownOpen}
+            setIsDropdownOpen={toggleDropdown}
             />
           )}
           <Content message={message}/>
         </div>
       </div>
       {isDropdownOpen && ( // Dropdown menu for right click options
-        <ChatDropdown
-        sentByUser={false}
-        onClose = {closeDropdown}
-        message={message} // Pass the message to the dropdown
-        setEditing={null}
-        setEditingMessage={null} // Pass the setMessage function to the options
-        refs={refs}
-        floatingStyles={floatingStyles}
-      />
+        <span ref={dropdownRef}>
+          <ChatDropdown
+          sentByUser={false}
+          onClose = {closeDropdown}
+          message={message} // Pass the message to the dropdown
+          setEditing={null}
+          setEditingMessage={null} // Pass the setMessage function to the options
+          refs={refs}
+          floatingStyles={floatingStyles}
+          />
+        </span>
       )}
     </div>
   )
@@ -156,7 +194,7 @@ function OtherMessage({ message, refs, floatingStyles }) {
 
 
 
-function Message({ messageContent , userID , mode, setEditing, setEditingMessage, editingMessage, boundaryRef }) {
+function Message({ messageContent , userID , mode, setEditing, setEditingMessage, editingMessage, boundaryRef, isDropdownOpen, toggleDropdown}) {
   //const [message,setMessage]=useState(messageContent);
 
   //Refs for modal handling
@@ -170,8 +208,8 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
     <>
       {sentByUser ? 
       <SelfMessage message={messageContent} mode={mode} 
-      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} refs={refs} floatingStyles={floatingStyles}/> 
-      : <OtherMessage message={messageContent} refs={refs} floatingStyles={floatingStyles}/>}
+      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} refs={refs} floatingStyles={floatingStyles} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown}/> 
+      : <OtherMessage message={messageContent} refs={refs} floatingStyles={floatingStyles} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown}/>}
     </>
   );
 }
