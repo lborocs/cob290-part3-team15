@@ -125,7 +125,8 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
 }
 
 function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDropdown }) {
-  const [isHovered, SetisHovered] = useState(false); // Default is not hovered
+  const [isHovered, SetisHovered] = useState(false); // Default is not hovered]
+  const messageRef = useRef(null); // Reference to the message element
   const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
       SetisHovered(true)
@@ -138,7 +139,13 @@ function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDro
   //Anti Right Click
   const HandleRightClick = (event) => {
     event.preventDefault();
-    toggleDropdown();
+    // Stop the propagation so mousedown doesn't interfere
+    event.stopPropagation();
+    if (isDropdownOpen) {
+      toggleDropdown(null); // Close the dropdown
+    } else {
+      toggleDropdown(message.messageID); // Open the dropdown for this message
+    }
   };
 
   // Set up floating ui
@@ -153,12 +160,24 @@ function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDro
     open: isDropdownOpen,
     onOpenChange: (open) => {
       if (!open) {
-        toggleDropdown(); // Close the dropdown when open changes to false
+        toggleDropdown(null); // Close the dropdown when open changes to false
       }
     },
   }); 
 
-  useDismiss(context, {outsidePressEvent: "mousedown"});
+  useDismiss(context, {
+    outsidePressEvent: "mousedown",
+    referencePress: false, // Prevent closing when clicking on the reference element
+    bubbles: true, // Allow the event to bubble up to the parent elements
+    outsidePress: (event) => {
+      // If it's a right-click on the message element, don't close the dropdown
+      if (event.button === 2 && messageRef.current && messageRef.current.contains(event.target)) {
+        return false; // Returning false prevents the dropdown from closing
+      }
+      return true; // All other clicks should close the dropdown
+    }
+  }
+  );
 
   return(
     <div className="max-w-3/4 text-base font-medium self-start relative">
@@ -167,7 +186,7 @@ function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDro
         <p className="text-text">{message.name}</p>
       </div>
       }
-      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`} onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={refs.setReference}>
+      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`} onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={(node) => {messageRef.current = node; if (refs.setReference){refs.setReference(node)};}}>
         <div className="text-left flex flex-col text-pretty break-all">
           {isHovered && (
             <MessageOptions sentByUser={false} 
@@ -184,7 +203,7 @@ function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDro
       {isDropdownOpen && ( // Dropdown menu for right click options
         <ChatDropdown
         sentByUser={false}
-        onClose = {()=> toggleDropdown()}
+        onClose = {()=> toggleDropdown(null)}
         message={message} // Pass the message to the dropdown
         setEditing={null}
         setEditingMessage={null} // Pass the setMessage function to the options
