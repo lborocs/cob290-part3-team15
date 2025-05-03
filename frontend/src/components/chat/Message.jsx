@@ -82,6 +82,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
     outsidePressEvent: "mousedown",
     referencePress: false, // Prevent closing when clicking on the reference element
     bubbles: true, // Allow the event to bubble up to the parent elements
+    trees: true, // Allow the event to bubble up to the parent elements
     outsidePress: (event) => {
       // If it's a right-click on the message element, don't close the dropdown
       if (event.button === 2 && messageRef.current && messageRef.current.contains(event.target)) {
@@ -89,8 +90,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
       }
       return true; // All other clicks should close the dropdown
     }
-  }
-  );
+  });
   
   return(
     <div className="flex flex-col w-full ">
@@ -132,8 +132,8 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
             message={message} // Pass the message to the dropdown
             setEditing={setEditing}
             setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
-            refs={refs} 
-            floatingStyles={floatingStyles}
+            refs={dropdownRefs} 
+            floatingStyles={dropdownStyles}
             openHideModal={openHideModal} // Pass the openHideModal function to the dropdown
           />
         )}
@@ -185,36 +185,36 @@ function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDro
     }
   };
 
-  // Set up floating ui
-  const { refs: dropdownRefs, floatingStyles: dropdownStyles, context } = useFloating({
-    middleware: [
-      offset(10), 
-      flip(),         
-      shift()
-    ],
-    placement: "bottom-end",
-    whileElementsMounted: autoUpdate,
-    open: isDropdownOpen,
-    onOpenChange: (open) => {
-      if (!open) {
-        toggleDropdown(null); // Close the dropdown when open changes to false
-      }
-    },
-  }); 
-
-  useDismiss(context, {
-    outsidePressEvent: "mousedown",
-    referencePress: false, // Prevent closing when clicking on the reference element
-    bubbles: true, // Allow the event to bubble up to the parent elements
-    outsidePress: (event) => {
-      // If it's a right-click on the message element, don't close the dropdown
-      if (event.button === 2 && messageRef.current && messageRef.current.contains(event.target)) {
-        return false; // Returning false prevents the dropdown from closing
-      }
-      return true; // All other clicks should close the dropdown
+ // Set up floating ui
+ const { refs: dropdownRefs, floatingStyles: dropdownStyles, context } = useFloating({
+  middleware: [
+    offset(10), 
+    flip(),         
+    shift()
+  ],
+  placement: "bottom-end",
+  whileElementsMounted: autoUpdate,
+  open: isDropdownOpen,
+  onOpenChange: (open) => {
+    if (!open) {
+      toggleDropdown(null); // Close the dropdown when open changes to false
     }
+  },
+}); 
+
+useDismiss(context, {
+  outsidePressEvent: "mousedown",
+  referencePress: false, // Prevent closing when clicking on the reference element
+  bubbles: true, // Allow the event to bubble up to the parent elements
+  trees: true, // Allow the event to bubble up to the parent elements
+  outsidePress: (event) => {
+    // If it's a right-click on the message element, don't close the dropdown
+    if (event.button === 2 && messageRef.current && messageRef.current.contains(event.target)) {
+      return false; // Returning false prevents the dropdown from closing
+    }
+    return true; // All other clicks should close the dropdown
   }
-  );
+  });
 
   return(
     <div className="flex flex-col w-full ">
@@ -256,8 +256,8 @@ function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDro
           message={message} // Pass the message to the dropdown
           setEditing={null}
           setEditingMessage={null} // Pass the setMessage function to the options
-          refs={refs}
-          floatingStyles={floatingStyles}
+          refs={dropdownRefs}
+          floatingStyles={dropdownStyles}
           />
         )}
       </div>
