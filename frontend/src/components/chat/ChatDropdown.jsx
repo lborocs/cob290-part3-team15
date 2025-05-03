@@ -38,7 +38,7 @@ function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMess
 
     return (
         <>
-          <DropdownList items={items} onClick={componentsFunctions} icons={icons} refs={refs} floatingStyles={floatingStyles}/>
+          <DropdownList items={items} onClick={componentsFunctions} icons={icons} refs={refs} floatingStyles={floatingStyles} blurBackground={true}/>
         </>
     );
 }
