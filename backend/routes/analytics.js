@@ -6,20 +6,114 @@ const {authenticateToken} = require("../exports/authenticate");
 router.use(express.json()) // for parsing 'application/json'
 
 // Get the full details of all projects or all projects assigned to a user
-router.get("/getProjects",authenticateToken,(req,res) => {
+router.get("/getOverview",authenticateToken,(req,res) => {
+
+    // fist get the projects
     let query=`SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description' FROM projects as p`;
     const filter = req.query.filter;
     let values = [];
-
+    // if the user is not a manager, we need to filter the projects by the user
     if (filter !== "all") {
         query += ` WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID=? AND pu.ProjectID=p.ProjectID)`;
         values = [filter];
     }
 
-    database.query(query, values, (err, results) => {
-        res.send({results: results});
-    });
+    // second query to get the employees on all of the projects, and if again the user is not a manager, we need to filter the employees by which projects the user is on
+    const queryEmployees = `SELECT u.UserID as 'id', u.Forename as 'forename', u.Surname as 'surname'
+                            FROM project_users as pu
+                            INNER JOIN users as u ON pu.UserID = u.UserID
+                            WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID=? AND pu.ProjectID=pu.ProjectID)`;
+    const valuesEmployees = [filter];
+    // if the user is a manager, we need to get all of the employees on all of the projects
+    if (filter === "all") {
+        queryEmployees += ` WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.ProjectID=p.ProjectID)`;
+    
+    }
+    // get all the tasks for all of the projects the user is on, again, if they are a manager, get all the tasks for all the projects
+    const queryTasks = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline'
+                        FROM tasks as t 
+                        WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID=? AND pu.ProjectID=t.ProjectID)`;
+    const valuesTasks = [filter];
+    // if the user is a manager, we need to get all of the tasks for all of the projects
+    if (filter === "all") {
+        queryTasks += ` WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.ProjectID=p.ProjectID)`;
+    }
+
+    database.query(query, values, (err, projectResults) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching projects" });
+        }
+
+        database.query(queryEmployees, valuesEmployees, (err, employeeResults) => {
+            if (err) {
+                return res.status(500).send({ error: "Error fetching employees" });
+            }
+
+            database.query(queryTasks, valuesTasks, (err, taskResults) => {
+                if (err) {
+                    return res.status(500).send({ error: "Error fetching tasks" });
+                }
+
+                res.send({
+                    projects: projectResults,
+                    employees: employeeResults,
+                    tasks: taskResults,
+                });
+            });
+        });
+    }
+    );
 });
+
+
+// this gets the details of the selected project
+router.get("/getProjectDetails", authenticateToken, (req, res) => {
+    const title = req.query.title;
+    if (!title) {
+        return res.status(400).send({ error: "Title parameter is required" });
+    }
+
+    const query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description' FROM projects as p WHERE p.Title=?`;
+    const values = [title];
+
+    database.query(query, values, (err, projectResults) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching project details" });
+        }
+        if (projectResults.length === 0) {
+            return res.status(404).send({ error: "Project not found" });
+        }
+
+        const projectId = projectResults[0].id;
+
+        // Query to get tasks for the project
+        const queryTasks = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline' FROM tasks as t WHERE t.ProjectID=?`;
+
+        // Query to get employees on the project
+        const queryEmployees = `SELECT u.UserID as 'id', u.Forename as 'forename', u.Surname as 'surname' 
+                                FROM project_users as pu 
+                                INNER JOIN users as u ON pu.UserID = u.UserID 
+                                WHERE pu.ProjectID=?`;
+
+        database.query(queryTasks, [projectId], (err, taskResults) => {
+            if (err) {
+                return res.status(500).send({ error: "Error fetching tasks" });
+            }
+
+            database.query(queryEmployees, [projectId], (err, employeeResults) => {
+                if (err) {
+                    return res.status(500).send({ error: "Error fetching employees" });
+                }
+
+                res.send({
+                    project: projectResults[0],
+                    tasks: taskResults,
+                    employees: employeeResults,
+                });
+            });
+        });
+    });
+}); 
 
 // Get the IDs of all projects led by a user
 router.get("/getUserLedProjects",authenticateToken,(req,res) => {

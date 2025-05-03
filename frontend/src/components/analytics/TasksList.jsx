@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 import TaskCard from './TaskCard';
 
-function TasksList() {
-  const [tasks] = useState([
-    { id: 1, title: 'Create tasks component', dueDate: '2025-03-31', priority: 'high', project: 'Add extra info' },
-    { id: 2, title: 'Add to tasks component', dueDate: '2025-04-16', priority: 'high', project: 'Add extra info' },
-    { id: 3, title: 'Add a filter', dueDate: '2025-04-18', priority: 'medium', project: 'Add extra info' },
-    { id: 4, title: 'Filter by priority', dueDate: '2025-04-20', priority: 'low', project: 'Add extra info' },
-    { id: 5, title: 'Todo employee page', dueDate: '2025-05-22', priority: 'medium', project: 'Add extra info' },
-    { id: 6, title: 'wewee', dueDate: '2025-05-20', priority: 'medium', project: 'Add extra info' },
-    { id: 7, title: 'Fwqhwe', dueDate: '2025-05-20', priority: 'low', project: 'Add extra info' },
-    { id: 8, title: 'wawwaw', dueDate: '2025-05-20', priority: 'medium', project: 'Add extra info' },
-  ]);
+function TasksList({ tasks }) {
+  console.log(tasks);
 
   const [filter, setFilter] = useState('today');
+  const [searchQuery, setSearchQuery] = useState('');
   const today = new Date();
 
   const filteredTasks = tasks.filter(task => {
-    const dueDate = new Date(task.dueDate);
-    
+    const dueDate = new Date(task.deadline);
+
     if (filter === 'today') {
       return dueDate.toDateString() === today.toDateString();
     }
@@ -27,38 +19,79 @@ function TasksList() {
       endOfWeek.setDate(today.getDate() + 7);
       return dueDate >= today && dueDate <= endOfWeek;
     }
-    return true;
+    if (filter === 'month') {
+      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      return dueDate >= today && dueDate <= endOfMonth;
+    }
+    if (filter === 'completed') {
+      return task.completed;
+    }
+    if (filter === 'overdue') {
+      return dueDate < today && !task.completed;
+    }
+    return true; // 'all' filter
   });
 
-  const sortedTasks = [...filteredTasks].sort((a, b) => 
-    new Date(a.dueDate) - new Date(b.dueDate)
+  const searchedTasks = filteredTasks.filter(task =>
+    task.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  
+  const sortedTasks = [...searchedTasks].sort((a, b) =>
+    new Date(a.deadline) - new Date(b.deadline)
+  );
+
+  const handleDropdownChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   return (
-    <div className='flex flex-col p-6 bg-secondary/40 rounded-3xl col-span-2 row-span-4'>
+    <div className="flex flex-col p-6 bg-secondary/40 rounded-3xl col-span-2 row-span-4">
       <div className="flex flex-col items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Upcoming Tasks</h3>
-        <div className="flex gap-1">
-          {['today', 'week', 'all'].map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-3 py-1 rounded-full text-sm capitalize ${
-                filter === f ? 'bg-accentOrange text-white' : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              {f === 'all' ? 'All' : f === 'today' ? 'Today' : 'This Week'}
-            </button>
-          ))}
+        <div className="flex gap-2 w-full">
+          <select
+            value={filter}
+            onChange={handleDropdownChange}
+            className="flex-1 px-3 py-1 rounded-full text-sm capitalize bg-gray-200 text-gray-700"
+          >
+            <option value="today">Today</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+          </select>
+          <button
+            onClick={() => setFilter('all')}
+            className={`flex-1 px-3 py-1 rounded-full text-sm capitalize ${
+              filter === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setFilter('overdue')}
+            className={`flex-1 px-3 py-1 rounded-full text-sm capitalize ${
+              filter === 'overdue' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Overdue
+          </button>
         </div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for a task"
+          className="mt-4 w-full px-3 py-2 rounded-full text-sm bg-gray-200 text-gray-700"
+        />
       </div>
 
       <div className="flex flex-col gap-3 overflow-y-auto flex-grow pb-1 scroll-pb-3">
         {sortedTasks.length > 0 ? (
           sortedTasks.map(task => (
-            <TaskCard task={task}/>
+            <TaskCard key={task.id} task={task} />
           ))
         ) : (
           <p className="text-gray-500 text-center py-4">No tasks found</p>

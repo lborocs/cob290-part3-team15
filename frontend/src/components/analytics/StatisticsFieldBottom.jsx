@@ -4,18 +4,22 @@ import { faker } from '@faker-js/faker';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 
-function StatisticsFieldBottom() {
+function StatisticsFieldBottom( { employees } ) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const dummyEmployees = Array.from({ length: 5 }, () => ({
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
+  // looping through the employees to get the id, forename and surname
+  const dummyEmployees = employees.map((employee) => ({
+    id: employee.id,
+    name: `${employee.forename} ${employee.surname}`,
     profilePicture: faker.image.avatar(),
-    tasksGiven: faker.number.int({ min: 10, max: 50 }),
-    tasksDue: faker.number.int({ min: 5, max: 20 }),
-    tasksCompleted: faker.number.int({ min: 5, max: 20 }),
+
+    // TODO: Make a call for the statistics of the employee
+    tasksGiven: Math.floor(Math.random() * 100),
+    tasksDue: Math.floor(Math.random() * 100),
+    tasksCompleted: Math.floor(Math.random() * 100),
   }));
+
 
   const filteredEmployees = dummyEmployees.filter((employee) =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase())
