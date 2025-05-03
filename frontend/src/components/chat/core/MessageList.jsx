@@ -93,7 +93,7 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
   }, [messages])  
   
   return (
-    <div className="flex flex-col mx-30" ref={boundaryRef}>
+    <div className="flex flex-col max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center px-auto" ref={boundaryRef}>
         {messages.map((message) => (
             <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef} isDropdownOpen={openDropdownID === message.messageID} toggleDropdown = {() => toggleDropdown(message.messageID)}/>
         ))}

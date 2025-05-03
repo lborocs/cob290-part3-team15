@@ -148,7 +148,7 @@ function Chat({ user }){
             <Navbar userID = {userID} selectable={selectable} isSelected={sidebarVisible} setIsSelected={setSidebarVisible} activeTab={activeTab} status={personalStatus}/>
 
             {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
-            <div className="flex flex-1 relative">
+            <div className="flex flex-1 max-w-[calc(100%-72px)] relative">
                 {sidebarVisible ? 
                 <div className={`flex flex-col h-full fixed lg:static bg-backgroundOrange sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`} onContextMenu={HandleRightClick} ref={containerRef}> 
                     {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
@@ -157,16 +157,16 @@ function Chat({ user }){
                 :<></>}
                 
                 {/*Main Chat Area*/}
-                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative`} onContextMenu={HandleRightClick}>
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full`} onContextMenu={HandleRightClick}>
                     <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div>
-                    <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
-                        <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
+                    <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)] max-w-full ">
+                        <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
                         {editing && (
-                            <div className="w-full bg-transparent text-black justify-center text-left rounded-lg px-30 z-5">
+                            <div className="flex w-full bg-transparent text-black justify-center text-left rounded-lg z-5 px-4">
                                 
-                                <span className="flex items-center">
+                                <span className="flex items-center max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center">
                                     <button
                                         className="mr-4 text-gray-500 hover:text-red-700"
                                         onClick={() => {
@@ -181,7 +181,7 @@ function Chat({ user }){
                                 
                             </div>
                         )}
-                        <div className="flex flex-col bg-transparent h-20 justify-center px-4 shadow-md px-30">
+                        <div className="flex flex-col bg-transparent h-20 justify-center px-4 shadow-md">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing} editingMessage={editingMessage} setEditingMessage={setEditingMessage} setEditing={setEditing}/>
                         </div>
                     </div>

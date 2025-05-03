@@ -64,8 +64,8 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
     }
   }
   return (
-    <form className="flex items-center gap-2 p-2 border border-gray-500 rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition w-full" onSubmit={onSubmit}>
-        <input type="text" className= "flex-1 p-2 bg-transparent text-white focus:outline-none" id="message_box" ref={ref} value={message} onChange={(e) => handleMessageChange(e.target.value)} placeholder="Enter message" />
+    <form className="max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center flex items-center gap-2 p-2 border border-gray-500 rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition" onSubmit={onSubmit}>
+        <input type="text" className= "flex-1 p-2 bg-transparent text-white focus:outline-none max-w-[calc(100%-36px)]" id="message_box" ref={ref} value={message} onChange={(e) => handleMessageChange(e.target.value)} placeholder="Enter message" />
         <button type="submit" className="p-2 text-white rounded-full flex items-center" id="submit_message_button" onClick={onSubmit}><BsSend className="w-5 h-5 text-gray-300 hover:text-gray-400 transition-all"/></button>
     </form>
   );
