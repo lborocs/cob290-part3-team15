@@ -21,6 +21,15 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
   const messageRef = useRef(null);
 
+
+  const isToday = new Date(message.timestamp).toDateString() === new Date().toDateString();
+  const isYesterday = (() => {const yesterday = new Date();yesterday.setDate(new Date().getDate() - 1);return new Date(message.timestamp).toDateString() === yesterday.toDateString()})();
+  const formattedTime = 
+    isToday ? `${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`
+            : isYesterday ? `Yesterday at ${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`
+            : `${String(new Date(message.timestamp).getDate()).padStart(2, '0')}/${String(new Date(message.timestamp).getMonth() + 1).padStart(2, '0')} ${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`;
+
+  
   const HandleHover = (e) => {
     if (e.type === 'mouseenter'){
       SetisHovered(true)
@@ -84,42 +93,62 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   );
   
   return(
-    <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} max-w-3/4 my-2 rounded-lg border border-2 border-accentGreen/80 px-4 py-2 text-base font-medium self-end bg-accentGreen/50 relative`} 
-    onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={(node) => {messageRef.current = node; if (refs.setReference){refs.setReference(node)};}}>
-      <div className="self-start text-pretty break-all">
-        {isHovered && (
-          <MessageOptions sentByUser={true} 
-          isHoveredComment={isHovered}
-          message={message} // Pass the message to the options
-          setEditing={setEditing} // Pass the setMessage function to the options
-          setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
-          setIsDropdownOpen={toggleDropdown}
+    <div className="flex flex-col w-full ">
+      {message.isNewDay && (
+        <div className="flex items-center my-4">
+          <div className="flex-grow border-t text-gray-400/50"></div>
+          <span className="px-4 text-sm text-gray-500 whitespace-nowrap">
+            {new Date(message.timestamp).toLocaleDateString(undefined, {day: 'numeric',month: 'long',year: 'numeric',})}
+          </span>
+          <div className="flex-grow border-t text-gray-400/50"></div>
+        </div>
+      )}
+      <div className="flex flex-col max-w-3/4 text-base font-medium self-end items-end justify-end relative">
+        {message.showName &&
+        <div className="w-fit justify-end">
+          <p className="text-text text-right">{formattedTime}</p>
+        </div>
+        }
+      <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} mb-2 rounded-lg border border-2 border-accentGreen/80 px-4 py-2 text-base font-medium bg-accentGreen/50 relative`} 
+      onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={(node) => {messageRef.current = node; if (refs.setReference){refs.setReference(node)};}}>
+
+        <div className="self-start text-pretty break-all">
+          {isHovered && (
+            <MessageOptions sentByUser={true} 
+            isHoveredComment={isHovered}
+            message={message} // Pass the message to the options
+            setEditing={setEditing} // Pass the setMessage function to the options
+            setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
+            setIsDropdownOpen={toggleDropdown}
+            />
+          )}
+          <Content message={message}/>
+          {message.isEdited==1 && (<p className="text-right text-xs text-light text-gray-400">edited</p>)}
+        </div>
+        {isDropdownOpen && ( // Dropdown menu for right click options
+          <ChatDropdown
+            sentByUser={true}
+            onClose = {()=> toggleDropdown(null)}
+            message={message} // Pass the message to the dropdown
+            setEditing={setEditing}
+            setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
+            refs={refs} 
+            floatingStyles={floatingStyles}
+            openHideModal={openHideModal} // Pass the openHideModal function to the dropdown
           />
         )}
-        <Content message={message}/>
+        {
+          isHideModalOpen && (
+          <HideMessageModal
+            open={isHideModalOpen}
+            onClose={closeHideModal}
+            message={messageToHide}
+          />
+          )
+        }
+          
       </div>
-      {isDropdownOpen && ( // Dropdown menu for right click options
-        <ChatDropdown
-          sentByUser={true}
-          onClose = {()=> toggleDropdown(null)}
-          message={message} // Pass the message to the dropdown
-          setEditing={setEditing}
-          setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
-          refs={refs} 
-          floatingStyles={floatingStyles}
-          openHideModal={openHideModal} // Pass the openHideModal function to the dropdown
-        />
-      )}
-      {
-        isHideModalOpen && (
-        <HideMessageModal
-          open={isHideModalOpen}
-          onClose={closeHideModal}
-          message={messageToHide}
-        />
-        )
-      }
-        
+      </div>
     </div>
   )
 }
@@ -135,6 +164,14 @@ function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDro
       SetisHovered(false)
     }
   };
+
+  const isToday = new Date(message.timestamp).toDateString() === new Date().toDateString();
+  const isYesterday = (() => {const yesterday = new Date();yesterday.setDate(new Date().getDate() - 1);return new Date(message.timestamp).toDateString() === yesterday.toDateString()})();
+  const formattedTime = 
+    isToday ? `${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`
+            : isYesterday ? `Yesterday at ${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`
+            : `${String(new Date(message.timestamp).getDate()).padStart(2, '0')}/${String(new Date(message.timestamp).getMonth() + 1).padStart(2, '0')} ${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`;
+
 
   //Anti Right Click
   const HandleRightClick = (event) => {
@@ -180,37 +217,49 @@ function OtherMessage({ message, refs, floatingStyles, isDropdownOpen, toggleDro
   );
 
   return(
-    <div className="max-w-3/4 text-base font-medium self-start relative">
-      {message.showName &&
-      <div className="w-fit">
-        <p className="text-text">{message.name}</p>
-      </div>
-      }
-      <div className={`mt-1 mb-2 rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`} onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={(node) => {messageRef.current = node; if (refs.setReference){refs.setReference(node)};}}>
-        <div className="text-left flex flex-col text-pretty break-all">
-          {isHovered && (
-            <MessageOptions sentByUser={false} 
-            isHoveredComment={isHovered} 
-            message={message} // Pass the message to the options
-            setEditing={null}
-            setEditingMessage={null}
-            setIsDropdownOpen={toggleDropdown}
-            />
-          )}
-          <Content message={message}/>
+    <div className="flex flex-col w-full ">
+      {message.isNewDay && (
+        <div className="flex items-center my-4">
+          <div className="flex-grow border-t text-gray-400/50"></div>
+          <span className="px-4 text-sm text-gray-500 whitespace-nowrap">
+            {new Date(message.timestamp).toLocaleDateString(undefined, {day: 'numeric',month: 'long',year: 'numeric',})}
+          </span>
+          <div className="flex-grow border-t text-gray-400/50"></div>
         </div>
-      </div>
-      {isDropdownOpen && ( // Dropdown menu for right click options
-        <ChatDropdown
-        sentByUser={false}
-        onClose = {()=> toggleDropdown(null)}
-        message={message} // Pass the message to the dropdown
-        setEditing={null}
-        setEditingMessage={null} // Pass the setMessage function to the options
-        refs={refs}
-        floatingStyles={floatingStyles}
-        />
       )}
+      <div className="flex flex-col max-w-3/4 text-base font-medium self-start relative">
+        {message.showName &&
+        <div className="w-fit">
+          <p className="text-text text-right">{message.name} {formattedTime}</p>
+        </div>
+        }
+        <div className={`mb-2 w-fit rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`} onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={(node) => {messageRef.current = node; if (refs.setReference){refs.setReference(node)};}}>
+          <div className="text-left flex flex-col text-pretty break-all">
+            {isHovered && (
+              <MessageOptions sentByUser={false} 
+              isHoveredComment={isHovered} 
+              message={message} // Pass the message to the options
+              setEditing={null}
+              setEditingMessage={null}
+              setIsDropdownOpen={toggleDropdown}
+              />
+            )}
+            <Content message={message}/>
+            {message.isEdited==1 && (<p className="text-right text-xs text-light text-gray-400">edited</p>)}
+          </div>
+        </div>
+        {isDropdownOpen && ( // Dropdown menu for right click options
+          <ChatDropdown
+          sentByUser={false}
+          onClose = {()=> toggleDropdown(null)}
+          message={message} // Pass the message to the dropdown
+          setEditing={null}
+          setEditingMessage={null} // Pass the setMessage function to the options
+          refs={refs}
+          floatingStyles={floatingStyles}
+          />
+        )}
+      </div>
     </div>
   )
 }

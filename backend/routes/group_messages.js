@@ -7,11 +7,11 @@ const {authenticateToken} = require("../exports/authenticate");
 router.use(express.json()) // for parsing 'application/json'
 
 router.get("/getMessages",authenticateToken,(req,res) => {
-    const query=`SELECT group_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,group_messages.Content as content,group_messages.Sender as user, group_messages.Timestamp as timestamp
+    const query=`SELECT group_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,group_messages.Content as content,group_messages.Sender as user, group_messages.Timestamp as timestamp, group_messages.isEdited as isEdited
                  FROM group_messages 
                  LEFT JOIN users ON group_messages.Sender=users.UserID 
                  INNER JOIN group_users ON group_messages.GroupID=group_users.GroupID
-                 WHERE group_messages.GroupID=? AND group_users.UserID=?
+                 WHERE group_messages.GroupID=? AND group_users.UserID=? AND group_messages.isDeleted=0
                  ORDER BY group_messages.Timestamp ASC`;
     const id = req.user.userID;
     const group = req.query.target;
@@ -28,11 +28,11 @@ router.get("/getMessages",authenticateToken,(req,res) => {
 });
 
 router.get("/getMessagesAfter",authenticateToken,(req,res) => {
-  const query=`SELECT group_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,group_messages.Content as content,group_messages.Sender as user, group_messages.Timestamp as timestamp
+  const query=`SELECT group_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,group_messages.Content as content,group_messages.Sender as user, group_messages.Timestamp as timestamp, group_messages.isEdited as isEdited
                FROM group_messages 
                LEFT JOIN users ON group_messages.Sender=users.UserID 
                INNER JOIN group_users ON group_messages.GroupID=group_users.GroupID
-               WHERE group_messages.GroupID=? AND group_users.UserID=? AND group_messages.Timestamp>CONVERT_TZ(?, '+00:00', @@session.time_zone)
+               WHERE group_messages.GroupID=? AND group_users.UserID=? AND group_messages.Timestamp>CONVERT_TZ(?, '+00:00', @@session.time_zone) AND group_messages.isDeleted=0
                ORDER BY group_messages.Timestamp ASC`;
     const id = req.user.userID;
     const group = req.query.target;
@@ -116,7 +116,7 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
 });
 
 router.put("/updateMessage",authenticateToken,(req,res) => {
-  const query="UPDATE group_messages SET Content=? WHERE MessageID=? AND Sender=?";
+  const query="UPDATE group_messages SET Content=?, isEdited = 1 WHERE MessageID=? AND Sender=?";
   const id = req.user.userID;
   const messageID= req.body.id;
   const content = req.body.content;

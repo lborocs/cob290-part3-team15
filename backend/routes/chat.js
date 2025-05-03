@@ -94,6 +94,7 @@ router.get("/getChats",authenticateToken,(req,res) => {
                                 ORDER BY dm.Timestamp DESC
                             ) AS rn
                         FROM direct_messages dm
+                        WHERE dm.isDeleted=0
                     ) AS dm 
                         ON (
                             (dm.Sender = active_chats.UserID AND dm.Recipient = active_chats.Target) OR 
@@ -118,7 +119,7 @@ router.get("/getChats",authenticateToken,(req,res) => {
                         AND gm.Timestamp = (
                             SELECT MAX(Timestamp)
                             FROM group_messages
-                            WHERE GroupID = g.GroupID
+                            WHERE GroupID = g.GroupID AND group_messages.isDeleted=0
                         )
                     WHERE gu.UserID = ?
                     ORDER BY timestamp DESC;`;

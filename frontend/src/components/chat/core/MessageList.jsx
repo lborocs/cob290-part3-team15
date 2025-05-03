@@ -23,8 +23,9 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
       if (response?.data?.results){
         // Hide name if back-to-back messages are from the same user
         const messagesWithShowName = response.data.results.map((message, index, arr) => {
-          const showName = (index === 0 || message.user !== arr[index - 1].user || message.user === userID);
-          return {...message,showName,};
+          const showName = (index === 0 || (message.user !== arr[index - 1].user) || (new Date(message.timestamp) - new Date(arr[index - 1].timestamp)) > (20 * 60 * 1000));
+          const isNewDay = (index === 0 || new Date(message.timestamp).toDateString() !== new Date(arr[index - 1].timestamp).toDateString());
+          return {...message,showName:showName,isNewDay:isNewDay};
         });
         setMessages(messagesWithShowName);
       }
@@ -65,7 +66,7 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
     //Find message with corresponding messageID and modify the content
     const updatedMessages = messages.map((message) => {
       if (message.messageID === editedValue.messageID) {
-        return { ...message, content: editedValue.content };
+        return { ...message, content: editedValue.content,isEdited:1 };
       }
       return message;
     });
