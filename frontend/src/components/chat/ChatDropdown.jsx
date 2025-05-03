@@ -4,23 +4,7 @@ import { BsClipboard2Fill } from "react-icons/bs";
 import { BsFillPencilFill } from "react-icons/bs";
 import { BsFillTrashFill } from "react-icons/bs";
 function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMessage,refs,floatingStyles, openHideModal }) {
-    const dropdownRef = useRef(null); // Reference to the dropdown element
-
-    // Close dropdown when clicking outside
-    //
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            onClose(); // Call the onClose function to close the dropdown
-        }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [onClose]);
-
+  
     const copyText = () => {
       navigator.clipboard.writeText(message.content); // Copy the message text to clipboard
       onClose(); // Close the dropdown when copy text is clicked
@@ -54,7 +38,7 @@ function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMess
 
     return (
         <>
-          <DropdownList items={items} onClick={componentsFunctions} icons={icons} refs={refs} floatingStyles={floatingStyles} blurBackground={false}/>
+          <DropdownList items={items} onClick={componentsFunctions} icons={icons} refs={refs} floatingStyles={floatingStyles}/>
         </>
     );
 }
