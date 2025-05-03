@@ -128,7 +128,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
         {isDropdownOpen && ( // Dropdown menu for right click options
           <ChatDropdown
             sentByUser={true}
-            onClose = {()=> toggleDropdown(null)}
+            onClose = {()=> {toggleDropdown(null); SetisHovered(false)}}
             message={message} // Pass the message to the dropdown
             setEditing={setEditing}
             setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
@@ -252,7 +252,7 @@ useDismiss(context, {
         {isDropdownOpen && ( // Dropdown menu for right click options
           <ChatDropdown
           sentByUser={false}
-          onClose = {()=> toggleDropdown(null)}
+          onClose = {()=> {toggleDropdown(null); SetisHovered(false)}}
           message={message} // Pass the message to the dropdown
           setEditing={null}
           setEditingMessage={null} // Pass the setMessage function to the options
