@@ -20,7 +20,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the modal
   const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
   const messageRef = useRef(null);
-
+  const[z,selectedZ]=useState(false); // State to control the z-index of the message
 
   const isToday = new Date(message.timestamp).toDateString() === new Date().toDateString();
   const isYesterday = (() => {const yesterday = new Date();yesterday.setDate(new Date().getDate() - 1);return new Date(message.timestamp).toDateString() === yesterday.toDateString()})();
@@ -56,8 +56,10 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
     event.stopPropagation();
     if (isDropdownOpen) {
       toggleDropdown(null); // Close the dropdown
+      selectedZ(false); // Disable z-index when closed
     } else {
       toggleDropdown(message.messageID); // Open the dropdown for this message
+      selectedZ(true) // Enable z-index when opened
     }
   };
   
@@ -74,6 +76,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
     onOpenChange: (open) => {
       if (!open) {
         toggleDropdown(null); // Close the dropdown when open changes to false
+        selectedZ(false); // Disable z-index when closed
       }
     },
   }); 
@@ -93,7 +96,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   });
   
   return(
-    <div className="flex flex-col w-full ">
+    <div className={`flex flex-col w-full ${z ? "z-10" : "z-0"}`}>
       {message.isNewDay && (
         <div className="flex items-center my-4">
           <div className="flex-grow border-t text-gray-400/50"></div>
