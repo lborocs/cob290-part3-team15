@@ -163,25 +163,7 @@ function Chat({ user }){
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
-                        {editing && (
-                            <div className="flex w-full bg-transparent text-black justify-center text-left rounded-lg z-5 px-4">
-                                
-                                <span className="flex items-center max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center">
-                                    <button
-                                        className="mr-4 text-gray-500 hover:text-red-700"
-                                        onClick={() => {
-                                            setEditing(false);
-                                            setEditingMessage(null);
-                                        }}
-                                        >
-                                        <BsX/>
-                                    </button>
-                                    Editing Message: {editingMessage.content}
-                                </span>
-                                
-                            </div>
-                        )}
-                        <div className="flex flex-col bg-transparent h-20 justify-center px-4 shadow-md">
+                        <div className="flex flex-col bg-transparent pb-2 justify-center px-4 shadow-md">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing} editingMessage={editingMessage} setEditingMessage={setEditingMessage} setEditing={setEditing}/>
                         </div>
                     </div>
