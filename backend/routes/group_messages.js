@@ -23,7 +23,19 @@ router.get("/getMessages",authenticateToken,(req,res) => {
 
     const values = [group,id];
     database.query(query, values, (err, results) => {
-        res.send({results: results});
+      if(err){
+        return res.status(500).json({error: "Failed to send message"})
+      }
+      const updateReadQuery = `UPDATE group_users
+                              SET LastRead = NOW() 
+                              WHERE UserID = ? AND GroupID = ?;`
+      const updateReadyValues=[id,group]
+      database.query(updateReadQuery, updateReadyValues, (err, results) => {
+        if(err){
+          return res.status(500).json({error: "Failed to update read status"})
+        }
+      });
+      res.send({results: results});
     });
 });
 
@@ -45,7 +57,19 @@ router.get("/getMessagesAfter",authenticateToken,(req,res) => {
 
     const values = [group,id,timestamp];
     database.query(query, values, (err, results) => {
-        res.send({results: results});
+      if(err){
+        return res.status(500).json({error: "Failed to send message"})
+      }
+      const updateReadQuery = `UPDATE group_users
+                              SET LastRead = NOW() 
+                              WHERE UserID = ? AND GroupID = ?;`
+      const updateReadyValues=[id,group]
+      database.query(updateReadQuery, updateReadyValues, (err, results) => {
+        if(err){
+          return res.status(500).json({error: "Failed to update read status"})
+        }
+      });
+      res.send({results: results});
     });
 });
 
@@ -102,7 +126,7 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
                         return res.status(500).json({ error: "Failed to refresh correctly" });
                       }
                       results.forEach((row) => {
-                        alertMessage(row.UserID);
+                        alertMessage(row.UserID,group,text,'group_messages');
                       });
                       res.status(200).json({ success: "Message sent successfully" });
                     });

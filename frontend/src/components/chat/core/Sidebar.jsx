@@ -8,8 +8,8 @@ import CreateChat from '../CreateChat.jsx';
 import ProfileCard from '../../accounts/ProfileCard.jsx';
 import LeaveDropdown from '../LeaveDropdown.jsx';
 import LeaveModal from '../LeaveModal.jsx';
-const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpdate,containerRef}) => {
 
+const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpdate,containerRef,setName}) => {
   const [chats,setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [dropdownChat, setDropdownChat] = useState(null); // Stores the chat for the dropdown
@@ -146,14 +146,15 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
         {filteredChats.map((chat) => (
           <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 gap-2 group`} onContextMenu={(e) => HandleRightClick(e,chat)}>
             <button className="flex w-full h-full pt-1 pl-2 pr-1 text-text rounded"
-              onClick={() => {setSelectedID(chat.target); setMode(chat.type)}}>
+              onClick={() => {setSelectedID(chat.target); setMode(chat.type); setName(chat.name); console.log(chat)}}>
+
               <div className="w-15 h-15 my-auto">
                   <ProfileCard displayBG={selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange group-hover:bg-orangeHover"} type={chat.type === "group_messages" ? "Group" : "" } id={chat.target} status={chat.status}/>
               </div>
               <div className="flex flex-1 flex-col justify-start h-full pl-2 relative">
                 <div className="flex flex-col w-full justify-start">
-                  <p className="font-extrabold text-text max-w-40 w-full text-[18px] text-left truncate">{chat.name}</p>
-                  <p className="font-normal text-text max-w-40 text-[16px] text-left truncate">{chat.content}</p>
+                  <p className="font-extrabold text-text group-hover:max-w-37 max-w-50 w-full text-[18px] text-left truncate">{chat.name}</p>
+                  <p className="font-normal text-text group-hover:max-w-37 max-w-50 text-[16px] text-left truncate">{chat.content}</p>
                   <p className="text-text text-sm absolute bottom-0 right-0 pr-2 pb-1 group-hover:hidden">{timeFormat(chat.timestamp)}</p>
                 </div>
               </div>

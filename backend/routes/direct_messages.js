@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const database = require("../config/database");
-const { io,connectedClients,alertMessage,alertEdit } = require('../exports/socket');
+const { io,connectedClients,alertMessage,alertEdit} = require('../exports/socket');
 const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
@@ -22,6 +22,18 @@ router.get("/getMessages",authenticateToken,(req,res) => {
 
     const values = [id,target,target,id];
     database.query(query, values, (err, results) => {
+        if(err){
+            return res.status(500).json({error: "Failed to send message"})
+        }
+        const updateReadQuery = `UPDATE active_chats 
+                                SET LastRead = NOW() 
+                                WHERE UserID = ? AND Target = ?;`
+        const updateReadyValues=[id,target]
+        database.query(updateReadQuery, updateReadyValues, (err, results) => {
+            if(err){
+                return res.status(500).json({error: "Failed to update read status"})
+            }
+        });
         res.send({results: results});
     });
 });
@@ -44,6 +56,18 @@ router.get("/getMessagesAfter",authenticateToken,(req,res) => {
 
     const values = [id,target,target,id,timestamp];
     database.query(query, values, (err, results) => {
+        if(err){
+            return res.status(500).json({error: "Failed to send message"})
+        }
+        const updateReadQuery = `UPDATE active_chats 
+                                SET LastRead = NOW() 
+                                WHERE UserID = ? AND Target = ?;`
+        const updateReadyValues=[id,target]
+        database.query(updateReadQuery, updateReadyValues, (err, results) => {
+            if(err){
+                return res.status(500).json({error: "Failed to update read status"})
+            }
+        });
         res.send({results: results});
     });
 });
@@ -69,9 +93,9 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
             database.query(activeChatQuery, activeChat1, () => {});
             database.query(activeChatQuery, activeChat2, () => {});
 
-            const targetUser = String(req.body.target);
-            alertMessage(targetUser);
-            alertMessage(id); //Might as well do it here so all clients refresh
+        
+            alertMessage(target,id,text,'direct_messages');
+            alertMessage(id,target,text,'direct_messages');
             res.status(200).json({ success: "Message sent successfully" });
         }
         else res.status(500).json({ error: "Server rejected message" });
