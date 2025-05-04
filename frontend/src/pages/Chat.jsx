@@ -32,8 +32,6 @@ function Chat({ user }){
     //Sidebar
     const containerRef = useRef(null);
 
-    const [chatName, setName] = useState('');
-
     //Socket
     const [refresh,setRefresh] = useState(0)
     const [newNotification,setNewNotification] = useState(0);
@@ -67,6 +65,17 @@ function Chat({ user }){
     useEffect(() => {
         localStorage.setItem('selectedID', selectedID);
     }, [selectedID]);
+
+    //Chat name (Saves)
+    const [chatName, setName] = useState(() => {
+        const saved = localStorage.getItem('chatName');
+        return saved ? saved : ''
+    });
+
+    //Chat name handler
+    useEffect(() => {
+        localStorage.setItem('chatName', chatName);
+    }, [chatName]);
 
     //Anti Right Click (Make a copy for the dropdown menu, this is general purpose)
     const HandleRightClick = (event) => {
