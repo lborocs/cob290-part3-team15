@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import TaskCard from './TaskCard';
 
 function TasksList({ tasks }) {
-  console.log(tasks);
-
   const [filter, setFilter] = useState('today');
   const [searchQuery, setSearchQuery] = useState('');
   const today = new Date();

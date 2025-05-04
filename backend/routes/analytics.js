@@ -131,7 +131,7 @@ router.get("/getUserLedProjects",authenticateToken,(req,res) => {
     });
 });
 
-// Get all tasks assigned to a user
+// get all tasks assigned to a user
 router.get("/getUserTasks",authenticateToken,(req,res) => {
     const query=`SELECT ProjectID, AssigneeID, Title, Status, Priority, HoursRequired, Deadline, CompletionDate FROM tasks WHERE tasks.AssigneeID=?`;
     const id = req.query.target;
@@ -171,7 +171,7 @@ router.get("/getUserWeeklyHours",authenticateToken,(req,res) => {
     });
 });
 
-// Get the hours of work completed on a project x weeks ago
+// get the hours of work completed on a project x weeks ago
 router.get("/getProjectWeeklyHours",authenticateToken,(req,res) => {
     const query=`SELECT
                              SUM(IF(ProjectID = ?
@@ -211,6 +211,72 @@ router.get("/getProjectWeeklyScope",authenticateToken,(req,res) => {
     const values = [target,newestCutoff];
     database.query(query, values, (err, results) => {
         res.send({results: results})
+    });
+});
+
+
+
+// get the different
+router.get("/getTaskCompletionStatus", authenticateToken, (req, res) => {
+    const projectId = req.query.projectId;
+
+    if (!projectId) {
+        return res.status(400).send({ error: "Project ID is required" });
+    }
+
+    console.log("Project ID:", projectId); // Debugging
+
+    const query = `
+        SELECT 
+            SUM(CASE WHEN Status = 'Completed' THEN 1 ELSE 0 END) AS completed,
+            SUM(CASE WHEN Status != 'Completed' THEN 1 ELSE 0 END) AS pending
+        FROM tasks
+        WHERE ProjectID = ?`;
+
+    database.query(query, [projectId], (err, results) => {
+        if (err) {
+            console.error("Error fetching task completion status:", err); // Debugging
+            return res.status(500).send({ error: "Error fetching task completion status" });
+        }
+
+        console.log("Task Completion Status Results:", results); // Debugging
+
+        // Format the response for the pie chart
+        const formattedResults = [
+            { label: "Completed", value: results[0].completed || 0 },
+            { label: "Pending", value: results[0].pending || 0 },
+        ];
+
+        res.send(formattedResults);
+    });
+});
+
+router.get("/getTaskAllocationAndPerformance", authenticateToken, (req, res) => {
+    const projectId = req.query.projectId;
+
+    if (!projectId) {
+        return res.status(400).send({ error: "Project ID is required" });
+    }
+
+    const query = `
+        SELECT 
+            u.Forename AS label,
+            COUNT(t.TaskID) AS tasksAssigned,
+            SUM(CASE WHEN t.Status = 'Completed' THEN 1 ELSE 0 END) AS tasksCompleted
+        FROM users u
+        LEFT JOIN tasks t ON u.UserID = t.AssigneeID AND t.ProjectID = ?
+        WHERE EXISTS (
+            SELECT 1 
+            FROM project_users pu 
+            WHERE pu.UserID = u.UserID AND pu.ProjectID = ?
+        )
+        GROUP BY u.UserID`;
+
+    database.query(query, [projectId, projectId], (err, results) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching task allocation and performance" });
+        }
+        res.send(results);
     });
 });
 

@@ -71,7 +71,7 @@ function Analytics({ user }) {
                         const employeeCountStat = {
                             id: 'overview-employees',
                             title: 'Employees',
-                            value: employeeCount,
+                            value: uniqueEmployees.length,
                         };
                         setQuickStatistics((prevStats) => [...prevStats, employeeCountStat]);
                     }
@@ -95,7 +95,7 @@ function Analytics({ user }) {
                         setQuickStatistics((prevStats) => [...prevStats, taskCountStat]);
                     }
                 } else {
-                    // we get just the selected project
+                    // or we get just the selected project
                     const response = await axios.get(`/api/analytics/getProjectDetails?title=${selectedProject.title}`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
@@ -107,6 +107,7 @@ function Analytics({ user }) {
                         setEmployees(projectEmployees);
 
                         const projectTasks = response.data.tasks;
+                        setTasks(projectTasks);
 
                         // add statistics for the selected project
                         const taskCount = projectTasks.length;
@@ -196,7 +197,7 @@ function Analytics({ user }) {
 
                 <div className="lg:col-start-6 lg:row-start-2 lg:col-span-6 lg:row-span-5 rounded-3xl lg:grid lg:grid-cols-6 lg:grid-rows-4 flex flex-col gap-4 w-full">
                     <>
-                        <StatisticsFieldCarousel />
+                        <StatisticsFieldCarousel project={ selectedProject }/>
                         <TasksList tasks={ tasks }/>
                         <StatisticsFieldBottom employees={ employees }/>
                     </>
