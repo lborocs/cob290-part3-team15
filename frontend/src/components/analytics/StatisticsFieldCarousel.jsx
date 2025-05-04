@@ -10,21 +10,21 @@ const chartConfig = [
     type: 'pie',
     title: 'Task Completion Status',
     description: 'Percentage of completed vs pending tasks',
-    endpoint: '/api/analytics/getTaskCompletionStatus',
+    endpoint: '/api/analytics/employees/getTaskCompletionStatus',
     component: PieChart,
   },
   {
     type: 'bar',
     title: 'Task Allocation by User',
     description: 'Number of tasks assigned to each team member',
-    endpoint: '/api/analytics/getTaskAllocationAndPerformance',
+    endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
     component: BarChart,
   },
   {
     type: 'line',
     title: 'Hours Worked by User',
     description: 'Total hours worked by each team member',
-    endpoint: '/api/analytics/getUserWeeklyHours',
+    endpoint: '/api/analytics/employees/getUserWeeklyHours',
     component: LineChart,
   }
 ];

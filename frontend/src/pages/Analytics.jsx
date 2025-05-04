@@ -34,6 +34,7 @@ function Analytics({ user }) {
                 const accessToken = localStorage.getItem('accessToken');
 
                 if (selectedProject.title === 'Overview') {
+                    // TODO we shouldn't get all the data at once in the overview, just get the employees/projects and get the rest when needed
                     // this is a function for when the page is in overview mode
                     let filter = "all";
 
@@ -41,7 +42,7 @@ function Analytics({ user }) {
                         filter = user.userID;
                     }
 
-                    const response = await axios.get(`/api/analytics/getOverview?filter=${filter}`, {
+                    const response = await axios.get(`/api/analytics/employees/getOverview?filter=${filter}`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
 
@@ -96,17 +97,35 @@ function Analytics({ user }) {
                     }
                 } else {
                     // or we get just the selected project
-                    const response = await axios.get(`/api/analytics/getProjectDetails?title=${selectedProject.title}`, {
+
+                    // get project details
+                    const responseDetails = await axios.get(`/api/analytics/projects/getProjectDetails?title=${selectedProject.title}`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
 
-                    if (response?.data) {
-                        const projectDetails = response.data.project;
+                    if (responseDetails?.data) {
+                        const projectDetails = responseDetails.data.project;
+                        // TODO use this
+                    }
 
-                        const projectEmployees = response.data.employees;
+                    // get project members
+                    const responseMembers = await axios.get(`/api/analytics/projects/getProjectMembers?id=${selectedProject.id}`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    });
+
+                    if (responseMembers?.data) {
+                        const projectEmployees = responseMembers.data.employees;
+                        console.log(projectEmployees)
                         setEmployees(projectEmployees);
+                    }
 
-                        const projectTasks = response.data.tasks;
+                    // get project tasks
+                    const responseTasks = await axios.get(`/api/analytics/projects/getProjectTasks?id=${selectedProject.id}`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    });
+
+                    if (responseTasks?.data) {
+                        const projectTasks = responseTasks.data.tasks;
                         setTasks(projectTasks);
 
                         // add statistics for the selected project
