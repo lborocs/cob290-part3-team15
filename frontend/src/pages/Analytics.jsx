@@ -42,25 +42,31 @@ function Analytics({ user }) {
                         filter = user.userID;
                     }
 
-                    const response = await axios.get(`/api/analytics/employees/getOverview?filter=${filter}`, {
+                    const responseProjects = await axios.get(`/api/analytics/employees/getOverviewProjects?filter=${filter}`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
 
-                    if (response?.data?.projects) {
-                        setProjects(response.data.projects);
+                    let statsArr = [];
 
-                        const projectCount = response.data.projects.length;
+                    if (responseProjects?.data?.projects) {
+                        setProjects(responseProjects.data.projects);
+
+                        const projectCount = responseProjects.data.projects.length;
                         const projectCountStat = {
                             id: 'overview-projects',
                             title: 'Projects',
                             value: projectCount,
                         };
-                        setQuickStatistics([projectCountStat]);
+                        statsArr.push(projectCountStat);
                     }
 
-                    if (response?.data?.employees) {
+                    const responseEmployees = await axios.get(`/api/analytics/employees/getOverviewEmployees?filter=${filter}`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    });
+
+                    if (responseEmployees?.data?.employees) {
                         // remove duplicates from the employees array
-                        const uniqueEmployees = response.data.employees.filter((employee, index, self) =>
+                        const uniqueEmployees = responseEmployees.data.employees.filter((employee, index, self) =>
                             index === self.findIndex((e) => (
                                 e.id === employee.id
                             ))
@@ -68,18 +74,22 @@ function Analytics({ user }) {
                         setEmployees(uniqueEmployees);
 
                         // employee count statistic
-                        const employeeCount = response.data.employees.length;
+                        const employeeCount = responseEmployees.data.employees.length;
                         const employeeCountStat = {
                             id: 'overview-employees',
                             title: 'Employees',
                             value: uniqueEmployees.length,
                         };
-                        setQuickStatistics((prevStats) => [...prevStats, employeeCountStat]);
+                        statsArr.push(employeeCountStat);
                     }
 
-                    if (response?.data?.tasks) {
+                    const responseTasks = await axios.get(`/api/analytics/employees/getOverviewTasks?filter=${filter}`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    });
+
+                    if (responseTasks?.data?.tasks) {
                         // remove duplicates from the tasks array
-                        const uniqueTasks = response.data.tasks.filter((task, index, self) =>
+                        const uniqueTasks = responseTasks.data.tasks.filter((task, index, self) =>
                             index === self.findIndex((t) => (
                                 t.id === task.id
                             ))
@@ -87,14 +97,16 @@ function Analytics({ user }) {
                         setTasks(uniqueTasks);
 
                         // task count statistic
-                        const taskCount = response.data.tasks.length;
+                        const taskCount = responseTasks.data.tasks.length;
                         const taskCountStat = {
                             id: 'overview-tasks',
                             title: 'Tasks',
                             value: taskCount,
                         };
-                        setQuickStatistics((prevStats) => [...prevStats, taskCountStat]);
+                        statsArr.push(taskCountStat);
                     }
+
+                    setQuickStatistics(statsArr);
                 } else {
                     // or we get just the selected project
 
