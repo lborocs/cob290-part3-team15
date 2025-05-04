@@ -41,12 +41,17 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
           //Hide name if back-to-back messages are from the same user
           const lastMessageOwner = messages.slice(-1)[0]?.user || null;
           const newMessages = response.data.results.map((message, index, arr) => {
-            const showName = (index === 0 && message.user === lastMessageOwner) ? false : (index === 0 || message.user !== arr[index - 1].user || message.user === userID);
+            const showName = (index === 0 && message.user === lastMessageOwner) ? 
+            ((new Date(message.timestamp) - new Date(lastMessageTimestamp)) > (20 * 60 * 1000)) : 
+            (index === 0 || (message.user !== arr[index - 1].user) || (new Date(message.timestamp) - new Date(arr[index - 1].timestamp)) > (20 * 60 * 1000))
             return {
-              ...message,showName,};
+              ...message,showName:showName,isNewDay:false};
           });
           setMessages(prevMessages => [...prevMessages, ...newMessages]);
         }
+      }
+      else{
+        getMessages()
       }
     }
     catch (error) {

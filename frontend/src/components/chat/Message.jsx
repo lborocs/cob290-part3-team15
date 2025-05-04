@@ -15,7 +15,7 @@ function Content({ message }) {
   );
 }
 
-function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, isDropdownOpen, toggleDropdown, dropdownRefs, SetisHovered, isHovered }) {
+function SelfMessage({ message, setEditing, setEditingMessage, editingMessage, toggleDropdown, dropdownRefs, SetisHovered, isHovered }) {
   const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the modal
   const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
   const messageRef = useRef(null);
@@ -114,7 +114,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   )
 }
 
-function OtherMessage({ message, isDropdownOpen, toggleDropdown, dropdownRefs, SetisHovered, isHovered }) {
+function OtherMessage({ message, toggleDropdown, dropdownRefs, SetisHovered, isHovered }) {
   const messageRef = useRef(null); // Reference to the message element
 
   const { refs: hoverRefs, floatingStyles: hoverStyles, context: hoverContext } = useFloating({
@@ -237,9 +237,9 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
     
     <>
       {sentByUser ? 
-      <SelfMessage message={messageContent} mode={mode} 
-      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs} SetisHovered={SetisHovered} isHovered={isHovered}/> 
-      : <OtherMessage message={messageContent} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs} SetisHovered={SetisHovered} isHovered={isHovered}/>}
+      <SelfMessage message={messageContent}
+      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs} SetisHovered={SetisHovered} isHovered={isHovered}/> 
+      : <OtherMessage message={messageContent} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs} SetisHovered={SetisHovered} isHovered={isHovered}/>}
         {isDropdownOpen && (
         <ChatDropdown
           sentByUser={sentByUser}
