@@ -123,7 +123,7 @@ router.get("/getUserWeeklyHours",authenticateToken,(req,res) => {
 
 
 
-// get the different
+// Get the number of tasks an employee has complete and incomplete
 router.get("/getTaskCompletionStatus", authenticateToken, (req, res) => {
     const projectId = req.query.projectId;
 
