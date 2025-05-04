@@ -152,12 +152,8 @@ function Chat({ user }){
 
     const attemptToSetNotification = (data) => {
         if (data.target===selectedIDRef.current && data.target!==null && data.type===modeRef.current){
-            console.log("HI")
         }
         else{
-            console.log(data)
-            console.log(selectedIDRef.current)
-            console.log(modeRef.current)
             setNewNotification(previous => previous+1);
         }
     }
@@ -183,7 +179,7 @@ function Chat({ user }){
                     <Header name={chatName} mode={mode} selectedID={selectedID} />
                     <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)] max-w-full ">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
                         <div className="flex flex-col bg-transparent pb-2 justify-center px-4 shadow-md">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing} editingMessage={editingMessage} setEditingMessage={setEditingMessage} setEditing={setEditing}/>
