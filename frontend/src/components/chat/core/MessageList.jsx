@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 
 function MessageList({userID, selectedID, mode, refresh, messageContainerRef, setEditing, setEditingMessage, editingMessage, editedValue}) {
   const [messages, setMessages] = useState([]);
-  const [openDropdownID, setOpenDropdownID] = useState(null); // State to track the open dropdown
   const boundaryRef = useRef(null); 
   
   const getMessages = async() => {
@@ -68,6 +67,8 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
 
   //Onload
   useEffect(()=>{
+    setEditing(false);
+    setEditingMessage(null);
     getMessages();
   }, [selectedID,mode])
 
