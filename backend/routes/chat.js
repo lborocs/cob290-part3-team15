@@ -79,7 +79,8 @@ router.get("/getChats",authenticateToken,(req,res) => {
                         'direct_messages' AS type,
                         users.status AS status,
                         active_chats.LastUpdate AS timestamp,
-                        dm.Content AS content
+                        dm.Content AS content,
+                        IFNULL(unread.UnreadCount, 0) AS notifications
                     FROM active_chats
                     LEFT JOIN users 
                         ON users.UserID = active_chats.Target 
@@ -94,12 +95,35 @@ router.get("/getChats",authenticateToken,(req,res) => {
                                 ORDER BY dm.Timestamp DESC
                             ) AS rn
                         FROM direct_messages dm
+                        WHERE dm.isDeleted=0
                     ) AS dm 
                         ON (
                             (dm.Sender = active_chats.UserID AND dm.Recipient = active_chats.Target) OR 
                             (dm.Recipient = active_chats.UserID AND dm.Sender = active_chats.Target)
                         )
                         AND dm.rn = 1
+                    LEFT JOIN (
+                        SELECT 
+                            COUNT(*) AS UnreadCount,
+                            CASE 
+                                WHEN dm.Sender < dm.Recipient THEN dm.Sender
+                                ELSE dm.Recipient
+                            END AS user1,
+                            CASE 
+                                WHEN dm.Sender < dm.Recipient THEN dm.Recipient
+                                ELSE dm.Sender
+                            END AS user2
+                        FROM direct_messages dm
+                        JOIN active_chats active_chats_2 
+                        ON ((dm.Sender = active_chats_2.Target AND dm.Recipient = active_chats_2.UserID) 
+                        OR (dm.Recipient = active_chats_2.Target AND dm.Sender = active_chats_2.UserID))
+                        WHERE 
+                            (active_chats_2.LastRead IS NULL OR dm.Timestamp > active_chats_2.LastRead)
+                            AND active_chats_2.UserID = ?
+                        GROUP BY user1, user2
+                    ) unread
+                    ON (LEAST(active_chats.UserID, active_chats.Target) = unread.user1 AND GREATEST(active_chats.UserID, active_chats.Target) = unread.user2
+                    )
                     WHERE active_chats.UserID = ? 
 
                     UNION
@@ -110,7 +134,13 @@ router.get("/getChats",authenticateToken,(req,res) => {
                         'group_messages' AS type,
                         NULL AS status,
                         g.LastUpdate AS timestamp,
-                        gm.Content AS content
+                        gm.Content AS content,
+                        (SELECT COUNT(*)
+                            FROM group_messages gm_sub
+                            WHERE gm_sub.GroupID = g.GroupID
+                            AND gm_sub.Timestamp > IFNULL(gu.LastRead, 0)
+                            AND gm_sub.isDeleted = 0
+                        ) AS notifications
                     FROM groups g
                     JOIN group_users gu ON gu.GroupID = g.GroupID
                     LEFT JOIN group_messages gm 
@@ -118,8 +148,9 @@ router.get("/getChats",authenticateToken,(req,res) => {
                         AND gm.Timestamp = (
                             SELECT MAX(Timestamp)
                             FROM group_messages
-                            WHERE GroupID = g.GroupID
+                            WHERE GroupID = g.GroupID AND group_messages.isDeleted=0
                         )
+                    
                     WHERE gu.UserID = ?
                     ORDER BY timestamp DESC;`;
     const id = req.user.userID;
@@ -129,7 +160,7 @@ router.get("/getChats",authenticateToken,(req,res) => {
         return res.status(400).json({ error: "Error with login instance, please log back in!" });
     }
 
-    const values = [id,id];
+    const values = [id,id,id];
     database.query(query, values, (err, results) => {
         res.send({results: results});
     });

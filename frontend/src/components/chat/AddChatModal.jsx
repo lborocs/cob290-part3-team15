@@ -7,6 +7,7 @@ import { FaUser } from "react-icons/fa";
 function AddChatModal({ open, onClose, userID }) {
     const [searchInput, setInput] = useState("");
     const [selectedPeople, setSelectedPeople] = useState([]);
+    const [isGroupMode, setIsGroupMode] = useState(false); // State to track if group mode is enabled
 
     const [people, setPeople] = useState([]); // Limited list of people
     const [fullPeopleList, setFullPeopleList] = useState([]); // Full list of people
@@ -138,13 +139,15 @@ function AddChatModal({ open, onClose, userID }) {
     }, [open]);
 
   return (
-    open && (
-        <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-8 w-xl" accentColor="bg-orangeHover">
-            {/* Header */}
-            <h3 className="text-2xl font-bold text-text mb-4 text-left w-full select-none">{selectedPeople.filter(p => p.isSelected).length > 1 ? "Add Group" : "Add Person"}</h3>
-
-            <div className="py-8 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
-                <div className="w-full px-8">
+    <>
+    {/* If the modal is open and group mode is disabled, i.e initially, show this modal */}
+    {open && !isGroupMode && (
+        <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-3 px-3 w-xl" accentColor="bg-orangeHover">
+            <div className="pt-5"></div>
+            <div className="py-3 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
+                {/* Header */}
+                <h3 className="px-4 text-2xl font-bold text-text mb-3 text-left w-full select-none">Add Person</h3>
+                <div className="w-full px-4">
                     {/* Search Bar */}
                     <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
                     <input
@@ -156,60 +159,80 @@ function AddChatModal({ open, onClose, userID }) {
                     />
                         <BsSearch className="text-gray-200" />
                     </div>
-                    {/* Selected People Section */}
-                    {false && (
-                    <div className="relative flex items-center mb-4 pl-4 pr-4">
-                        {/* Left Scroll Button */}
-                        <button
-                            onClick={() => {
-                                const container = document.getElementById("selected-people-container");
-                                container.scrollLeft -= 150;
-                            }}
-                            className="absolute left-0 text-black"
-                        >
-                            <BsChevronLeft />
-                        </button>
+                </div>
 
-                        {/* Selected People Container */}
-                        <div
-                            id="selected-people-container"
-                            className="flex flex-nowrap items-center overflow-hidden"
+                {/* List of people */}
+                
+                <div className="space-y-2 px-4 w-full max-h-40 overflow-y-auto">
+                {/* For Selected People / Top Half */}
+                {selectedPeople
+                    .map((person) => (
+                        <label
+                            key={person.id}
+                            className="flex w-full items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
+                            onClick={() => console.log(person.name)}
                         >
-                            {selectedPeople.map((person) => (
-                                <div
-                                    key={person.id}
-                                    className="flex flex-nowrap whitespace-nowrap bg-orangeHover text-text px-3 py-1 rounded-full shadow-sm"
-                                >
-                                    <span className="mr-2 flex flex-nowrap">{person.name}</span>
-                                    <button
-                                        onClick={() => {
-                                            setSelectedPeople(selectedPeople.filter((p) => p.id !== person.id))
-                                            }
-                                        }
-                                        className="text-gray-500 hover:text-red-700 font-bold"
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+                            <div
+                                className={`flex flex-col w-8 h-8 rounded-full items-center ${colors[Object.keys(colors)[person.id % Object.keys(colors).length]]} mr-4`}
+                            ><FaUser className="h-full h-full text-white" /></div>
+                            <span className="font-bold px-2">{person.name}</span>
+                        </label>
+                    ))}
+                {/* For Unselected People / Bottom Half */}
+                {people
+                    .filter((person) => 
+                        !selectedPeople.some((p) => p.id === person.id) // Filter out selected people
+                    )
+                    .filter((person) =>
+                        person.name.toLowerCase().includes(searchInput.toLowerCase())
+                    )
+                    .map((person) => (
+                        <label
+                            key={person.id}
+                            className="flex w-full items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
+                            onClick={() => console.log(person.name)}
+                        >
+                            <div
+                                className={`flex flex-col w-8 h-8 rounded-full items-center ${colors[Object.keys(colors)[person.id % Object.keys(colors).length]]} mr-4`}
+                            ><FaUser className="h-full h-full text-white" /></div>
+                            <span className="font-bold px-2">{person.name}</span>
+                        </label>
+                    ))}
+                </div>
+            </div>
+            <div className="flex items-center justify-center w-full">  
+                <button onClick={() => setIsGroupMode(true)} className=" w-[40%] mt-4 px-2 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
+                    Create group
+                </button>
+            </div>
+        </Modal>
+    )}
+        
 
-                        {/* Right Scroll Button */}
-                        <button
-                            onClick={() => {
-                                const container = document.getElementById("selected-people-container");
-                                container.scrollLeft += 150;
-                            }}
-                            className="absolute right-0 text-black"
-                        >
-                            <BsChevronRight />
-                        </button>
+    {/* If the modal is open and group mode is enabled, show this modal */}
+    {open && isGroupMode && (
+        <Modal open={open} onClose={onClose} bgColor="bg-backgroundOrange py-3 px-3 w-xl" accentColor="bg-orangeHover">
+            <div className="pt-5"></div>
+            <div className="py-3 bg-accentOrange rounded-lg mx-auto shadow-sm w-full select-none">
+                {/* Header */}
+                <h3 className="px-4 text-2xl font-bold text-text mb-3 text-left w-full select-none">Add People</h3>
+
+                <div className="w-full px-4">
+                    {/* Search Bar */}
+                    <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
+                    <input
+                        type="text"
+                        value={searchInput}
+                        onChange={handleSearchInput}
+                        placeholder="Search"
+                        className="flex-grow bg-transparent outline-none text-gray-200 placeholder-gray-200"
+                    />
+                        <BsSearch className="text-gray-200" />
                     </div>
-                    )}
                 </div>
                 {/* List of people */}
                 
-                <div className="space-y-2 px-8 w-full max-h-40 overflow-y-auto">
+                <div className="space-y-2 px-4 w-full max-h-40 overflow-y-auto">
                 {/* For Selected People / Top Half */}
                 {selectedPeople
                     .map((person) => (
@@ -256,13 +279,25 @@ function AddChatModal({ open, onClose, userID }) {
                     ))}
                 </div>
             </div>
-            <div className="flex justify-end">  
-                <button onClick={handleSubmit} className="mt-4 px-10 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
-                    Add
-                </button>
-            </div>
+            <span className="flex justify-between w-full">
+                {/* Back Button */}
+                <div className="flex justify-start w-[40%]">
+                    <button
+                        onClick={() => setIsGroupMode(false)} // Switch back to DM layer
+                        className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full"
+                    >
+                        Back
+                    </button>
+                </div>
+                <div className="flex justify-end w-[40%]">  
+                    <button onClick={handleSubmit} className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full">
+                        {selectedPeople.filter(p => p.isSelected).length > 1 ? "Create Group" : "Start Chat"}
+                    </button>
+                </div>
+            </span>
         </Modal>
-    )
+    )}
+    </>
   );
 }
 

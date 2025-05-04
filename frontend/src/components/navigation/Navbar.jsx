@@ -97,7 +97,7 @@ const Navbar = (props) => {
     }, [props.refreshNotifications]);
 
 
-    const dismiss = useDismiss(context, {outsidePressEvent: "mousedown",});
+    useDismiss(context, {outsidePressEvent: "mousedown",});
 
     //Anti Right Click
     const HandleRightClick = (event) => {

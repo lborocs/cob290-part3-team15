@@ -89,6 +89,12 @@ function Chat({ user }){
         }
     }, [windowWidth]);
 
+    const setSidebarVisibleSmallScreen = () => {
+        if (windowWidth < 1024) {
+            setSidebarVisible(false);
+        } 
+    }
+
     useEffect(() => {
         connectSocket();
         const socket = getSocket();
@@ -152,12 +158,8 @@ function Chat({ user }){
 
     const attemptToSetNotification = (data) => {
         if (data.target===selectedIDRef.current && data.target!==null && data.type===modeRef.current){
-            console.log("HI")
         }
         else{
-            console.log(data)
-            console.log(selectedIDRef.current)
-            console.log(modeRef.current)
             setNewNotification(previous => previous+1);
         }
     }
@@ -169,42 +171,23 @@ function Chat({ user }){
             <Navbar userID = {userID} selectable={selectable} isSelected={sidebarVisible} setIsSelected={setSidebarVisible} activeTab={activeTab} status={personalStatus} newNotification={newNotification} refreshNotifications={messagesLoaded}/>
 
             {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
-            <div className="flex flex-1 relative">
+            <div className="flex flex-1 max-w-[calc(100%-72px)] relative">
                 {sidebarVisible ? 
                 <div className={`flex flex-col h-full fixed lg:static bg-backgroundOrange sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`} onContextMenu={HandleRightClick} ref={containerRef}> 
                     {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
-                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} statusUpdate={otherStatus} containerRef={containerRef} setName={setName}/>
+                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} statusUpdate={otherStatus} containerRef={containerRef} setName={setName} setSidebarVisible={setSidebarVisibleSmallScreen}/>
                 </div>
                 :<></>}
                 
                 {/*Main Chat Area*/}
-                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative`} onContextMenu={HandleRightClick}>
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full`} onContextMenu={HandleRightClick}>
                     {/* <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div> */}
                     <Header name={chatName} mode={mode} selectedID={selectedID} />
-                    <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)]">
-                        <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
-                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} 
-                            messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
+                    <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)] max-w-full ">
+                        <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
+                            <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
-                        {editing && (
-                            <div className="w-full bg-transparent text-black justify-center text-left rounded-lg px-30 z-5">
-                                
-                                <span className="flex items-center">
-                                    <button
-                                        className="mr-4 text-gray-500 hover:text-red-700"
-                                        onClick={() => {
-                                            setEditing(false);
-                                            setEditingMessage(null);
-                                        }}
-                                        >
-                                        <BsX/>
-                                    </button>
-                                    Editing Message: {editingMessage.content}
-                                </span>
-                                
-                            </div>
-                        )}
-                        <div className="flex flex-col bg-transparent h-20 justify-center px-4 shadow-md px-30">
+                        <div className="flex flex-col bg-transparent pb-2 justify-center px-4 shadow-md">
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing} editingMessage={editingMessage} setEditingMessage={setEditingMessage} setEditing={setEditing}/>
                         </div>
                     </div>

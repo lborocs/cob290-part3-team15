@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from "react";
 
 function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,messageContainerRef, setEditing, setEditingMessage, editingMessage, editedValue}) {
   const [messages, setMessages] = useState([]);
-
   const boundaryRef = useRef(null); 
-
+  
   const getMessages = async() => {
     //Actual API request
     try{
@@ -17,8 +16,9 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
         setMessagesLoaded(Date.now());
         // Hide name if back-to-back messages are from the same user
         const messagesWithShowName = response.data.results.map((message, index, arr) => {
-          const showName = (index === 0 || message.user !== arr[index - 1].user || message.user === userID);
-          return {...message,showName,};
+          const showName = (index === 0 || (message.user !== arr[index - 1].user) || (new Date(message.timestamp) - new Date(arr[index - 1].timestamp)) > (20 * 60 * 1000));
+          const isNewDay = (index === 0 || new Date(message.timestamp).toDateString() !== new Date(arr[index - 1].timestamp).toDateString());
+          return {...message,showName:showName,isNewDay:isNewDay};
         });
         setMessages(messagesWithShowName);
       }
@@ -42,12 +42,17 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
           //Hide name if back-to-back messages are from the same user
           const lastMessageOwner = messages.slice(-1)[0]?.user || null;
           const newMessages = response.data.results.map((message, index, arr) => {
-            const showName = (index === 0 && message.user === lastMessageOwner) ? false : (index === 0 || message.user !== arr[index - 1].user || message.user === userID);
+            const showName = (index === 0 && message.user === lastMessageOwner) ? 
+            ((new Date(message.timestamp) - new Date(lastMessageTimestamp)) > (20 * 60 * 1000)) : 
+            (index === 0 || (message.user !== arr[index - 1].user) || (new Date(message.timestamp) - new Date(arr[index - 1].timestamp)) > (20 * 60 * 1000))
             return {
-              ...message,showName,};
+              ...message,showName:showName,isNewDay:false};
           });
           setMessages(prevMessages => [...prevMessages, ...newMessages]);
         }
+      }
+      else{
+        getMessages()
       }
     }
     catch (error) {
@@ -59,7 +64,7 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
     //Find message with corresponding messageID and modify the content
     const updatedMessages = messages.map((message) => {
       if (message.messageID === editedValue.messageID) {
-        return { ...message, content: editedValue.content };
+        return { ...message, content: editedValue.content,isEdited:1 };
       }
       return message;
     });
@@ -68,6 +73,8 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
 
   //Onload
   useEffect(()=>{
+    setEditing(false);
+    setEditingMessage(null);
     getMessages();
   }, [selectedID,mode])
 
@@ -86,7 +93,7 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
   }, [messages])  
   
   return (
-    <div className="flex flex-col mx-30" ref={boundaryRef}>
+    <div className="flex flex-col max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center px-auto" ref={boundaryRef}>
         {messages.map((message) => (
             <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef}/>
         ))}

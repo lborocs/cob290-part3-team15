@@ -7,10 +7,10 @@ const {authenticateToken} = require("../exports/authenticate");
 router.use(express.json()) // for parsing 'application/json'
 
 router.get("/getMessages",authenticateToken,(req,res) => {
-    const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp
+    const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp, isEdited as isEdited
                  FROM direct_messages 
                  LEFT JOIN users ON direct_messages.Sender=users.UserID 
-                 WHERE (Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)
+                 WHERE ((Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)) AND isDeleted=0
                  ORDER BY direct_messages.Timestamp ASC`;
     const id = req.user.userID;
     const target = req.query.target;
@@ -39,10 +39,10 @@ router.get("/getMessages",authenticateToken,(req,res) => {
 });
 
 router.get("/getMessagesAfter",authenticateToken,(req,res) => {
-    const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp
+    const query=`SELECT direct_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,direct_messages.Content as content,direct_messages.Sender as user, direct_messages.Timestamp as timestamp, isEdited as isEdited
                  FROM direct_messages 
                  LEFT JOIN users ON direct_messages.Sender=users.UserID 
-                 WHERE ((Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)) AND direct_messages.Timestamp>CONVERT_TZ(?, '+00:00', @@session.time_zone)
+                 WHERE (((Sender=? AND Recipient=?) OR (Sender=? AND Recipient=?)) AND direct_messages.Timestamp>CONVERT_TZ(?, '+00:00', @@session.time_zone)) AND isDeleted=0
                  ORDER BY direct_messages.Timestamp ASC`;
     const id = req.user.userID;
     const target = req.query.target;
@@ -104,7 +104,7 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
 });
 
 router.put("/updateMessage",authenticateToken,(req,res) => {
-    const query="UPDATE direct_messages SET Content=? WHERE MessageID=? AND Sender=?";
+    const query="UPDATE direct_messages SET Content=?, isEdited = 1 WHERE MessageID=? AND Sender=?";
     const id = req.user.userID;
     const messageID= req.body.id;
     const content = req.body.content;

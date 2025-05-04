@@ -1,4 +1,4 @@
-import {BsSend} from 'react-icons/bs';
+import {BsSend, BsX} from 'react-icons/bs';
 import { useState,useRef, useEffect } from 'react';
 import axios from "axios";
 
@@ -15,7 +15,11 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
       //If editing, set the message to the message being edited
       setMessage(editingMessage.content);
     }
+    else{
+      setMessage("");
+    }
   },[editing, editingMessage]);
+
   // onSubmit function
   const onSubmit = async(e) => {
     e.preventDefault();
@@ -32,7 +36,7 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
             setEditing(false); // Set editing to false after submitting the message
             setEditingMessage(null); // Clear the message being edited
             setMessage(""); // Clear the message input field
-            ref.current.blur(); // Remove focus from the input field
+            ref.current.focus()
           } else {
               console.error("Failed to update message");
           }
@@ -41,6 +45,7 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
         }
         return
       }
+      return
     }
     if (message===""){
       return
@@ -54,6 +59,7 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
       const response = await axios.post(`/api/chat/${mode}/sendMessage`, body, headers);
       if (response?.data?.success){
         setMessage("");
+        ref.current.focus()
       }
       else{
         console.error("Message failed to send");
@@ -63,12 +69,37 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
       console.error(error);
     }
   }
+
   return (
-    <form className="flex items-center gap-2 p-2 border border-gray-500 rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition w-full" onSubmit={onSubmit}>
-        <input type="text" className= "flex-1 p-2 bg-transparent text-white focus:outline-none" id="message_box" ref={ref} value={message} onChange={(e) => handleMessageChange(e.target.value)} placeholder="Enter message" />
+    <>
+    <form className="max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center flex flex-col items-center border border-black rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition" onSubmit={onSubmit}>
+        {editing && (
+          <span className="flex justify-between items-center max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center p-1 rounded-t-lg bg-black/30 text-white">
+            <div className="flex truncate">
+              <p className="font-light px-2">Editing Message:</p>
+              <p className="font-bold truncate max-w-full overflow-hidden text-ellipsis whitespace-nowrap pr-5">{editingMessage.content}</p>
+            </div>
+            <button
+                className="mr-2 text-white hover:text-red-700"
+                onClick={() => {
+                    setEditing(false);
+                    setEditingMessage(null);
+                }}
+                >
+                <BsX className="text-2xl"/>
+            </button>
+          </span>
+        )}
+        <div className="flex max-w-[max(1500px,100%)] w-[min(1500px,100%)] p-2">
+        <input type="text" className= "flex-1 p-2 bg-transparent text-white focus:outline-none max-w-[calc(100%-36px)]" 
+        autoComplete="off" id="message_box" ref={ref} value={message} onChange={(e) => handleMessageChange(e.target.value)} placeholder="Enter message"
+        onKeyDown={(e) => {if (e.key === 'Enter') {e.preventDefault();onSubmit(e)}}}/>
         <button type="submit" className="p-2 text-white rounded-full flex items-center" id="submit_message_button" onClick={onSubmit}><BsSend className="w-5 h-5 text-gray-300 hover:text-gray-400 transition-all"/></button>
+        </div>
     </form>
+  </>
   );
+  
 }
 
 export default MessageBox;
