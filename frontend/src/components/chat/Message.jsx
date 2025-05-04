@@ -15,8 +15,7 @@ function Content({ message }) {
   );
 }
 
-function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, isDropdownOpen, toggleDropdown, dropdownRefs }) {
-  const [isHovered, SetisHovered] = useState(false); // Default is not hovered
+function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, isDropdownOpen, toggleDropdown, dropdownRefs, SetisHovered, isHovered }) {
   const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the modal
   const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
   const messageRef = useRef(null);
@@ -115,8 +114,7 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   )
 }
 
-function OtherMessage({ message, isDropdownOpen, toggleDropdown, dropdownRefs }) {
-  const [isHovered, SetisHovered] = useState(false); // Default is not hovered
+function OtherMessage({ message, isDropdownOpen, toggleDropdown, dropdownRefs, SetisHovered, isHovered }) {
   const messageRef = useRef(null); // Reference to the message element
 
   const { refs: hoverRefs, floatingStyles: hoverStyles, context: hoverContext } = useFloating({
@@ -197,7 +195,7 @@ function OtherMessage({ message, isDropdownOpen, toggleDropdown, dropdownRefs })
 
 function Message({ messageContent , userID , mode, setEditing, setEditingMessage, editingMessage, boundaryRef}) {
   //const [message,setMessage]=useState(messageContent);
-
+  const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const sentByUser = parseInt(messageContent.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
   const [isDropdownOpen, setDropdownOpen] = useState(false); // State to track the open dropdown
   
@@ -240,8 +238,8 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
     <>
       {sentByUser ? 
       <SelfMessage message={messageContent} mode={mode} 
-      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs}/> 
-      : <OtherMessage message={messageContent} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs}/>}
+      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs} SetisHovered={SetisHovered} isHovered={isHovered}/> 
+      : <OtherMessage message={messageContent} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs} SetisHovered={SetisHovered} isHovered={isHovered}/>}
         {isDropdownOpen && (
         <ChatDropdown
           sentByUser={sentByUser}
