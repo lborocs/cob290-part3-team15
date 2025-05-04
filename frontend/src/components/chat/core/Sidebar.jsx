@@ -39,7 +39,13 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
   
       const response = await axios.get(`/api/chat/getChats`, {headers: { Authorization: `Bearer ${accessToken}` }});
       if (response?.data?.results){
-          setChats(response.data.results);
+        const adjustedChats = response.data.results.map(chat => {
+          if (chat.target === selectedID && chat.type === mode) {
+            return { ...chat, notifications: 0 }; //Force to 0, selected screen already
+          }
+          return chat;
+        });
+        setChats(adjustedChats);
       } 
       else {
           setChats([]);
@@ -146,8 +152,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
         {filteredChats.map((chat) => (
           <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 gap-2 group`} onContextMenu={(e) => HandleRightClick(e,chat)}>
             <button className="flex w-full h-full pt-1 pl-2 pr-1 text-text rounded"
-              onClick={() => {setSelectedID(chat.target); setMode(chat.type); setName(chat.name);setSidebarVisible(false)}}>
-
+              onClick={() => {setSelectedID(chat.target); setMode(chat.type); setName(chat.name);setSidebarVisible(false);setChats(prevChats => prevChats.map(c =>c.target === chat.target && c.type === chat.type? { ...c, notifications: 0 }: c));}}>
               <div className="w-15 h-15 my-auto">
                   <ProfileCard displayBG={selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange group-hover:bg-orangeHover"} type={chat.type === "group_messages" ? "Group" : "" } id={chat.target} status={chat.status}/>
               </div>
@@ -155,8 +160,15 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
                 <div className="flex flex-col w-full justify-start">
                   <p className="font-extrabold text-text group-hover:max-w-37 max-w-50 w-full text-[18px] text-left truncate">{chat.name}</p>
                   <p className="font-normal text-text group-hover:max-w-37 max-w-50 text-[16px] text-left truncate">{chat.content}</p>
-                  <p className="text-text text-sm absolute bottom-0 right-0 pr-2 pb-1 group-hover:hidden">{timeFormat(chat.timestamp)}</p>
+                  {chat.notifications>0?
+                  <div className={`group-hover:hidden right-0 absolute font-bold w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-[16px]`}>
+                    <p className="w-full text-center pr-[1px]">{ chat.notifications<99? chat.notifications : "99+"}</p>
+                  </div>
+                  :<></>
+                  }
+                  <p className={`absolute bottom-0 right-0 group-hover:hidden text-text text-sm pr-2 pb-1 ${chat.notifications>0?"font-bold":""}`}>{timeFormat(chat.timestamp)}</p>
                 </div>
+                
               </div>
             </button>
 
