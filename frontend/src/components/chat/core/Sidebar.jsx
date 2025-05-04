@@ -161,7 +161,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
                   <p className="font-extrabold text-text group-hover:max-w-37 max-w-50 w-full text-[18px] text-left truncate">{chat.name}</p>
                   <p className="font-normal text-text group-hover:max-w-37 max-w-50 text-[16px] text-left truncate">{chat.content}</p>
                   {chat.notifications>0?
-                  <div className={`group-hover:hidden right-0 absolute font-bold w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-[16px]`}>
+                  <div className={`group-hover:hidden right-0 absolute font-bold w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white ${ chat.notifications<99? "text-[14px]" : "text-[11px]"}`}>
                     <p className="w-full text-center pr-[1px]">{ chat.notifications<99? chat.notifications : "99+"}</p>
                   </div>
                   :<></>
