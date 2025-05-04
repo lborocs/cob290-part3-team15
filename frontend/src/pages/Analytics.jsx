@@ -99,7 +99,7 @@ function Analytics({ user }) {
                     // or we get just the selected project
 
                     // get project details
-                    const responseDetails = await axios.get(`/api/analytics/projects/getProjectDetails?title=${selectedProject.title}`, {
+                    const responseDetails = await axios.get(`/api/analytics/projects/getProjectDetails?id=${selectedProject.id}`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
 

@@ -8,14 +8,14 @@ router.use(express.json()) // for parsing 'application/json'
 // TODO change this to get details from the project ID not title
 // this gets the details of the selected project
 router.get("/getProjectDetails", authenticateToken, (req, res) => {
-    const query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description' FROM projects as p WHERE p.Title=?`;
+    const query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description' FROM projects as p WHERE p.ProjectID=?`;
 
-    const title = req.query.title;
-    if (!title) {
-        return res.status(400).send({ error: "Title parameter is required" });
+    const projectId = req.query.id;
+    if (!projectId) {
+        return res.status(400).send({ error: "id parameter is required" });
     }
 
-    const values = [title];
+    const values = [projectId];
     database.query(query, values, (err, projectResults) => {
         if (err) {
             return res.status(500).send({error: "Error fetching project details"});
