@@ -6,13 +6,6 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
   const [messages, setMessages] = useState([]);
   const [openDropdownID, setOpenDropdownID] = useState(null); // State to track the open dropdown
   const boundaryRef = useRef(null); 
-  const toggleDropdown = (messageID) => {
-    if (openDropdownID === messageID) {
-      setOpenDropdownID(null); // Close the dropdown if it's already open
-    } else {
-      setOpenDropdownID(messageID); // Open the dropdown for the clicked message
-    }
-  };
   
   const getMessages = async() => {
     //Actual API request
@@ -95,7 +88,7 @@ function MessageList({userID, selectedID, mode, refresh, messageContainerRef, se
   return (
     <div className="flex flex-col max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center px-auto" ref={boundaryRef}>
         {messages.map((message) => (
-            <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef} isDropdownOpen={openDropdownID === message.messageID} toggleDropdown = {() => toggleDropdown(message.messageID)}/>
+            <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef}/>
         ))}
     </div>
   );

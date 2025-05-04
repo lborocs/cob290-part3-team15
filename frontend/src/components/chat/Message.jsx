@@ -1,7 +1,7 @@
 import MessageOptions from './MessageOptions.jsx';
 import { use, useRef, useState, useEffect } from 'react';
 import ChatDropdown from './ChatDropdown.jsx';
-import { useFloating, offset, flip, shift, useDismiss,  autoUpdate} from '@floating-ui/react';
+import { useFloating, offset, flip, shift, useDismiss,  autoUpdate, useHover,useInteractions,} from '@floating-ui/react';
 import HideMessageModal from './HideMessageModal.jsx';
 
 function Content({ message }) {
@@ -15,7 +15,7 @@ function Content({ message }) {
   );
 }
 
-function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, isDropdownOpen, toggleDropdown, boundaryRef }) {
+function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessage, isDropdownOpen, toggleDropdown, dropdownRefs }) {
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the modal
   const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
@@ -30,14 +30,22 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
             : `${String(new Date(message.timestamp).getDate()).padStart(2, '0')}/${String(new Date(message.timestamp).getMonth() + 1).padStart(2, '0')} ${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`;
 
   
-  const HandleHover = (e) => {
-    if (e.type === 'mouseenter'){
-      SetisHovered(true)
-    } 
-    else if (e.type === 'mouseleave'){
-      SetisHovered(false)
-    }
+  const { refs: hoverRefs, floatingStyles: hoverStyles, context: hoverContext } = useFloating({
+    placement: "top-end",
+    middleware: [offset(-2)],
+    whileElementsMounted: autoUpdate,
+    open: false,
+    onOpenChange: (open) => {SetisHovered(open)}});
+  useHover(hoverContext, { move: false });
+
+
+  const setRefs = (element) => {
+    dropdownRefs.setReference(element);
+    hoverRefs.setReference(element);
   };
+
+
+  
 
   const openHideModal = () => {
     setMessageToHide(message); // Set the message to be hidden
@@ -54,46 +62,8 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
     event.preventDefault();
     // Stop the propagation so mousedown doesn't interfere
     event.stopPropagation();
-    if (isDropdownOpen) {
-      toggleDropdown(null); // Close the dropdown
-      selectedZ(false); // Disable z-index when closed
-    } else {
-      toggleDropdown(message.messageID); // Open the dropdown for this message
-      selectedZ(true) // Enable z-index when opened
-    }
-  };
-  
-  // Set up floating ui
-  const { refs: dropdownRefs, floatingStyles: dropdownStyles, context } = useFloating({
-    middleware: [
-      offset(), 
-      flip(),         
-      shift({ boundary: boundaryRef.current, padding: 8})
-    ],
-    placement: "top-end",
-    whileElementsMounted: autoUpdate,
-    open: isDropdownOpen,
-    onOpenChange: (open) => {
-      if (!open) {
-        toggleDropdown(null); // Close the dropdown when open changes to false
-        selectedZ(false); // Disable z-index when closed
-      }
-    },
-  }); 
-  
-  useDismiss(context, {
-    outsidePressEvent: "mousedown",
-    referencePress: false, // Prevent closing when clicking on the reference element
-    bubbles: true, // Allow the event to bubble up to the parent elements
-    trees: true, // Allow the event to bubble up to the parent elements
-    outsidePress: (event) => {
-      // If it's a right-click on the message element, don't close the dropdown
-      if (event.button === 2 && messageRef.current && messageRef.current.contains(event.target)) {
-        return false; // Returning false prevents the dropdown from closing
-      }
-      return true; // All other clicks should close the dropdown
-    }
-  });
+    toggleDropdown();
+  }; 
   
   return(
     <div className={`flex flex-col w-full ${z ? "z-10" : "z-0"}`}>
@@ -113,33 +83,21 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
         </div>
         }
         <div ref={messageRef}>
-          <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} mb-2 rounded-lg border border-2 border-accentGreen/80 px-4 py-2 text-base font-medium bg-accentGreen/50 relative`} 
-          onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={dropdownRefs.setReference}>
+          <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} mb-2 rounded-lg border border-2 border-accentGreen/80 px-4 py-2 text-base font-medium bg-accentGreen/50 relative`} onContextMenu={HandleRightClick} ref={setRefs}>
             <div className="self-start text-pretty break-all">
               {isHovered && (
+                <div ref={hoverRefs.setFloating} style={hoverStyles}>
                 <MessageOptions sentByUser={true} 
-                isHoveredComment={isHovered}
                 message={message} // Pass the message to the options
                 setEditing={setEditing} // Pass the setMessage function to the options
                 setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
                 setIsDropdownOpen={toggleDropdown}
                 />
+                </div>
               )}
               <Content message={message}/>
               {message.isEdited==1 && (<p className="text-right text-xs text-light text-gray-400 select-none">edited</p>)}
             </div>
-            {isDropdownOpen && ( // Dropdown menu for right click options
-              <ChatDropdown
-                sentByUser={true}
-                onClose = {()=> {toggleDropdown(null); SetisHovered(false)}}
-                message={message} // Pass the message to the dropdown
-                setEditing={setEditing}
-                setEditingMessage={setEditingMessage} // Pass the setMessage function to the options
-                refs={dropdownRefs} 
-                floatingStyles={dropdownStyles}
-                openHideModal={openHideModal} // Pass the openHideModal function to the dropdown
-              />
-            )}
             {
               isHideModalOpen && (
               <HideMessageModal
@@ -157,17 +115,17 @@ function SelfMessage({ message,mode, setEditing, setEditingMessage, editingMessa
   )
 }
 
-function OtherMessage({ message, isDropdownOpen, toggleDropdown, boundaryRef }) {
-  const [isHovered, SetisHovered] = useState(false); // Default is not hovered]
+function OtherMessage({ message, isDropdownOpen, toggleDropdown, dropdownRefs }) {
+  const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const messageRef = useRef(null); // Reference to the message element
-  const HandleHover = (e) => {
-    if (e.type === 'mouseenter'){
-      SetisHovered(true)
-    } 
-    else if (e.type === 'mouseleave'){
-      SetisHovered(false)
-    }
-  };
+
+  const { refs: hoverRefs, floatingStyles: hoverStyles, context: hoverContext } = useFloating({
+    placement: "top-end",
+    middleware: [offset(-2)],
+    whileElementsMounted: autoUpdate,
+    open: false,
+    onOpenChange: (open) => {SetisHovered(open)}});
+    useHover(hoverContext, { move: false });
 
   const isToday = new Date(message.timestamp).toDateString() === new Date().toDateString();
   const isYesterday = (() => {const yesterday = new Date();yesterday.setDate(new Date().getDate() - 1);return new Date(message.timestamp).toDateString() === yesterday.toDateString()})();
@@ -180,52 +138,23 @@ function OtherMessage({ message, isDropdownOpen, toggleDropdown, boundaryRef }) 
   //Anti Right Click
   const HandleRightClick = (event) => {
     event.preventDefault();
-    // Stop the propagation so mousedown doesn't interfere
     event.stopPropagation();
-    if (isDropdownOpen) {
-      toggleDropdown(null); // Close the dropdown
-    } else {
-      toggleDropdown(message.messageID); // Open the dropdown for this message
-    }
+    toggleDropdown()
   };
 
- // Set up floating ui
- const { refs: dropdownRefs, floatingStyles: dropdownStyles, context } = useFloating({
-  middleware: [
-    offset(), 
-    flip(),         
-    shift({ boundary: boundaryRef.current, padding: 8})
-  ],
-  placement: "top-end",
-  whileElementsMounted: autoUpdate,
-  open: isDropdownOpen,
-  onOpenChange: (open) => {
-    if (!open) {
-      toggleDropdown(null); // Close the dropdown when open changes to false
-    }
-  },
-}); 
 
-useDismiss(context, {
-  outsidePressEvent: "mousedown",
-  referencePress: false, // Prevent closing when clicking on the reference element
-  bubbles: true, // Allow the event to bubble up to the parent elements
-  trees: true, // Allow the event to bubble up to the parent elements
-  outsidePress: (event) => {
-    // If it's a right-click on the message element, don't close the dropdown
-    if (event.button === 2 && messageRef.current && messageRef.current.contains(event.target)) {
-      return false; // Returning false prevents the dropdown from closing
-    }
-    return true; // All other clicks should close the dropdown
-  }
-  });
+  const setRefs = (element) => {
+    dropdownRefs.setReference(element);
+    hoverRefs.setReference(element);
+  };
+
 
   return(
     <div className="flex flex-col w-full ">
       {message.isNewDay && (
         <div className="flex items-center my-4">
           <div className="flex-grow border-t text-gray-400/50"></div>
-          <span className="px-4 text-sm text-gray-500 whitespace-nowrap">
+          <span className="px-4 text-sm text-gray-500 whitespace-nowrap select-none">
             {new Date(message.timestamp).toLocaleDateString(undefined, {day: 'numeric',month: 'long',year: 'numeric',})}
           </span>
           <div className="flex-grow border-t text-gray-400/50"></div>
@@ -239,32 +168,22 @@ useDismiss(context, {
         </div>
         }
         <div ref={messageRef}>
-          <div className={`mb-2 w-fit rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`} onMouseEnter={HandleHover} onMouseLeave={HandleHover} onContextMenu={HandleRightClick} ref={dropdownRefs.setReference}>
+          <div className={`mb-2 w-fit rounded-lg border border-2 border-gray-400/20 px-4 py-2 bg-secondary relative`} onContextMenu={HandleRightClick} ref={setRefs}>
             <div className="text-left flex flex-col text-pretty break-all">
               {isHovered && (
+                <div ref={hoverRefs.setFloating} style={hoverStyles}>
                 <MessageOptions sentByUser={false} 
-                isHoveredComment={isHovered} 
                 message={message} // Pass the message to the options
                 setEditing={null}
                 setEditingMessage={null}
                 setIsDropdownOpen={toggleDropdown}
                 />
+                </div>
               )}
               <Content message={message}/>
               {message.isEdited==1 && (<p className="text-right text-xs font-light text-gray-400 select-none">edited</p>)}
             </div>
           </div>
-          {isDropdownOpen && ( // Dropdown menu for right click options
-            <ChatDropdown
-            sentByUser={false}
-            onClose = {()=> {toggleDropdown(null); SetisHovered(false)}}
-            message={message} // Pass the message to the dropdown
-            setEditing={null}
-            setEditingMessage={null} // Pass the setMessage function to the options
-            refs={dropdownRefs}
-            floatingStyles={dropdownStyles}
-            />
-          )}
         </div>
       </div>
     </div>
@@ -276,17 +195,67 @@ useDismiss(context, {
 
 
 
-function Message({ messageContent , userID , mode, setEditing, setEditingMessage, editingMessage, boundaryRef, isDropdownOpen, toggleDropdown}) {
+function Message({ messageContent , userID , mode, setEditing, setEditingMessage, editingMessage, boundaryRef}) {
   //const [message,setMessage]=useState(messageContent);
 
   const sentByUser = parseInt(messageContent.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
+  const [isDropdownOpen, setDropdownOpen] = useState(false); // State to track the open dropdown
+  
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => {
+      if (prev) {setTimeout(() => setDropdownOpen(false), 0);return prev;} //Close 1 Render Later (Stops dismiss instantly refiring this)
+      else{return true} //Open immediately otherwise
+    });
+  };
+
+  // Set up floating ui
+  const { refs: dropdownRefs, floatingStyles: dropdownStyles, context } = useFloating({
+    placement: "top-end",
+    middleware: [offset(-2),flip(),shift({ boundary: boundaryRef.current})],
+    whileElementsMounted: autoUpdate,
+    open: isDropdownOpen,
+    onOpenChange: toggleDropdown
+  }); 
+
+
+  useDismiss(context, {
+    outsidePressEvent: "pointerup", // Can be "pointerdown" too
+    bubbles: true,
+    trees: true,
+    onDismiss: () => dismiss,
+  });
+
+
+
+  
+
+  
+  const openHideModal = () => {
+    setMessageToHide(messageContent); // Set the message to be hidden
+    setIsHideModalOpen(true); // Open the modal
+  };
+
   return (
+    
     <>
       {sentByUser ? 
       <SelfMessage message={messageContent} mode={mode} 
-      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} boundaryRef={boundaryRef}/> 
-      : <OtherMessage message={messageContent} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} boundaryRef={boundaryRef}/>}
+      setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs}/> 
+      : <OtherMessage message={messageContent} isDropdownOpen={isDropdownOpen} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs}/>}
+        {isDropdownOpen && (
+        <ChatDropdown
+          sentByUser={sentByUser}
+          onClose = {()=> {toggleDropdown(null); SetisHovered(false)}}
+          message={messageContent} // Pass the message to the dropdown
+          setEditing={sentByUser ? setEditing : null}
+          setEditingMessage={sentByUser ? setEditingMessage : null}
+          openHideModal={openHideModal}
+          refs={dropdownRefs} 
+          floatingStyles={dropdownStyles}
+        />
+        )}
     </>
+
   );
 }
 

@@ -7,7 +7,7 @@ function DropdownList({ items, onClick, icons, refs, floatingStyles, blurBackgro
       {/* Background Blur */}
       {blurBackground && (
         <div
-          className="fixed inset-0 bg-black/40 z-5 pointer-events-none"
+          className="fixed inset-0 z-50 pointer-events-auto"
         ></div>
       )}
 

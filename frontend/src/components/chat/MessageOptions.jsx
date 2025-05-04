@@ -1,7 +1,7 @@
 import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
 import { useState } from 'react';
 
-function MessageOptions({sentByUser, isHoveredComment, message, setEditing, setEditingMessage,setIsDropdownOpen}) {
+function MessageOptions({sentByUser, message, setEditing, setEditingMessage,setIsDropdownOpen}) {
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);
     
     const HandleMouseEnterEdit = () => {
@@ -17,33 +17,30 @@ function MessageOptions({sentByUser, isHoveredComment, message, setEditing, setE
     };
 
     return (
-        <>
-            {isHoveredComment && (
-                <div className="flex rounded-lg bg-white space-x-2 absolute right-0 bottom-10 y-10 z-40">
-                    {/* Dropdown button */}
-                    <button 
-                    onClick={toggleDropdown} 
-                    className="p-1"
-                    >
-                        <BsThreeDots className="text-gray-200 hover:text-purple-200" />
-                    </button>
-                    {/* Edit button */}
-                    {sentByUser &&
-                    <button
-                    onClick={() => {
-                    setEditing(true); // Set editing state to true when edit button is clicked
-                    setEditingMessage(message); // Set the message to be edited
-                    }}
-                    className="p-1"
-                    onMouseEnter={HandleMouseEnterEdit}
-                    onMouseLeave={HandleMouseLeaveEdit}
-                    >
-                    {isHoveredEdit ? <BsPencilFill className="text-purple-200" /> : <BsPencil className="text-gray-200" />}
-                    </button>
-                    }
-                </div>
-            )}
-        </>
+        <div className="flex rounded-lg bg-white space-x-2 z-40 p-1">
+            {/* Edit button */}
+            {sentByUser &&
+            <button
+            onClick={() => {
+            setEditing(true); // Set editing state to true when edit button is clicked
+            setEditingMessage(message); // Set the message to be edited
+            }}
+            className="p-1"
+            onMouseEnter={HandleMouseEnterEdit}
+            onMouseLeave={HandleMouseLeaveEdit}
+            >
+            {isHoveredEdit ? <BsPencilFill className="text-purple-200" /> : <BsPencil className="text-gray-200" />}
+            </button>
+            }
+
+            {/* Dropdown button */}
+            <button 
+            onClick={toggleDropdown} 
+            className="p-1"
+            >
+                <BsThreeDots className="text-gray-200 hover:text-purple-200" />
+            </button>
+        </div>
       )
 }
 
