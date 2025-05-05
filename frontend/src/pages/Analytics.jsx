@@ -7,10 +7,6 @@ import axios from "axios";
 import WelcomeMessage from "../components/analytics/WelcomeMessage.jsx";
 import QuickStatistics from "../components/analytics/QuickStatistics.jsx";
 import SearchBox from "../components/analytics/SearchBox.jsx";
-import StatisticsFieldCarousel from "../components/analytics/StatisticsFieldCarousel.jsx";
-import TasksList from "../components/analytics/TasksList.jsx";
-import StatisticsFieldBottom from "../components/analytics/StatisticsFieldBottom.jsx";
-import EmptyMessageBox from "../components/analytics/EmptyMessageBox.jsx";
 import StatisticsField from "../components/analytics/StatisticsField.jsx";
 
 function Analytics({ user }) {
@@ -38,11 +34,13 @@ function Analytics({ user }) {
                     // this is a function for when the page is in overview mode
                     let filter = "all";
 
+                    // If not a manager, filter queries for that employee
+                    // and get the list of led projects
                     if (user.role !== "Manager") {
                         filter = user.userID;
                     }
 
-                    const responseProjects = await axios.get(`/api/analytics/employees/getOverviewProjects?filter=${filter}`, {
+                    const responseProjects = await axios.get(`/api/analytics/employees/getEmployeeProjects?filter=${filter}`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
 
@@ -74,7 +72,6 @@ function Analytics({ user }) {
                         setEmployees(uniqueEmployees);
 
                         // employee count statistic
-                        const employeeCount = responseEmployees.data.employees.length;
                         const employeeCountStat = {
                             id: 'overview-employees',
                             title: 'Employees',

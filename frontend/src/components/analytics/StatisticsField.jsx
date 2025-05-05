@@ -1,5 +1,4 @@
 import StatisticsFieldCarousel from "./StatisticsFieldCarousel.jsx";
-import EmptyMessageBox from "./EmptyMessageBox.jsx";
 import TasksList from "./TasksList.jsx";
 import StatisticsFieldBottom from "./StatisticsFieldBottom.jsx";
 import React from "react";
