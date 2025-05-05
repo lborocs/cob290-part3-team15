@@ -10,14 +10,14 @@ import SearchBox from "../components/analytics/SearchBox.jsx";
 import StatisticsFieldCarousel from "../components/analytics/StatisticsFieldCarousel.jsx";
 import TasksList from "../components/analytics/TasksList.jsx";
 import StatisticsFieldBottom from "../components/analytics/StatisticsFieldBottom.jsx";
+import EmptyMessageBox from "../components/analytics/EmptyMessageBox.jsx";
+import StatisticsField from "../components/analytics/StatisticsField.jsx";
 
 function Analytics({ user }) {
     const navigate = useNavigate();
-    const [roleLabel, setRoleLabel] = useState("Employee");
     const selectable = false;
     const activeTab = "Analytics";
     const [personalStatus, setPersonalStatus] = useState("Offline");
-
     const [selectedProject, setSelectedProject] = useState({ title: 'Overview' });
     const [projects, setProjects] = useState([]);
     const [quickStatistics, setQuickStatistics] = useState([]);
@@ -194,16 +194,16 @@ function Analytics({ user }) {
                 status={personalStatus}
             />
             <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
-                <WelcomeMessage userName={user.name} roleLabel={roleLabel} />
+                <WelcomeMessage userName={user.name} roleLabel={user.role} />
 
-                <div className="lg:col-span-4 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-between">
-                    <span>{selectedProject.title}</span>
+                <div className="lg:col-span-6 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-start">
+                    <span className={"py-1 pr-2"}>{selectedProject.title}</span>
                     {selectedProject.title !== 'Overview' && (
                         <button
-                            onClick={() => setSelectedProject({ title: 'Overview' })}
-                            className="px-2 py-1 bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
+                            onClick={() => handleProjectSelect({ title: 'Overview' })}
+                            className="px-2 py-1 h-full bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
                         >
-                            Back to Overview
+                            Back
                         </button>
                     )}
                 </div>
@@ -226,13 +226,11 @@ function Analytics({ user }) {
                     selectedProject={selectedProject}
                 />
 
-                <div className="lg:col-start-6 lg:row-start-2 lg:col-span-6 lg:row-span-5 rounded-3xl lg:grid lg:grid-cols-6 lg:grid-rows-4 flex flex-col gap-4 w-full">
-                    <>
-                        <StatisticsFieldCarousel project={ selectedProject }/>
-                        <TasksList tasks={ tasks }/>
-                        <StatisticsFieldBottom employees={ employees }/>
-                    </>
-                </div>
+                <StatisticsField
+                    selectedProject={selectedProject}
+                    tasks={tasks}
+                    employees={employees}
+                />
             </div>
         </div>
     );

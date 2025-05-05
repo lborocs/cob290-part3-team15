@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PieChart from './PieChart';
 import BarChart from './BarChart';
-import LineChart from './LineChart'; 
-import { el } from '@faker-js/faker';
+import LineChart from './LineChart';
 
 const chartConfig = [
   {
