@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import ProjectCard from './ProjectCard'; // Assuming ProjectCard is the component for individual projects
 
-function SearchBox({ projects, onProjectSelect }) {
+function SearchBox({ projects, onProjectSelect, selectedProject }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredProjects = projects.filter(project =>
@@ -30,9 +30,10 @@ function SearchBox({ projects, onProjectSelect }) {
             className="flex-1 min-w-[30%] max-w-[30%] box-border"
           >
             <ProjectCard 
-              title={project.title} 
+              title={project.title}
               description={project.description}
-              onClick={() => onProjectSelect(project)} 
+              onClick={(passedProject=project) => onProjectSelect(passedProject)} // Accept an argument in case we want to reset project to overview
+              isSelected={selectedProject.title===project.title}
             />
           </div>
         ))}

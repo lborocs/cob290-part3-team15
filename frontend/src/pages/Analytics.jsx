@@ -20,10 +20,6 @@ function Analytics({ user }) {
     const [employees, setEmployees] = useState([]);
     const [tasks, setTasks] = useState([]);
 
-    const handleProjectSelect = (project) => {
-        setSelectedProject(project);
-    };
-
     useEffect(() => {
         async function fetchData() {
             try {
@@ -197,7 +193,7 @@ function Analytics({ user }) {
                     <span className={"py-1 pr-2"}>{selectedProject.title}</span>
                     {selectedProject.title !== 'Overview' && (
                         <button
-                            onClick={() => handleProjectSelect({ title: 'Overview' })}
+                            onClick={() => setSelectedProject({ title: 'Overview' })}
                             className="px-2 py-1 h-full bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
                         >
                             Back
@@ -219,7 +215,7 @@ function Analytics({ user }) {
 
                 <SearchBox
                     projects={projects}
-                    onProjectSelect={handleProjectSelect}
+                    onProjectSelect={setSelectedProject}
                     selectedProject={selectedProject}
                 />
 
