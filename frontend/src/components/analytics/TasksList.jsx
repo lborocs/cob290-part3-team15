@@ -2,35 +2,42 @@ import React, { useState } from 'react';
 import TaskCard from './TaskCard';
 
 function TasksList({ tasks }) {
-  const [filter, setFilter] = useState('today');
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [dueDateFilter, setDueDateFilter] = useState('any');
   const [searchQuery, setSearchQuery] = useState('');
   const today = new Date();
 
-  const filteredTasks = tasks.filter(task => {
+  const dueDateFilteredTasks = tasks.filter(task => {
     const dueDate = new Date(task.deadline);
 
-    if (filter === 'today') {
+    if (dueDateFilter === 'today') {
       return dueDate.toDateString() === today.toDateString();
     }
-    if (filter === 'week') {
+    if (dueDateFilter === 'week') {
       const endOfWeek = new Date();
       endOfWeek.setDate(today.getDate() + 7);
       return dueDate >= today && dueDate <= endOfWeek;
     }
-    if (filter === 'month') {
+    if (dueDateFilter === 'month') {
       const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
       return dueDate >= today && dueDate <= endOfMonth;
     }
-    if (filter === 'completed') {
-      return task.completed;
+    return true; // 'any' filter
+  });
+
+  const statusFilteredTasks = dueDateFilteredTasks.filter(task => {
+    const dueDate = new Date(task.deadline);
+
+    if (statusFilter === 'completed') {
+      return task.status === 'Completed';
     }
-    if (filter === 'overdue') {
-      return dueDate < today && !task.completed;
+    if (statusFilter === 'overdue') {
+      return dueDate < today && task.status !== 'Completed'; // Only show overdue tasks if incomplete
     }
     return true; // 'all' filter
   });
 
-  const searchedTasks = filteredTasks.filter(task =>
+  const searchedTasks = statusFilteredTasks.filter(task =>
     task.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -39,7 +46,7 @@ function TasksList({ tasks }) {
   );
 
   const handleDropdownChange = (event) => {
-    setFilter(event.target.value);
+    setDueDateFilter(event.target.value);
   };
 
   const handleSearchChange = (event) => {
@@ -49,30 +56,35 @@ function TasksList({ tasks }) {
   return (
     <div className="flex flex-col p-6 bg-secondary/40 rounded-3xl col-span-2 row-span-4">
       <div className="flex flex-col items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Upcoming Tasks</h3>
-        <div className="flex gap-2 w-full">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Tasks</h3>
+        <div className="flex w-full">
+          <p className={"px-2"}>Due Date</p>
           <select
-            value={filter}
+            value={dueDateFilter}
             onChange={handleDropdownChange}
             className="flex-1 px-3 py-1 rounded-full text-sm capitalize bg-gray-200 text-gray-700"
           >
+            <option value="any">Any</option>
             <option value="today">Today</option>
-            <option value="week">Week</option>
-            <option value="month">Month</option>
+            <option value="week">This week</option>
+            <option value="month">This month</option>
           </select>
+        </div>
+        <div className="flex gap-2 mt-2 w-full">
+          <p className={"px-2"}>Status</p>
           <button
-            onClick={() => setFilter('all')}
-            className={`flex-1 px-3 py-1 rounded-full text-sm capitalize ${
-              filter === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
-            }`}
+              onClick={() => setStatusFilter(statusFilter==='completed' ? 'all' : 'completed')}
+              className={`flex-1 px-3 py-1 rounded-full text-sm capitalize ${
+                  statusFilter === 'completed' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
+              }`}
           >
-            All
+            Completed
           </button>
           <button
-            onClick={() => setFilter('overdue')}
-            className={`flex-1 px-3 py-1 rounded-full text-sm capitalize ${
-              filter === 'overdue' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
-            }`}
+              onClick={() => setStatusFilter(statusFilter==='overdue' ? 'all' : 'overdue')}
+              className={`flex-1 px-3 py-1 rounded-full text-sm capitalize ${
+                  statusFilter === 'overdue' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
+              }`}
           >
             Overdue
           </button>

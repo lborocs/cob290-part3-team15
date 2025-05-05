@@ -351,7 +351,7 @@ INSERT INTO `tasks` VALUES (11,3,1,'Gamma Task 3','In Progress','High',15,'2025-
 INSERT INTO `tasks` VALUES (12,3,1,'Gamma Task 4','Not Started','Low',2,'2025-04-29','2025-04-21','2025-04-23');
 INSERT INTO `tasks` VALUES (13,4,3,'Delta Task 1','Not Started','High',30,'2025-06-26',NULL,'2025-03-21');
 INSERT INTO `tasks` VALUES (14,4,3,'Delta Task 2','Not Started','Medium',12,'2025-04-30','2025-04-21','2025-04-11');
-INSERT INTO `tasks` VALUES (15,4,11,'Delta Task 3','Not Started','Low',20,'2025-06-18',NULL,'2025-04-21');
+INSERT INTO `tasks` VALUES (15,4,11,'Delta Task 3','Completed','Low',20,'2025-05-16','2025-05-05','2025-04-21');
 INSERT INTO `tasks` VALUES (16,4,8,'Delta Task 4','Not Started','Medium',15,'2025-07-10',NULL,'2025-05-15');
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -383,7 +383,7 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Offline');
 INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Invisible');
-INSERT INTO `users` VALUES (3,'Bill','Broomstick','Employee','[default profile icon here]','ABC123BCA!!!','Offline');
+INSERT INTO `users` VALUES (3,'Bill','Broomstick','Employee','[default profile icon here]','ABC123BCA!!!','Online');
 INSERT INTO `users` VALUES (6,'Rokuro','Thiri','Manager',NULL,'ABC123BCA!!!','Offline');
 INSERT INTO `users` VALUES (7,'Ige','Kapil','Employee',NULL,'ABC123BCA!!!','Offline');
 INSERT INTO `users` VALUES (8,'Leutbert','Custodio','Employee',NULL,'ABC123BCA!!!','Offline');
@@ -403,4 +403,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-05 20:10:49
+-- Dump completed on 2025-05-05 21:08:45

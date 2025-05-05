@@ -7,12 +7,18 @@ function TaskCard( { task } ) {
         low: 'bg-green-100 text-green-800'
     };
 
-    const isOverdue = new Date(task.deadline) < new Date();
+    let bgColour = 'bg-white';
+    if (task.status === 'Completed') {
+        bgColour = 'bg-green-100';
+    }
+    else if (new Date(task.deadline) < new Date()) {
+        bgColour = 'bg-red-100';
+    }
 
     return (
         <div 
             key={task.id} 
-            className={`p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow ${isOverdue ? 'bg-red-50' : 'bg-white'}`}
+            className={`p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow ${bgColour}`}
         >
             <div className="flex justify-between items-start">
                 <div>
