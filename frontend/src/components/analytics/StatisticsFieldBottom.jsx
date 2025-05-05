@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { Bar } from 'react-chartjs-2';
@@ -20,18 +20,14 @@ function StatisticsFieldBottom( { employees } ) {
     tasksCompleted: Math.floor(Math.random() * 100),
   }));
 
-
   const filteredEmployees = dummyEmployees.filter((employee) =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSelectUser = (user) => {
-    setSelectedUser(user);
-  };
-
-  const handleBack = () => {
+  // When a new project is selected, deselect any selected user
+  useEffect(() => {
     setSelectedUser(null);
-  };
+  }, [employees]);
 
   return (
     <div className="flex flex-col w-full col-span-4 row-span-2 bg-secondary/40 p-4 rounded-3xl">
@@ -51,7 +47,7 @@ function StatisticsFieldBottom( { employees } ) {
                 key={employee.id}
                 className="flex items-center p-2 bg-white rounded-lg shadow cursor-pointer hover:shadow-lg hover:bg-gray-100 transition-all duration-200"
                 style={{ maxHeight: '60px' }}
-                onClick={() => handleSelectUser(employee)}
+                onClick={() => setSelectedUser(employee)}
               >
                 <img
                   src={employee.profilePicture}
@@ -67,7 +63,7 @@ function StatisticsFieldBottom( { employees } ) {
         <div className="flex flex-col w-full">
           <button
               onClick={() => {
-                handleBack();
+                setSelectedUser(null);
                 setSearchTerm(''); // Clear the search bar to reset
               }}
               className="mb-4 p-2 rounded-md shadow-sm bg-white/85 flex flex-col hover:bg-gray-100 hover:cursor-pointer"
