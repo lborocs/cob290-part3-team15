@@ -37,6 +37,7 @@ function StatisticsFieldBottom( { employees } ) {
     <div className="flex flex-col w-full col-span-4 row-span-2 bg-secondary/40 p-4 rounded-3xl">
       {!selectedUser ? (
         <>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Team Members</h3>
           <input
             type="text"
             placeholder="Search employee..."
@@ -65,11 +66,11 @@ function StatisticsFieldBottom( { employees } ) {
       ) : (
         <div className="flex flex-col w-full">
           <button
-            onClick={() => {
-              handleBack();
-              setSearchTerm(''); // Clear the search bar to reset
-            }}
-            className="mb-4 p-2 bg-primary text-black rounded-lg"
+              onClick={() => {
+                handleBack();
+                setSearchTerm(''); // Clear the search bar to reset
+              }}
+              className="mb-4 p-2 rounded-md shadow-sm bg-white/85 flex flex-col hover:bg-gray-100 hover:cursor-pointer"
           >
             Back
           </button>
