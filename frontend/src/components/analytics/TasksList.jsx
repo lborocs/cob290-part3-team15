@@ -62,7 +62,7 @@ function TasksList({ tasks }) {
           <select
             value={dueDateFilter}
             onChange={handleDropdownChange}
-            className="flex-1 px-3 py-1 rounded-full text-sm capitalize bg-gray-200 text-gray-700"
+            className="flex-1 px-3 py-1 rounded-full text-sm capitalize bg-gray-200 hover:bg-gray-200/70 text-gray-700 hover:cursor-pointer"
           >
             <option value="any">Any</option>
             <option value="today">Today</option>
@@ -75,7 +75,7 @@ function TasksList({ tasks }) {
           <button
               onClick={() => setStatusFilter(statusFilter==='completed' ? 'all' : 'completed')}
               className={`flex-1 px-3 py-1 rounded-full text-sm capitalize ${
-                  statusFilter === 'completed' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
+                  statusFilter === 'completed' ? 'bg-accentOrange hover:bg-accentOrange/70 text-white' : 'bg-gray-200 hover:bg-gray-200/70 text-gray-700'
               }`}
           >
             Completed
@@ -83,7 +83,7 @@ function TasksList({ tasks }) {
           <button
               onClick={() => setStatusFilter(statusFilter==='overdue' ? 'all' : 'overdue')}
               className={`flex-1 px-3 py-1 rounded-full text-sm capitalize ${
-                  statusFilter === 'overdue' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
+                  statusFilter === 'overdue' ? 'bg-accentOrange hover:bg-accentOrange/70 text-white' : 'bg-gray-200 hover:bg-gray-200/70 text-gray-700'
               }`}
           >
             Overdue
