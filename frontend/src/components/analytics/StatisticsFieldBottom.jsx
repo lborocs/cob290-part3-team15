@@ -45,7 +45,7 @@ function StatisticsFieldBottom( { employees } ) {
             {filteredEmployees.map((employee) => (
               <div
                 key={employee.id}
-                className="flex items-center p-2 bg-white rounded-lg shadow cursor-pointer hover:shadow-lg hover:bg-gray-100 transition-all duration-200"
+                className="flex items-center p-2 bg-white rounded-md shadow cursor-pointer hover:shadow-md hover:bg-gray-100 transition-all duration-200"
                 style={{ maxHeight: '60px' }}
                 onClick={() => setSelectedUser(employee)}
               >
@@ -61,15 +61,15 @@ function StatisticsFieldBottom( { employees } ) {
         </>
       ) : (
         <div className="flex flex-col w-full">
-          <button
+          <div
               onClick={() => {
                 setSelectedUser(null);
                 setSearchTerm(''); // Clear the search bar to reset
               }}
-              className="mb-4 p-2 rounded-md shadow-sm bg-white/85 flex flex-col hover:bg-gray-100 hover:cursor-pointer"
+              className="flex flex-col mb-4 p-2 bg-white rounded-md shadow cursor-pointer hover:shadow-md hover:bg-gray-100 transition-all duration-200"
           >
             Back
-          </button>
+          </div>
           <div className="flex items-center mb-4">
             <img
               src={selectedUser.profilePicture}
