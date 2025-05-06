@@ -1,69 +1,167 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import PieChart from './PieChart';
+import BarChart from './BarChart';
+import HorizontalBarChart from './HorizontalBarChart';
+import LineChart from './LineChart';
+import EmployeeHoursChart from './EmployeeHoursChart';
+import EmployeeProjectsChart from './EmployeeProjectsChart';
 
-// need to figure out backend calls
-const dummyData = [
-    { id: 1, title: 'Statistic 1', value: '42', description: 'This is the first statistic.' },
-    { id: 2, title: 'Statistic 2', value: '73%', description: 'This is the second statistic.' },
-    { id: 3, title: 'Statistic 3', value: '120', description: 'This is the third statistic.' },
+const chartConfig = [
+  {
+    type: 'pie',
+    title: 'Task Completion Status',
+    description: 'Percentage of completed vs pending tasks',
+    endpoint: '/api/analytics/projects/getTaskCompletionStatus',
+    component: PieChart,
+  },
+  {
+    type: 'employee-hours',
+    title: 'My Weekly Hours',
+    description: 'My hours worked in the past 4 weeks',
+    component: EmployeeHoursChart,
+  },
+  {
+    type: 'employee-projects',
+    title: 'My Project Contributions',
+    description: 'Tasks I contributed to by project',
+    component: EmployeeProjectsChart,
+  },
+  {
+    type: 'line',
+    title: 'Hours Worked by User',
+    description: 'Total hours worked by each team member',
+    endpoint: '/api/analytics/employees/getUserWeeklyHours',
+    component: LineChart,
+  },
+  {
+    type: 'bar',
+    title: 'Task Allocation by User',
+    description: 'Number of tasks assigned to each team member',
+    endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
+    component: BarChart,
+  },
+  {
+    type: 'horizontal-bar',
+    title: 'Task Completion Efficiency',
+    description: 'Tasks completed vs assigned by user',
+    component: HorizontalBarChart,
+  }
 ];
 
-function StatisticsFieldCarousel() {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [activeButton, setActiveButton] = useState(null);
+// Dummy data for the charts
+const dummyData = {
+  'employee-hours': [
+    { week: 'Week 1', hours: 32 },
+    { week: 'Week 2', hours: 38 },
+    { week: 'Week 3', hours: 40 },
+    { week: 'Week 4', hours: 35 }
+  ],
+  'employee-projects': [
+    { project: 'Project Alpha', tasks: 12 },
+    { project: 'Project Beta', tasks: 8 },
+    { project: 'Project Gamma', tasks: 5 },
+  ]
+};
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'ArrowRight') {
-            setActiveButton('right');
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % dummyData.length);
-        } else if (event.key === 'ArrowLeft') {
-            setActiveButton('left');
-            setCurrentIndex((prevIndex) => (prevIndex - 1 + dummyData.length) % dummyData.length);
+function StatisticsFieldCarousel({ project }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [chartData, setChartData] = useState([]);
+  const currentChart = chartConfig[currentIndex];
+  const ChartComponent = currentChart.component;
+
+  useEffect(() => {
+    console.log("Project ID:", project.id); // Debugging
+    const fetchData = async () => {
+        try {
+          // dummy data for the new employee charts
+          if (currentChart.type === 'employee-hours' || currentChart.type === 'employee-projects') {
+            setChartData(dummyData[currentChart.type]);
+            return;
+          }
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axios.get(currentChart.endpoint, {
+                params: { projectId: project.id },
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+
+            console.log(`Response for ${currentChart.title}:`, response.data);
+
+            // Format data for the bar chart
+            if (currentChart.type === 'bar') {
+              const formattedData = response.data.map((item) => ({
+                label: item.label,
+                tasksAssigned: item.tasksAssigned,
+                tasksCompleted: item.tasksCompleted,
+              }));
+              setChartData(formattedData);
+            } else if (currentChart.type === 'line') {
+              // Format data for the line chart
+              const formattedData = response.data.map((item) => ({
+                employee: item.employee,
+                hours: item.hours,
+              }));
+              setChartData(formattedData);
+            }
+            else {
+              // Format data for the pie chart
+              const formattedData = Array.isArray(response.data)
+                ? response.data
+                : [
+                    { label: 'Completed', value: response.data.completed || 0 },
+                    { label: 'Pending', value: response.data.pending || 0 },
+                  ];
+              setChartData(formattedData);
+            }
+        } catch (error) {
+            console.error(`Error fetching data for ${currentChart.title}:`, error);
         }
     };
 
-    const handleButtonClick = (direction) => {
-        setActiveButton(direction);
-        if (direction === 'left') {
-            setCurrentIndex((prevIndex) => (prevIndex - 1 + dummyData.length) % dummyData.length);
-        } else if (direction === 'right') {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % dummyData.length);
-        }
-    };
+    fetchData();
+  }, [currentIndex, project.id]);
 
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        const timeout = setTimeout(() => setActiveButton(null), 200); // Reset active state after 200ms
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            clearTimeout(timeout);
-        };
-    }, [activeButton]);
-
-    return (
-        <div className="flex items-center justify-between p-6 bg-secondary/50 rounded-3xl col-span-4 row-span-2">
-            <button
-                className={`px-4 py-2 rounded text-white hover:bg-accentOrange/70 ${
-                    activeButton === 'left' ? 'bg-accentOrange/70' : 'bg-accentOrange'
-                }`}
-                onClick={() => handleButtonClick('left')}
-            >
-                ←
-            </button>
-            <div className="text-center mx-6 flex-grow">
-                <h2 className="text-xl font-semibold text-text">{dummyData[currentIndex].title}</h2>
-                <p className="text-4xl font-bold text-accentOrange my-4">{dummyData[currentIndex].value}</p>
-                <p className="text-gray-600">{dummyData[currentIndex].description}</p>
-            </div>
-            <button
-                className={`px-4 py-2 rounded text-white hover:bg-accentOrange/70 ${
-                    activeButton === 'right' ? 'bg-accentOrange/70' : 'bg-accentOrange'
-                }`}
-                onClick={() => handleButtonClick('right')}
-            >
-                →
-            </button>
-        </div>
+  const handleNavigation = (direction) => {
+    setCurrentIndex((prev) =>
+      (prev + (direction === 'left' ? -1 : 1) + chartConfig.length) % chartConfig.length
     );
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') handleNavigation('right');
+      if (e.key === 'ArrowLeft') handleNavigation('left');
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  return (
+    <div className="flex items-center justify-between p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
+      <button
+        className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
+        onClick={() => handleNavigation('left')}
+      >
+        ←
+      </button>
+
+      <div className="flex flex-col items-center justify-center text-center mx-6 flex-grow h-full">
+        <h2 className="text-xl font-semibold text-text mb-4">{currentChart.title}</h2>
+        <div className="w-full max-w-md max-h-[220px] h-full mb-4">
+          <ChartComponent data={chartData} />
+        </div>
+        <p className="text-gray-600 px-2">{currentChart.description}</p>
+      </div>
+
+      <button
+        className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
+        onClick={() => handleNavigation('right')}
+      >
+        →
+      </button>
+    </div>
+  );
 }
 
 export default StatisticsFieldCarousel;
