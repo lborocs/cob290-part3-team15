@@ -7,21 +7,22 @@ function MemberDropdown({onClose, refs, floatingStyles}) {
 
     return (
         <div
-      className="w-auto absolute bg-white rounded-lg p-2 z-50 border border-gray-300" {...(refs?.setFloating ? { ref: refs.setFloating } : {})} {...(floatingStyles ? { style: floatingStyles } : {})}>
-          {/* Goes through each item in the list and maps items to a key value*/}
-          {items.map((item, index) => (
-              <div
-              className="flex justify-between items-center w-auto whitespace-nowrap text-sm p-2 px-2 hover:bg-gray-100 cursor-pointer rounded-md text-gray-700"
-              onClick={componentsFunctions[index]} // Maps the item to the function at the same index
-              key={index} // Add a unique key for each item
-              >
-              <span>
-                  {item}
-              </span>
-              {icons[index] && <span className="ml-4 text-gray-500 items-end">{icons[index]}</span>} {/* Check if icon exists before rendering */}
-              </div>
-          ))}
-      </div>
+        className="w-auto absolute bg-backgroundOrange rounded-lg p-2 z-50 border border-accentOrange" {...(refs?.setFloating ? { ref: refs.setFloating } : {})} {...(floatingStyles ? { style: floatingStyles } : {})}>
+            <h2 className="font-bold">Members</h2>
+            {/* Goes through each item in the list and maps items to a key value*/}
+            {items.map((item, index) => (
+                <div
+                className="flex justify-between bg-accentOrange items-center w-auto whitespace-nowrap text-sm p-2 px-2 hover:bg-orangeHover cursor-pointer rounded-md text-gray-700"
+                onClick={componentsFunctions[index]} // Maps the item to the function at the same index
+                key={index} // Add a unique key for each item
+                >
+                <span>
+                    {item}
+                </span>
+                {icons[index] && <span className="ml-4 text-gray-500 items-end">{icons[index]}</span>} {/* Check if icon exists before rendering */}
+                </div>
+            ))}
+        </div>
     );
 }
 
