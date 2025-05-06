@@ -33,7 +33,7 @@ function SearchBox({ projects, onProjectSelect, selectedProject }) {
               key={project.id}
               title={project.title}
               description={project.description}
-              onClick={() => onProjectSelect(project)}
+              onClick={(passedProject=project) => onProjectSelect(passedProject)} // Accept an argument so we can deselect the project by clicking again
               isSelected={selectedProject?.title === project.title}
             />
           ))
