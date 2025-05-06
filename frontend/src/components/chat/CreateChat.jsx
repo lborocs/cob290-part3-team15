@@ -1,12 +1,16 @@
 import { MdGroupAdd } from "react-icons/md";
-
-function CreateChat({userID}) {
+import { useState } from "react";
+import AddChatModal from "./AddChatModal.jsx";
+function CreateChat({userID,setSelectedID,setMode}) {
+  const [addChatModal, setAddChatModal] = useState(false);
+  
   return (
-    <div className="flex h-full justify-center items-center">
-      <button>
-        <MdGroupAdd className="w-6 h-6 text-text/70"/>
-      </button>
-    </div>
+    <>
+    <button onClick = {() => setAddChatModal(true)} className="flex h-full justify-center items-center">
+      <MdGroupAdd className="w-6 h-6 text-text/70"/>
+    </button>
+    <AddChatModal open={addChatModal} onClose={() => setAddChatModal(false)} userID={userID} setSelectedID={setSelectedID} setMode={setMode}/>
+    </>
   );
 }
 

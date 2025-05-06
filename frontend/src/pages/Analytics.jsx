@@ -129,7 +129,6 @@ function Analytics({ user }) {
             </div>
         </div>
     )
-    
 }
 
 export default Auth(Analytics);

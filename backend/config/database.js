@@ -29,4 +29,13 @@ database.connect((err) => {
     }
 });
 
+//On connection, set everyone to offline
+database.query("UPDATE users SET Status='Offline' WHERE Status NOT IN ('Offline','Invisible')", (err, results) => {
+    if (err) {
+        console.error("Error setting initial status:", err);
+    } else {
+        console.log("All users set to offline");
+    }
+});
+
 module.exports = database;

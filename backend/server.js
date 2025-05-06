@@ -62,7 +62,15 @@ io.on('connection', (socket) => {
 
     socket.on('requestStatus', async() => {
         try {
-            await setStatus(userId,"Online",true);
+            await setStatus(userId,"Unsure",true);
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    socket.on('updateStatus', async(status) => {
+        try {
+            await setStatus(userId,status,false);
         } catch (err) {
             console.error(err);
         }
