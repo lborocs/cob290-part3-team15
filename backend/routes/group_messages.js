@@ -215,4 +215,128 @@ router.put("/hideMessage",authenticateToken,(req,res) => {
   });
 });
 
+router.get("/getMembers",authenticateToken,(req,res) => {
+  const id = req.user.userID;
+  const group = req.query.group;
+
+  //Stop bad ID's 
+  if (isNaN(id) || isNaN(group)) {
+    return res.status(400).json({ error: "Bad request" });
+  }
+
+  //Verify group membership
+  const membershipQuery=`SELECT 1 FROM group_users WHERE UserID=? AND GroupID=?`
+  const membershipValues=[id,group]
+
+  database.query(membershipQuery, membershipValues, (err, results) => {
+    if (!err){
+      if (results.length < 1) {
+        return res.status(500).json({ error: "You are not a member" });
+      }
+      const query = "SELECT CONCAT(users.Forename,' ',users.Surname) as name, group_users.UserID as id FROM group_users LEFT JOIN users ON users.UserID=group_users.UserID WHERE GroupID = ?"
+      const values = [target];
+      database.query(query, values, (err, results) => {
+        if(!err){
+          res.send({results: results});
+        }
+        return res.status(500).json({ error: "Failed to get users" });
+      });
+    }
+    return res.status(500).json({ error: "Failed to verify membership" });
+  });
+});
+
+router.get("/removeMember",authenticateToken,(req,res) => {
+  const id = req.user.userID;
+  const group = req.query.group;
+  const target = req.query.target
+
+  //Stop bad ID's 
+  if (isNaN(id) || isNaN(group) || isNaN(target)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  //Verify group ownership
+  const ownershipQuery = `SELECT 1 FROM groups WHERE Owner = ? AND GroupID = ?`;
+  const ownershipValues = [id, group];
+
+  database.query(ownershipQuery, ownershipValues, (err, results) => {
+    if (err) return res.status(500).json({ error: "Failed to verify ownership" });
+    if (results.length === 0) {return res.status(403).json({ error: "You are not the owner of this group." })}
+  });
+
+  const query = `DELETE FROM group_users WHERE GroupID = ? AND UserID = ?`;
+  const values = [group, target];
+
+  database.query(query, values, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to remove member" });
+    }
+
+    return res.status(200).json({ success: true });
+  });
+});
+
+router.get("/addMember",authenticateToken,(req,res) => {
+  const id = req.user.userID;
+  const group = req.query.group;
+  const target = req.query.target
+
+  //Stop bad ID's 
+  if (isNaN(id) || isNaN(group) || isNaN(target)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  //Verify group ownership
+  const ownershipQuery = `SELECT 1 FROM groups WHERE Owner = ? AND GroupID = ?`;
+  const ownershipValues = [id, group];
+
+  database.query(ownershipQuery, ownershipValues, (err, results) => {
+    if (err) return res.status(500).json({ error: "Failed to verify ownership" });
+    if (results.length === 0) {return res.status(403).json({ error: "You are not the owner of this group." })}
+  });
+
+  const query = `INSERT IGNORE INTO group_users (GroupID,UserID) VALUES (?,?)`;
+  const values = [group, target];
+
+  database.query(query, values, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to add member" });
+    }
+
+    return res.status(200).json({ success: true });
+  });
+});
+
+router.get("/updateName",authenticateToken,(req,res) => {
+  const id = req.user.userID;
+  const group = req.query.group;
+  const name = req.query.name
+
+  //Stop bad ID's 
+  if (isNaN(id) || isNaN(group)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  //Verify group ownership
+  const ownershipQuery = `SELECT 1 FROM groups WHERE Owner = ? AND GroupID = ?`;
+  const ownershipValues = [id, group];
+
+  database.query(ownershipQuery, ownershipValues, (err, results) => {
+    if (err) return res.status(500).json({ error: "Failed to verify ownership" });
+    if (results.length === 0) {return res.status(403).json({ error: "You are not the owner of this group." })}
+  });
+
+  const query = `UPDATE groups SET Name=? WHERE GroupID=?`;
+  const values = [name, group];
+
+  database.query(query, values, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to add member" });
+    }
+
+    return res.status(200).json({ success: true });
+  });
+});
+
 module.exports = router;
