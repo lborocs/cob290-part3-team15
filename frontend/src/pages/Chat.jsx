@@ -14,6 +14,8 @@ import Navbar from '../components/navigation/Navbar.jsx';
 import Auth from "../components/login/Auth.jsx";
 import Header from '../components/chat/MessageHeader.jsx';
 
+import chatBackground from '../assets/chat_background.png';
+
 function Chat({ user }){
     const messageContainerRef = useRef(null);
     const windowWidth = useWindowWidth();
@@ -189,14 +191,14 @@ function Chat({ user }){
                 :<></>}
                 
                 {/*Main Chat Area*/}
-                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full`} onContextMenu={HandleRightClick}>
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full bg-cover bg-center`} style={{ backgroundImage: `url(${chatBackground})` }} onContextMenu={HandleRightClick}>
                     {/* <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div> */}
                     <Header name={chatName} mode={mode} selectedID={selectedID} />
-                    <div className="flex flex-col flex-1 bg-primary h-[calc(100%-100px)] max-w-full ">
-                        <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll px-4" ref={messageContainerRef}>
+                    <div className="flex flex-col flex-1 h-[calc(100%-100px)] min-h-[calc(100%-100px)] max-h-[calc(100%-100px)] max-w-full">
+                        <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
-                        <div className="flex flex-col bg-transparent pb-2 justify-center px-4 shadow-md">
+                        <div className="flex flex-col bg-transparent justify-center shadow-md overflow-y-scroll scrollbar-transparent" >
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing} editingMessage={editingMessage} setEditingMessage={setEditingMessage} setEditing={setEditing}/>
                         </div>
                     </div>

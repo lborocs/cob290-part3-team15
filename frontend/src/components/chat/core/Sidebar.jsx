@@ -133,7 +133,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
             <p className="text-text font-bold">?</p>
           </div>
           <div className="flex justify-center items-center bg-accentOrange hover:bg-orangeHover border-1 border-black/20 w-10 h-10 rounded-full mr-2">
-            <CreateChat userID={userID}/>
+            <CreateChat userID={userID} setSelectedID={setSelectedID} setMode={setMode}/>
           </div>
         </div>
       </div>

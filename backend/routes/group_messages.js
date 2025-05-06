@@ -126,7 +126,7 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
                         return res.status(500).json({ error: "Failed to refresh correctly" });
                       }
                       results.forEach((row) => {
-                        alertMessage(row.UserID,group,text,'group_messages');
+                        alertMessage(row.UserID,group,text,'group_messages',true);
                       });
                       res.status(200).json({ success: "Message sent successfully" });
                     });
