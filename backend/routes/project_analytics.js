@@ -7,29 +7,10 @@ router.use(express.json()) // for parsing 'application/json'
 
 
 
-// Get quick statistics for a user on the project side, possibly filtered by project
-router.get("/getQuickStatistics",authenticateToken,(req,res) => {
-    const projectId = req.query.id;
-    let query = "";
+// Get the full details of all projects or all projects led by this user
+router.get("/getProjects",authenticateToken,(req,res) => {
 
-    // Get overview stats if no project is selected
-    if (!projectId) {
-        // For managers and team leaders, we get the number of projects, employees and tasks
-        query = ``
-
-        // For team leaders, we filter by projects they lead
-        if (req.user.role !== "Manager") {
-
-        }
-    }
-});
-
-
-
-// Get the full details of all projects or all projects led by a user
-router.get("/getEmployeeProjects",authenticateToken,(req,res) => {
-
-    let query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description'
+    let query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description', p.LeaderID as 'leader'
                  FROM projects as p`;
     let values = [];
     // Filter only projects led by this user for team leaders
@@ -50,7 +31,7 @@ router.get("/getEmployeeProjects",authenticateToken,(req,res) => {
 
 
 // Get the employees on all projects or all projects led by this user
-router.get("/getOverviewEmployees",authenticateToken,(req,res) => {
+router.get("/getTeamMembers",authenticateToken,(req,res) => {
     let query = `SELECT u.UserID as 'id', u.Forename as 'forename', u.Surname as 'surname'
                  FROM users as u`;
     let values = [];
@@ -60,7 +41,7 @@ router.get("/getOverviewEmployees",authenticateToken,(req,res) => {
                     WHERE EXISTS (SELECT pu.ProjectID, pu.UserID
                                   FROM project_users AS pu
                                   WHERE pu.UserID = u.UserID AND pu.ProjectID = p.ProjectID)`;
-        values = [req.user.userID];
+        values.push(req.user.userID);
     }
 
     database.query(query, values, (err, employeeResults) => {
@@ -75,8 +56,8 @@ router.get("/getOverviewEmployees",authenticateToken,(req,res) => {
 
 
 // Get the tasks on all projects or all projects led by this user
-router.get("/getOverviewTasks",authenticateToken,(req,res) => {
-    let query = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline'
+router.get("/getTasks",authenticateToken,(req,res) => {
+    let query = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.ProjectID as 'project', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline'
                         FROM tasks as t`;
     let values = [];
     // Filter only tasks on projects led by this user for team leaders
@@ -122,53 +103,7 @@ router.get("/getUserWeeklyHours",authenticateToken,(req,res) => {
 
 
 
-// Get employees on a project
-router.get("/getProjectMembers", authenticateToken, (req, res) => {
-    const query = `SELECT u.UserID as 'id', u.Forename as 'forename', u.Surname as 'surname'
-                            FROM project_users as pu
-                                     INNER JOIN users as u ON pu.UserID = u.UserID
-                            WHERE pu.ProjectID=?`;
-
-
-    const projectId = req.query.id;
-    if (!projectId) {
-        return res.status(400).send({ error: "id parameter is required" });
-    }
-
-    const values = [projectId];
-    database.query(query, values, (err, employeeResults) => {
-        if (err) {
-            return res.status(500).send({ error: "Error fetching tasks" });
-        }
-
-        res.send({employees: employeeResults});
-    });
-});
-
-
-
-// Get tasks on a project
-router.get("/getProjectTasks", authenticateToken, (req, res) => {
-    const query = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline' FROM tasks as t WHERE t.ProjectID=?`;
-
-    const projectId = req.query.id;
-    if (!projectId) {
-        return res.status(400).send({ error: "id parameter is required" });
-    }
-
-    const values = [projectId];
-    database.query(query, values, (err, taskResults) => {
-        if (err) {
-            return res.status(500).send({ error: "Error fetching employees" });
-        }
-
-        res.send({tasks: taskResults});
-    });
-});
-
-
-
-// TODO unused
+// TODO unused - for timeline graph
 // Get the hours of work completed on a project x weeks ago
 router.get("/getProjectWeeklyHours",authenticateToken,(req,res) => {
     const query=`SELECT
@@ -194,7 +129,7 @@ router.get("/getProjectWeeklyHours",authenticateToken,(req,res) => {
 
 
 
-// TODO unused
+// TODO unused - for timeline graph
 // Get the total hours of work in the project scope x weeks ago
 router.get("/getProjectWeeklyScope",authenticateToken,(req,res) => {
     const query=`SELECT
