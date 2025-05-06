@@ -272,7 +272,7 @@ router.get("/removeMember",authenticateToken,(req,res) => {
     if (err) {
       return res.status(500).json({ error: "Failed to remove member" });
     }
-
+    alertMessage(target,group,`Removed from group`,'group_messages',false);
     return res.status(200).json({ success: true });
   });
 });
@@ -303,7 +303,7 @@ router.get("/addMember",authenticateToken,(req,res) => {
     if (err) {
       return res.status(500).json({ error: "Failed to add member" });
     }
-
+    alertMessage(target,group,`Added to group`,'group_messages',true);
     return res.status(200).json({ success: true });
   });
 });
@@ -334,7 +334,6 @@ router.get("/updateName",authenticateToken,(req,res) => {
     if (err) {
       return res.status(500).json({ error: "Failed to add member" });
     }
-
     return res.status(200).json({ success: true });
   });
 });
