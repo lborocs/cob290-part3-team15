@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PieChart from './charts/PieChart.jsx';
-import BarChart from './charts/BarChart.jsx';
-import HorizontalBarChart from './charts/HorizontalBarChart.jsx';
-import LineChart from './charts/LineChart.jsx';
-import EmployeeHoursChart from './charts/EmployeeHoursChart.jsx';
-import EmployeeProjectsChart from './charts/EmployeeProjectsChart.jsx';
+import PieChart from './PieChart';
+import BarChart from './BarChart';
+import HorizontalBarChart from './HorizontalBarChart';
+import LineChart from './LineChart';
+import EmployeeHoursChart from './EmployeeHoursChart';
+import EmployeeProjectsChart from './EmployeeProjectsChart';
 
 // Dummy data for the charts
 const dummyData = {
@@ -19,6 +19,12 @@ const dummyData = {
     { project: 'Project Alpha', tasks: 12 },
     { project: 'Project Beta', tasks: 8 },
     { project: 'Project Gamma', tasks: 5 },
+  ],
+  'line': [ 
+    { employee: "John Doe", hours: 15 },
+    { employee: "Steve Roggers", hours: 42 },
+    { employee: "Toby Maguire", hours: 6 },
+    { employee: "Hugh Jackman", hours: 39 }
   ]
 };
 
@@ -76,7 +82,7 @@ function StatisticsFieldCarousel({ project }) {
     const fetchData = async () => {
       try {
         // dummy data for the new employee charts
-        if (currentChart.type === 'employee-hours' || currentChart.type === 'employee-projects') {
+        if (['employee-hours', 'employee-projects', 'line'].includes(currentChart.type)) {
           setChartData(dummyData[currentChart.type]);
           return;
         }
