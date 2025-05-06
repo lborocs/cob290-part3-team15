@@ -28,7 +28,7 @@ const dummyData = {
   ]
 };
 
-function StatisticsFieldCarousel({ project }) {
+function StatisticsFieldCarousel({ selectedProject }) {
 
   const chartConfig = [
     {
@@ -78,7 +78,7 @@ function StatisticsFieldCarousel({ project }) {
   const ChartComponent = currentChart.component;
 
   useEffect(() => {
-    console.log("Project ID:", project.id); // Debugging
+    console.log("Project ID:", selectedProject.id); // Debugging
     const fetchData = async () => {
       try {
         // dummy data for the new employee charts
@@ -88,7 +88,7 @@ function StatisticsFieldCarousel({ project }) {
         }
           const accessToken = localStorage.getItem('accessToken');
           const response = await axios.get(currentChart.endpoint, {
-              params: { projectId: project.id },
+              params: { projectId: selectedProject.id },
               headers: { Authorization: `Bearer ${accessToken}` },
           });
 
@@ -126,7 +126,7 @@ function StatisticsFieldCarousel({ project }) {
     };
 
     fetchData();
-  }, [currentIndex, project.id]);
+  }, [currentIndex, selectedProject.id]);
 
   const handleNavigation = (direction) => {
     setCurrentIndex((prev) =>
