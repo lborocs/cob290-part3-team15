@@ -194,7 +194,7 @@ function Analytics({ user }) {
                     {selectedProject.title !== 'Overview' && (
                         <button
                             onClick={() => setSelectedProject({ title: 'Overview' })}
-                            className="px-2 py-1 h-full bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
+                            className="px-5 py-2 ml-2 h-full bg-accentOrange text-black text-sm rounded-md shadow-sm hover:bg-secondary-dark"
                         >
                             Back
                         </button>
