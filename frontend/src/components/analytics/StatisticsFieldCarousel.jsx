@@ -19,6 +19,12 @@ const dummyData = {
     { project: 'Project Alpha', tasks: 12 },
     { project: 'Project Beta', tasks: 8 },
     { project: 'Project Gamma', tasks: 5 },
+  ],
+  'line': [ 
+    { employee: "John Doe", hours: 15 },
+    { employee: "Steve Roggers", hours: 42 },
+    { employee: "Toby Maguire", hours: 6 },
+    { employee: "Hugh Jackman", hours: 39 }
   ]
 };
 
@@ -76,7 +82,7 @@ function StatisticsFieldCarousel({ project }) {
     const fetchData = async () => {
       try {
         // dummy data for the new employee charts
-        if (currentChart.type === 'employee-hours' || currentChart.type === 'employee-projects') {
+        if (['employee-hours', 'employee-projects', 'line'].includes(currentChart.type)) {
           setChartData(dummyData[currentChart.type]);
           return;
         }
