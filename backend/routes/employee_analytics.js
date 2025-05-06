@@ -131,43 +131,4 @@ router.get("/getUserWeeklyHours",authenticateToken,(req,res) => {
     });
 });
 
-
-
-// Get the number of tasks an employee has complete and incomplete
-router.get("/getTaskCompletionStatus", authenticateToken, (req, res) => {
-    const projectId = req.query.projectId;
-
-    if (!projectId) {
-        return res.status(400).send({ error: "Project ID is required" });
-    }
-
-    console.log("Project ID:", projectId); // Debugging
-
-    const query = `
-        SELECT 
-            SUM(CASE WHEN Status = 'Completed' THEN 1 ELSE 0 END) AS completed,
-            SUM(CASE WHEN Status != 'Completed' THEN 1 ELSE 0 END) AS pending
-        FROM tasks
-        WHERE ProjectID = ?`;
-
-    database.query(query, [projectId], (err, results) => {
-        if (err) {
-            console.error("Error fetching task completion status:", err); // Debugging
-            return res.status(500).send({ error: "Error fetching task completion status" });
-        }
-
-        console.log("Task Completion Status Results:", results); // Debugging
-
-        // Format the response for the pie chart
-        const formattedResults = [
-            { label: "Completed", value: results[0].completed || 0 },
-            { label: "Pending", value: results[0].pending || 0 },
-        ];
-
-        res.send(formattedResults);
-    });
-});
-
-
-
 module.exports = router;

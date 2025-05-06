@@ -12,7 +12,7 @@ const chartConfig = [
     type: 'pie',
     title: 'Task Completion Status',
     description: 'Percentage of completed vs pending tasks',
-    endpoint: '/api/analytics/employees/getTaskCompletionStatus',
+    endpoint: '/api/analytics/projects/getTaskCompletionStatus',
     component: PieChart,
   },
   {
