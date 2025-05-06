@@ -61,7 +61,7 @@ const HorizontalBarChart = ({ data }) => {
       .duration(800)
       .attr('width', d => x(d.value));
 
-    // Add value text
+    // add value text
     barGroups.append('text')
       .attr('class', 'value')
       .attr('x', d => x(d.value) + 5)

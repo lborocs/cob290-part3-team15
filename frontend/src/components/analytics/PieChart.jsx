@@ -11,7 +11,7 @@ const PieChart = ({ data }) => {
 
     const svg = d3.select(ref.current)
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height + 50); // Add extra space for the legend
 
     svg.selectAll('*').remove();
 
@@ -73,7 +73,6 @@ const PieChart = ({ data }) => {
         return t => arc(interpolate(t));
       });
 
-
     // Label text
     slice.append('text')
       .attr('class', 'label')
@@ -85,6 +84,32 @@ const PieChart = ({ data }) => {
       .style('font-size', '12px')
       .style('font-weight', 'bold')
       .style('opacity', 0);
+
+    // Add legend
+    const legend = svg.append('g')
+      .attr('transform', `translate(10, ${height + 10})`);
+
+    legend.selectAll('.legend-item')
+      .data(data)
+      .enter()
+      .append('g')
+      .attr('class', 'legend-item')
+      .attr('transform', (_, i) => `translate(0, ${i * 20})`)
+      .each(function(d) {
+        const legendItem = d3.select(this);
+
+        legendItem.append('rect')
+          .attr('width', 12)
+          .attr('height', 12)
+          .attr('fill', color(d.label));
+
+        legendItem.append('text')
+          .attr('x', 18)
+          .attr('y', 10)
+          .text(d.label)
+          .style('font-size', '12px')
+          .style('fill', '#333');
+      });
 
   }, [data]);
 

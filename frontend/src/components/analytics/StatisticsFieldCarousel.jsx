@@ -1,55 +1,130 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import PieChart from './PieChart';
 import BarChart from './BarChart';
 import HorizontalBarChart from './HorizontalBarChart';
+import LineChart from './LineChart';
+import EmployeeHoursChart from './EmployeeHoursChart';
+import EmployeeProjectsChart from './EmployeeProjectsChart';
 
-const chartData = [
+const chartConfig = [
   {
     type: 'pie',
-    data: [
-      { label: 'Completed', value: 75 },
-      { label: 'Pending', value: 25 }
-    ],
     title: 'Task Completion Status',
     description: 'Percentage of completed vs pending tasks',
-    component: PieChart
+    endpoint: '/api/analytics/employees/getTaskCompletionStatus',
+    component: PieChart,
+  },
+  {
+    type: 'employee-hours',
+    title: 'My Weekly Hours',
+    description: 'My hours worked in the past 4 weeks',
+    component: EmployeeHoursChart,
+  },
+  {
+    type: 'employee-projects',
+    title: 'My Project Contributions',
+    description: 'Tasks I contributed to by project',
+    component: EmployeeProjectsChart,
+  },
+  {
+    type: 'line',
+    title: 'Hours Worked by User',
+    description: 'Total hours worked by each team member',
+    endpoint: '/api/analytics/employees/getUserWeeklyHours',
+    component: LineChart,
   },
   {
     type: 'bar',
-    data: [
-      { label: 'User 1', value: 12 },
-      { label: 'User 2', value: 19 },
-      { label: 'User 3', value: 8 },
-      { label: 'User 4', value: 51 },
-      { label: 'User 5', value: 10 }
-    ],
     title: 'Task Allocation by User',
     description: 'Number of tasks assigned to each team member',
-    component: BarChart
+    endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
+    component: BarChart,
   },
   {
-    type: 'horizontalBar',
-    data: [
-      { label: 'User 1', value: 6 },
-      { label: 'User 2', value: 15 },
-      { label: 'User 3', value: 7 },
-      { label: 'User 4', value: 12 },
-      { label: 'User 5', value: 38 }
-    ],
-    title: 'Top Performers',
-    description: 'Tasks completed by each team member',
-    component: HorizontalBarChart
+    type: 'horizontal-bar',
+    title: 'Task Completion Efficiency',
+    description: 'Tasks completed vs assigned by user',
+    component: HorizontalBarChart,
   }
 ];
 
-function StatisticsFieldCarousel() {
+// Dummy data for the charts
+const dummyData = {
+  'employee-hours': [
+    { week: 'Week 1', hours: 32 },
+    { week: 'Week 2', hours: 38 },
+    { week: 'Week 3', hours: 40 },
+    { week: 'Week 4', hours: 35 }
+  ],
+  'employee-projects': [
+    { project: 'Project Alpha', tasks: 12 },
+    { project: 'Project Beta', tasks: 8 },
+    { project: 'Project Gamma', tasks: 5 },
+  ]
+};
+
+function StatisticsFieldCarousel({ project }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const currentChart = chartData[currentIndex];
+  const [chartData, setChartData] = useState([]);
+  const currentChart = chartConfig[currentIndex];
   const ChartComponent = currentChart.component;
 
+  useEffect(() => {
+    console.log("Project ID:", project.id); // Debugging
+    const fetchData = async () => {
+        try {
+          // dummy data for the new employee charts
+          if (currentChart.type === 'employee-hours' || currentChart.type === 'employee-projects') {
+            setChartData(dummyData[currentChart.type]);
+            return;
+          }
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axios.get(currentChart.endpoint, {
+                params: { projectId: project.id },
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+
+            console.log(`Response for ${currentChart.title}:`, response.data);
+
+            // Format data for the bar chart
+            if (currentChart.type === 'bar') {
+              const formattedData = response.data.map((item) => ({
+                label: item.label,
+                tasksAssigned: item.tasksAssigned,
+                tasksCompleted: item.tasksCompleted,
+              }));
+              setChartData(formattedData);
+            } else if (currentChart.type === 'line') {
+              // Format data for the line chart
+              const formattedData = response.data.map((item) => ({
+                employee: item.employee,
+                hours: item.hours,
+              }));
+              setChartData(formattedData);
+            }
+            else {
+              // Format data for the pie chart
+              const formattedData = Array.isArray(response.data)
+                ? response.data
+                : [
+                    { label: 'Completed', value: response.data.completed || 0 },
+                    { label: 'Pending', value: response.data.pending || 0 },
+                  ];
+              setChartData(formattedData);
+            }
+        } catch (error) {
+            console.error(`Error fetching data for ${currentChart.title}:`, error);
+        }
+    };
+
+    fetchData();
+  }, [currentIndex, project.id]);
+
   const handleNavigation = (direction) => {
-    setCurrentIndex(prev => 
-      (prev + (direction === 'left' ? -1 : 1) + chartData.length) % chartData.length);
+    setCurrentIndex((prev) =>
+      (prev + (direction === 'left' ? -1 : 1) + chartConfig.length) % chartConfig.length
+    );
   };
 
   useEffect(() => {
@@ -57,13 +132,13 @@ function StatisticsFieldCarousel() {
       if (e.key === 'ArrowRight') handleNavigation('right');
       if (e.key === 'ArrowLeft') handleNavigation('left');
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (
-    <div className="flex items-center justify-between p-6 bg-secondary/50 rounded-3xl col-span-4 row-span-2 h-full">
+    <div className="flex items-center justify-between p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
       <button
         className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
         onClick={() => handleNavigation('left')}
@@ -74,7 +149,7 @@ function StatisticsFieldCarousel() {
       <div className="flex flex-col items-center justify-center text-center mx-6 flex-grow h-full">
         <h2 className="text-xl font-semibold text-text mb-4">{currentChart.title}</h2>
         <div className="w-full max-w-md max-h-[220px] h-full mb-4">
-          <ChartComponent data={currentChart.data} />
+          <ChartComponent data={chartData} />
         </div>
         <p className="text-gray-600 px-2">{currentChart.description}</p>
       </div>
