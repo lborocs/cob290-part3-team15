@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BsBoxArrowLeft } from "react-icons/bs";
-import DropdownList from "./DropdownList.jsx"; 
+import DropdownList from "../other/DropdownList.jsx"; 
 import LeaveModal from "./LeaveModal.jsx";
 function LeaveDropdown({onClose, leaveFunction, position}){
     // Hiding / deleting chats modal

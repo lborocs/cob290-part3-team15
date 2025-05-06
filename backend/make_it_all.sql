@@ -35,10 +35,9 @@ DROP TABLE IF EXISTS `active_chats`;
 CREATE TABLE `active_chats` (
   `UserID` int(11) NOT NULL,
   `Target` int(11) NOT NULL,
-  `Type` enum('direct_messages','group_messages') NOT NULL,
   `LastUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`UserID`,`Target`,`Type`),
-  CONSTRAINT `User is User` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
+  `LastRead` timestamp NULL DEFAULT NULL,
+  UNIQUE KEY `UserID` (`UserID`,`Target`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -48,11 +47,12 @@ CREATE TABLE `active_chats` (
 
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
-INSERT INTO `active_chats` VALUES (1,1,'group_messages','2025-04-13 18:06:49');
-INSERT INTO `active_chats` VALUES (1,2,'direct_messages','2025-04-14 22:58:46');
-INSERT INTO `active_chats` VALUES (2,1,'direct_messages','2025-04-14 22:58:46');
-INSERT INTO `active_chats` VALUES (2,1,'group_messages','2025-04-13 18:06:49');
-INSERT INTO `active_chats` VALUES (3,1,'direct_messages','2025-03-24 06:58:29');
+INSERT INTO `active_chats` VALUES (1,2,'2025-05-03 14:38:48','2025-05-01 07:51:20');
+INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28','2025-04-21 17:32:07');
+INSERT INTO `active_chats` VALUES (2,1,'2025-05-03 14:38:48','2025-04-21 17:55:07');
+INSERT INTO `active_chats` VALUES (2,3,'2025-04-20 07:07:03','2025-04-21 17:55:08');
+INSERT INTO `active_chats` VALUES (3,1,'2025-04-20 00:02:28','2025-04-20 07:27:10');
+INSERT INTO `active_chats` VALUES (3,2,'2025-04-20 07:07:03','2025-04-20 07:27:08');
 /*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,6 +95,8 @@ CREATE TABLE `direct_messages` (
   `Recipient` int(11) NOT NULL,
   `Content` varchar(1024) NOT NULL,
   `Timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `isEdited` tinyint(1) NOT NULL DEFAULT 0,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`MessageID`),
   KEY `Sender` (`Sender`),
   KEY `Recipient` (`Recipient`),
@@ -109,27 +111,27 @@ CREATE TABLE `direct_messages` (
 
 LOCK TABLES `direct_messages` WRITE;
 /*!40000 ALTER TABLE `direct_messages` DISABLE KEYS */;
-INSERT INTO `direct_messages` VALUES (1,2,1,'I have done my job','2025-03-16 19:41:24');
-INSERT INTO `direct_messages` VALUES (2,1,2,'What is your job?','2025-03-16 20:02:27');
-INSERT INTO `direct_messages` VALUES (3,2,1,'I do work','2025-03-17 02:02:58');
-INSERT INTO `direct_messages` VALUES (4,1,2,'No you don\'t!','2025-03-23 21:50:24');
-INSERT INTO `direct_messages` VALUES (5,1,3,'I send you the message!','2025-03-23 23:26:33');
-INSERT INTO `direct_messages` VALUES (6,1,3,'You get message?','2025-03-23 23:27:28');
-INSERT INTO `direct_messages` VALUES (7,1,3,'I send you the message!','2025-03-23 23:37:05');
-INSERT INTO `direct_messages` VALUES (8,1,3,'Why no refresh','2025-03-23 23:37:24');
-INSERT INTO `direct_messages` VALUES (9,1,2,'You\'re faking it...','2025-03-23 23:37:29');
-INSERT INTO `direct_messages` VALUES (10,2,1,'Test','2025-03-24 00:22:17');
-INSERT INTO `direct_messages` VALUES (11,2,1,'Hey don\'t you go hiding me','2025-03-24 05:13:42');
-INSERT INTO `direct_messages` VALUES (14,1,2,'What are you even testing?','2025-04-11 12:42:20');
-INSERT INTO `direct_messages` VALUES (15,1,2,'I\'m going to Asda by the way','2025-04-11 12:51:20');
-INSERT INTO `direct_messages` VALUES (16,1,2,'Sorry, i meant Lidl, i don\'t like Asda','2025-04-11 21:27:44');
-INSERT INTO `direct_messages` VALUES (17,2,1,'Hi just updating you on everything','2025-04-11 21:32:50');
-INSERT INTO `direct_messages` VALUES (18,2,1,'test','2025-04-12 14:57:06');
-INSERT INTO `direct_messages` VALUES (19,1,2,'test','2025-04-12 15:04:29');
-INSERT INTO `direct_messages` VALUES (20,1,2,'What are we testing again','2025-04-12 18:18:58');
-INSERT INTO `direct_messages` VALUES (21,1,2,'I\'ve reported you for fraud btw','2025-04-12 18:54:01');
-INSERT INTO `direct_messages` VALUES (22,2,1,'oh okay nvm','2025-04-12 18:54:58');
-INSERT INTO `direct_messages` VALUES (23,1,2,'Testing that the leave modal is working and it seems good!!','2025-04-14 22:58:46');
+INSERT INTO `direct_messages` VALUES (1,2,1,'I have done my job','2025-03-16 19:41:24',0,0);
+INSERT INTO `direct_messages` VALUES (2,1,2,'What is your job?','2025-03-16 20:02:27',0,0);
+INSERT INTO `direct_messages` VALUES (3,2,1,'I do work','2025-03-17 02:02:58',0,0);
+INSERT INTO `direct_messages` VALUES (4,1,2,'No you don\'t!','2025-03-23 21:50:24',0,0);
+INSERT INTO `direct_messages` VALUES (5,1,3,'I send you the message!','2025-03-23 23:26:33',0,0);
+INSERT INTO `direct_messages` VALUES (6,1,3,'You get message?','2025-03-23 23:27:28',0,0);
+INSERT INTO `direct_messages` VALUES (7,1,3,'I send you the message!','2025-03-23 23:37:05',0,0);
+INSERT INTO `direct_messages` VALUES (8,1,3,'Why no refresh?','2025-03-23 23:37:24',0,0);
+INSERT INTO `direct_messages` VALUES (9,1,2,'You\'re faking it...','2025-03-23 23:37:29',0,0);
+INSERT INTO `direct_messages` VALUES (10,2,1,'Test','2025-03-24 00:22:17',0,0);
+INSERT INTO `direct_messages` VALUES (11,2,1,'Hey don\'t you go hiding me','2025-03-24 05:13:42',0,0);
+INSERT INTO `direct_messages` VALUES (14,1,2,'What are you even testing?','2025-04-11 12:42:20',0,0);
+INSERT INTO `direct_messages` VALUES (15,1,2,'I\'m going to Asda by the way','2025-04-11 12:51:20',0,0);
+INSERT INTO `direct_messages` VALUES (16,1,2,'Sorry, i meant Lidl, i don\'t like Asda','2025-04-11 21:27:44',0,0);
+INSERT INTO `direct_messages` VALUES (17,2,1,'Hi just updating you on everything','2025-04-11 21:32:50',0,0);
+INSERT INTO `direct_messages` VALUES (18,2,1,'test','2025-04-12 14:57:06',0,0);
+INSERT INTO `direct_messages` VALUES (19,1,2,'test','2025-04-12 15:04:29',0,0);
+INSERT INTO `direct_messages` VALUES (20,1,2,'What are we testing again','2025-04-12 18:18:58',0,0);
+INSERT INTO `direct_messages` VALUES (21,1,2,'I\'ve reported you for fraud btw.','2025-04-12 18:54:01',0,0);
+INSERT INTO `direct_messages` VALUES (22,2,1,'oh okay nvm ;-;','2025-04-12 18:54:58',0,0);
+INSERT INTO `direct_messages` VALUES (23,2,1,'hi','2025-04-20 06:06:24',0,0);
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -146,12 +148,14 @@ CREATE TABLE `group_messages` (
   `GroupID` int(11) NOT NULL,
   `Content` varchar(1024) NOT NULL,
   `Timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `isEdited` tinyint(1) NOT NULL DEFAULT 0,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`MessageID`),
   KEY `User is Sender` (`Sender`),
   KEY `Group is Group` (`GroupID`),
   CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,20 +164,27 @@ CREATE TABLE `group_messages` (
 
 LOCK TABLES `group_messages` WRITE;
 /*!40000 ALTER TABLE `group_messages` DISABLE KEYS */;
-INSERT INTO `group_messages` VALUES (1,2,1,'Guys, It\'s official. I\'m a hater','2025-03-27 19:44:55');
-INSERT INTO `group_messages` VALUES (2,2,1,'Welcome back guys','2025-04-11 21:33:11');
-INSERT INTO `group_messages` VALUES (3,1,1,'huh','2025-04-12 12:03:10');
-INSERT INTO `group_messages` VALUES (4,2,1,'refresh','2025-04-12 14:56:46');
-INSERT INTO `group_messages` VALUES (5,2,1,'test','2025-04-12 14:56:53');
-INSERT INTO `group_messages` VALUES (6,1,1,'bug','2025-04-12 15:00:19');
-INSERT INTO `group_messages` VALUES (7,1,1,'test','2025-04-12 15:01:30');
-INSERT INTO `group_messages` VALUES (8,1,1,'fixed?','2025-04-12 15:04:57');
-INSERT INTO `group_messages` VALUES (9,1,1,'fixed','2025-04-12 15:05:07');
-INSERT INTO `group_messages` VALUES (10,1,1,'okay it\'s fixed now','2025-04-12 15:05:10');
-INSERT INTO `group_messages` VALUES (11,1,1,'test','2025-04-12 16:34:56');
-INSERT INTO `group_messages` VALUES (12,1,1,'testerrr','2025-04-12 18:12:36');
-INSERT INTO `group_messages` VALUES (13,2,1,'fixed huh?','2025-04-12 18:53:22');
-INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here','2025-04-13 09:40:43');
+INSERT INTO `group_messages` VALUES (1,2,1,'Guys, It\'s official. I\'m a hater','2025-03-27 19:44:55',0,0);
+INSERT INTO `group_messages` VALUES (2,2,1,'Welcome back guys','2025-04-11 21:33:11',0,0);
+INSERT INTO `group_messages` VALUES (3,1,1,'huh','2025-04-12 12:03:10',0,0);
+INSERT INTO `group_messages` VALUES (4,2,1,'refresh','2025-04-12 14:56:46',0,0);
+INSERT INTO `group_messages` VALUES (5,2,1,'test','2025-04-12 14:56:53',0,0);
+INSERT INTO `group_messages` VALUES (6,1,1,'bug','2025-04-12 15:00:19',0,0);
+INSERT INTO `group_messages` VALUES (7,1,1,'test','2025-04-12 15:01:30',0,0);
+INSERT INTO `group_messages` VALUES (8,1,1,'fixed?','2025-04-12 15:04:57',0,0);
+INSERT INTO `group_messages` VALUES (9,1,1,'fixed','2025-04-12 15:05:07',0,0);
+INSERT INTO `group_messages` VALUES (10,1,1,'okay it\'s fixed now','2025-04-12 15:05:10',0,0);
+INSERT INTO `group_messages` VALUES (11,1,1,'test','2025-04-12 16:34:56',0,0);
+INSERT INTO `group_messages` VALUES (12,1,1,'testerrr','2025-04-12 18:12:36',0,0);
+INSERT INTO `group_messages` VALUES (13,2,1,'fixed huh?','2025-04-12 18:53:22',0,0);
+INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here','2025-04-13 09:40:43',0,0);
+INSERT INTO `group_messages` VALUES (15,1,2,'Love it here','2025-04-20 00:01:36',0,0);
+INSERT INTO `group_messages` VALUES (16,1,2,'It\'s just so','2025-04-20 00:02:16',0,0);
+INSERT INTO `group_messages` VALUES (17,1,2,'Like cool','2025-04-20 00:02:24',0,0);
+INSERT INTO `group_messages` VALUES (18,1,2,'Sorry for spam','2025-04-20 00:28:48',0,0);
+INSERT INTO `group_messages` VALUES (19,1,3,'Does this work lol','2025-04-20 01:17:21',0,0);
+INSERT INTO `group_messages` VALUES (20,1,1,'Changed my mind about here','2025-04-20 01:52:59',1,0);
+INSERT INTO `group_messages` VALUES (21,4,2,'I don\'t even know who i am','2025-04-20 04:55:21',0,0);
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,6 +198,7 @@ DROP TABLE IF EXISTS `group_users`;
 CREATE TABLE `group_users` (
   `UserID` int(11) NOT NULL,
   `GroupID` int(11) NOT NULL,
+  `LastRead` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`UserID`,`GroupID`),
   KEY `Group is Group group_users` (`GroupID`),
   KEY `UserID` (`UserID`) USING BTREE,
@@ -201,8 +213,15 @@ CREATE TABLE `group_users` (
 
 LOCK TABLES `group_users` WRITE;
 /*!40000 ALTER TABLE `group_users` DISABLE KEYS */;
-INSERT INTO `group_users` VALUES (1,1);
-INSERT INTO `group_users` VALUES (2,1);
+INSERT INTO `group_users` VALUES (1,1,'2025-05-01 07:51:23');
+INSERT INTO `group_users` VALUES (1,2,'2025-05-01 07:31:47');
+INSERT INTO `group_users` VALUES (1,3,'2025-05-01 07:51:19');
+INSERT INTO `group_users` VALUES (2,1,'2025-04-21 17:55:06');
+INSERT INTO `group_users` VALUES (2,2,'2025-04-21 17:55:04');
+INSERT INTO `group_users` VALUES (2,3,'2025-04-21 17:55:05');
+INSERT INTO `group_users` VALUES (3,1,'2025-04-20 07:27:11');
+INSERT INTO `group_users` VALUES (4,2,NULL);
+INSERT INTO `group_users` VALUES (4,3,NULL);
 /*!40000 ALTER TABLE `group_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,10 +236,11 @@ CREATE TABLE `groups` (
   `GroupID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(64) NOT NULL,
   `Owner` int(11) NOT NULL,
+  `LastUpdate` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`GroupID`),
   KEY `Group Owner` (`Owner`),
   CONSTRAINT `Group Owner` FOREIGN KEY (`Owner`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -229,7 +249,9 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,'The Haters',2);
+INSERT INTO `groups` VALUES (1,'The Haters',2,'2025-05-03 15:01:06');
+INSERT INTO `groups` VALUES (2,'The Lovers',3,'2025-04-20 04:55:21');
+INSERT INTO `groups` VALUES (3,'New Group!',1,'2025-04-20 06:44:03');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -370,9 +392,10 @@ CREATE TABLE `users` (
   `Role` enum('Manager','Employee') NOT NULL DEFAULT 'Employee',
   `Icon` blob DEFAULT NULL,
   `PasswordHash` varchar(60) NOT NULL,
-  `Status` enum('Online','Offline','Invisible') NOT NULL DEFAULT 'Offline',
+  `Status` enum('Online','Offline','Invisible','DND','Away') NOT NULL DEFAULT 'Offline',
+  `SavedStatus` enum('Online','DND','Away') NOT NULL DEFAULT 'Online',
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -381,16 +404,17 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Employee','[default profile icon here]','ABC123BCA!!!','Offline');
-INSERT INTO `users` VALUES (2,'John','Smith','Manager','[default profile icon here]','ABC123BCA!!!','Invisible');
-INSERT INTO `users` VALUES (3,'Bill','Broomstick','Employee','[default profile icon here]','ABC123BCA!!!','Online');
-INSERT INTO `users` VALUES (6,'Rokuro','Thiri','Manager',NULL,'ABC123BCA!!!','Offline');
-INSERT INTO `users` VALUES (7,'Ige','Kapil','Employee',NULL,'ABC123BCA!!!','Offline');
-INSERT INTO `users` VALUES (8,'Leutbert','Custodio','Employee',NULL,'ABC123BCA!!!','Offline');
-INSERT INTO `users` VALUES (9,'Gerhard','Shukra','Employee',NULL,'ABC123BCA!!!','Offline');
-INSERT INTO `users` VALUES (10,'Aylin','Stacie','Employee',NULL,'ABC123BCA!!!','Offline');
-INSERT INTO `users` VALUES (11,'Alhassan','Fareeha','Employee',NULL,'ABC123BCA!!!','Offline');
-INSERT INTO `users` VALUES (12,'Laurencia','Kaya','Employee',NULL,'ABC123BCA!!!','Offline');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (2,'John','Smith','Manager',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (3,'Bill','Bloomstick','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (4,'Faker','Realman','Employee',NULL,'12A','Offline','Online');
+INSERT INTO `users` VALUES (5,'Rokuro','Thiri','Manager',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (6,'Ige','Kapil','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (7,'Leutbert','Custodio','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (8,'Gerhard','Shukra','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (9,'Aylin','Stacie','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (10,'Alhassan','Fareeha','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (11,'Laurencia','Kaya','Employee',NULL,'ABC123BCA!!!','Offline','Online');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

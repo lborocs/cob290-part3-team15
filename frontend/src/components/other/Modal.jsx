@@ -1,5 +1,5 @@
 import { BsX } from "react-icons/bs";
-export default function Modal({open, onClose, children}){
+export default function Modal({open, onClose, children, bgColor, accentColor}) {
     return(
         <div 
         onClick={onClose} 
@@ -11,12 +11,12 @@ export default function Modal({open, onClose, children}){
             <div
                 onClick={(e) => e.stopPropagation()} 
                 className={`
-                modal-content relative bg-white rounded-xl shadow p-6 transition-all
+                modal-content relative ${bgColor == null ? "bg-white" : bgColor} rounded-xl shadow p-6 transition-all
                 ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
                 `}
             >
                 <button 
-                    className="absolute top-2 right-2 p-1 rounded-lg text-gray-500 hover:bg-gray-200 hover:text-gray-600" 
+                    className={`absolute top-2 right-2 p-1 rounded-lg text-gray-500 hover:${accentColor == null ? "bg-gray-200" : accentColor } hover:text-gray-600`}
                     onClick={onClose}
                 >
                     < BsX />

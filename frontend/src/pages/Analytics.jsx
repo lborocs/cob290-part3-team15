@@ -20,7 +20,6 @@ function Analytics({ user }) {
     const [quickStatistics, setQuickStatistics] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [tasks, setTasks] = useState([]);
-
     useEffect(() => {
         async function fetchData() {
             try {
@@ -164,7 +163,6 @@ function Analytics({ user }) {
                 console.error("Error fetching data:", error);
             }
         }
-
         fetchData();
     }, [selectedProject, user.role, user.userID]);
 
@@ -306,7 +304,6 @@ function Analytics({ user }) {
             )}
         </div>
     )
-    
 }
 
 export default Auth(Analytics);
