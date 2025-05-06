@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PieChart from './PieChart';
 import BarChart from './BarChart';
+import HorizontalBarChart from './HorizontalBarChart';
 import LineChart from './LineChart';
+import EmployeeHoursChart from './EmployeeHoursChart';
+import EmployeeProjectsChart from './EmployeeProjectsChart';
 
 const chartConfig = [
   {
@@ -13,11 +16,16 @@ const chartConfig = [
     component: PieChart,
   },
   {
-    type: 'bar',
-    title: 'Task Allocation by User',
-    description: 'Number of tasks assigned to each team member',
-    endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
-    component: BarChart,
+    type: 'employee-hours',
+    title: 'My Weekly Hours',
+    description: 'My hours worked in the past 4 weeks',
+    component: EmployeeHoursChart,
+  },
+  {
+    type: 'employee-projects',
+    title: 'My Project Contributions',
+    description: 'Tasks I contributed to by project',
+    component: EmployeeProjectsChart,
   },
   {
     type: 'line',
@@ -25,8 +33,36 @@ const chartConfig = [
     description: 'Total hours worked by each team member',
     endpoint: '/api/analytics/employees/getUserWeeklyHours',
     component: LineChart,
+  },
+  {
+    type: 'bar',
+    title: 'Task Allocation by User',
+    description: 'Number of tasks assigned to each team member',
+    endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
+    component: BarChart,
+  },
+  {
+    type: 'horizontal-bar',
+    title: 'Task Completion Efficiency',
+    description: 'Tasks completed vs assigned by user',
+    component: HorizontalBarChart,
   }
 ];
+
+// Dummy data for the charts
+const dummyData = {
+  'employee-hours': [
+    { week: 'Week 1', hours: 32 },
+    { week: 'Week 2', hours: 38 },
+    { week: 'Week 3', hours: 40 },
+    { week: 'Week 4', hours: 35 }
+  ],
+  'employee-projects': [
+    { project: 'Project Alpha', tasks: 12 },
+    { project: 'Project Beta', tasks: 8 },
+    { project: 'Project Gamma', tasks: 5 },
+  ]
+};
 
 function StatisticsFieldCarousel({ project }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -38,6 +74,11 @@ function StatisticsFieldCarousel({ project }) {
     console.log("Project ID:", project.id); // Debugging
     const fetchData = async () => {
         try {
+          // dummy data for the new employee charts
+          if (currentChart.type === 'employee-hours' || currentChart.type === 'employee-projects') {
+            setChartData(dummyData[currentChart.type]);
+            return;
+          }
             const accessToken = localStorage.getItem('accessToken');
             const response = await axios.get(currentChart.endpoint, {
                 params: { projectId: project.id },
