@@ -8,6 +8,7 @@ import WelcomeMessage from "../components/analytics/WelcomeMessage.jsx";
 import QuickStatistics from "../components/analytics/QuickStatistics.jsx";
 import SearchBox from "../components/analytics/SearchBox.jsx";
 import StatisticsField from "../components/analytics/StatisticsField.jsx";
+import QuickStatisticItem from "../components/analytics/QuickStatisticItem.jsx";
 
 function Analytics({ user }) {
     const navigate = useNavigate();
@@ -219,15 +220,9 @@ function Analytics({ user }) {
                         </div>
 
                         <div className="col-start-2 row-start-3 col-span-4 w-full">
-                            <div className="grid grid-cols-3 gap-4 mt-4 w-full">
-                                {quickStatistics.map((stat) => (
-                                    <QuickStatistics
-                                        key={stat.id}
-                                        title={stat.title}
-                                        statisticValue={stat.value}
-                                    />
-                                ))}
-                            </div>
+                            <QuickStatistics
+                                quickStatistics={quickStatistics}
+                            />
                         </div>
 
                         <SearchBox
@@ -279,15 +274,9 @@ function Analytics({ user }) {
                         </div>
 
                         <div className="col-start-2 row-start-3 col-span-4 w-full">
-                            <div className="grid grid-cols-3 gap-4 mt-4 w-full">
-                                {quickStatistics.map((stat) => (
-                                    <QuickStatistics
-                                        key={stat.id}
-                                        title={stat.title}
-                                        statisticValue={stat.value}
-                                    />
-                                ))}
-                            </div>
+                            <QuickStatistics
+                                quickStatistics={quickStatistics}
+                            />
                         </div>
 
                         <SearchBox
