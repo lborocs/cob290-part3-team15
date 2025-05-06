@@ -26,7 +26,7 @@ function SearchBox({ projects, onProjectSelect, selectedProject }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto p-1">
         {filteredProjects.length > 0 ? (
           filteredProjects.map(project => (
             <ProjectCard 
