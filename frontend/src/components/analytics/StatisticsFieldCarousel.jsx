@@ -7,48 +7,6 @@ import LineChart from './LineChart';
 import EmployeeHoursChart from './EmployeeHoursChart';
 import EmployeeProjectsChart from './EmployeeProjectsChart';
 
-const chartConfig = [
-  {
-    type: 'pie',
-    title: 'Task Completion Status',
-    description: 'Percentage of completed vs pending tasks',
-    endpoint: '/api/analytics/projects/getTaskCompletionStatus',
-    component: PieChart,
-  },
-  {
-    type: 'employee-hours',
-    title: 'My Weekly Hours',
-    description: 'My hours worked in the past 4 weeks',
-    component: EmployeeHoursChart,
-  },
-  {
-    type: 'employee-projects',
-    title: 'My Project Contributions',
-    description: 'Tasks I contributed to by project',
-    component: EmployeeProjectsChart,
-  },
-  {
-    type: 'line',
-    title: 'Hours Worked by User',
-    description: 'Total hours worked by each team member',
-    endpoint: '/api/analytics/projects/getUserWeeklyHours',
-    component: LineChart,
-  },
-  {
-    type: 'bar',
-    title: 'Task Allocation by User',
-    description: 'Number of tasks assigned to each team member',
-    endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
-    component: BarChart,
-  },
-  {
-    type: 'horizontal-bar',
-    title: 'Task Completion Efficiency',
-    description: 'Tasks completed vs assigned by user',
-    component: HorizontalBarChart,
-  }
-];
-
 // Dummy data for the charts
 const dummyData = {
   'employee-hours': [
@@ -65,6 +23,49 @@ const dummyData = {
 };
 
 function StatisticsFieldCarousel({ project }) {
+
+  const chartConfig = [
+    {
+      type: 'pie',
+      title: 'Task Completion Status',
+      description: 'Percentage of completed vs pending tasks',
+      endpoint: '/api/analytics/projects/getTaskCompletionStatus',
+      component: PieChart,
+    },
+    {
+      type: 'employee-hours',
+      title: 'My Weekly Hours',
+      description: 'My hours worked in the past 4 weeks',
+      component: EmployeeHoursChart,
+    },
+    {
+      type: 'employee-projects',
+      title: 'My Project Contributions',
+      description: 'Tasks I contributed to by project',
+      component: EmployeeProjectsChart,
+    },
+    {
+      type: 'line',
+      title: 'Hours Worked by User',
+      description: 'Total hours worked by each team member',
+      endpoint: '/api/analytics/projects/getUserWeeklyHours',
+      component: LineChart,
+    },
+    {
+      type: 'bar',
+      title: 'Task Allocation by User',
+      description: 'Number of tasks assigned to each team member',
+      endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
+      component: BarChart,
+    },
+    {
+      type: 'horizontal-bar',
+      title: 'Task Completion Efficiency',
+      description: 'Tasks completed vs assigned by user',
+      component: HorizontalBarChart,
+    }
+  ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [chartData, setChartData] = useState([]);
   const currentChart = chartConfig[currentIndex];
@@ -73,49 +74,49 @@ function StatisticsFieldCarousel({ project }) {
   useEffect(() => {
     console.log("Project ID:", project.id); // Debugging
     const fetchData = async () => {
-        try {
-          // dummy data for the new employee charts
-          if (currentChart.type === 'employee-hours' || currentChart.type === 'employee-projects') {
-            setChartData(dummyData[currentChart.type]);
-            return;
-          }
-            const accessToken = localStorage.getItem('accessToken');
-            const response = await axios.get(currentChart.endpoint, {
-                params: { projectId: project.id },
-                headers: { Authorization: `Bearer ${accessToken}` },
-            });
-
-            console.log(`Response for ${currentChart.title}:`, response.data);
-
-            // Format data for the bar chart
-            if (currentChart.type === 'bar') {
-              const formattedData = response.data.map((item) => ({
-                label: item.label,
-                tasksAssigned: item.tasksAssigned,
-                tasksCompleted: item.tasksCompleted,
-              }));
-              setChartData(formattedData);
-            } else if (currentChart.type === 'line') {
-              // Format data for the line chart
-              const formattedData = response.data.map((item) => ({
-                employee: item.employee,
-                hours: item.hours,
-              }));
-              setChartData(formattedData);
-            }
-            else {
-              // Format data for the pie chart
-              const formattedData = Array.isArray(response.data)
-                ? response.data
-                : [
-                    { label: 'Completed', value: response.data.completed || 0 },
-                    { label: 'Pending', value: response.data.pending || 0 },
-                  ];
-              setChartData(formattedData);
-            }
-        } catch (error) {
-            console.error(`Error fetching data for ${currentChart.title}:`, error);
+      try {
+        // dummy data for the new employee charts
+        if (currentChart.type === 'employee-hours' || currentChart.type === 'employee-projects') {
+          setChartData(dummyData[currentChart.type]);
+          return;
         }
+          const accessToken = localStorage.getItem('accessToken');
+          const response = await axios.get(currentChart.endpoint, {
+              params: { projectId: project.id },
+              headers: { Authorization: `Bearer ${accessToken}` },
+          });
+
+          console.log(`Response for ${currentChart.title}:`, response.data);
+
+          // Format data for the bar chart
+          if (currentChart.type === 'bar') {
+            const formattedData = response.data.map((item) => ({
+              label: item.label,
+              tasksAssigned: item.tasksAssigned,
+              tasksCompleted: item.tasksCompleted,
+            }));
+            setChartData(formattedData);
+          } else if (currentChart.type === 'line') {
+            // Format data for the line chart
+            const formattedData = response.data.map((item) => ({
+              employee: item.employee,
+              hours: item.hours,
+            }));
+            setChartData(formattedData);
+          }
+          else {
+            // Format data for the pie chart
+            const formattedData = Array.isArray(response.data)
+              ? response.data
+              : [
+                  { label: 'Completed', value: response.data.completed || 0 },
+                  { label: 'Pending', value: response.data.pending || 0 },
+                ];
+            setChartData(formattedData);
+          }
+      } catch (error) {
+          console.error(`Error fetching data for ${currentChart.title}:`, error);
+      }
     };
 
     fetchData();

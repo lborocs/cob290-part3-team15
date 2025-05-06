@@ -41,7 +41,7 @@ router.get("/getTeamMembers",authenticateToken,(req,res) => {
                     WHERE EXISTS (SELECT pu.ProjectID, pu.UserID
                                   FROM project_users AS pu
                                   WHERE pu.UserID = u.UserID AND pu.ProjectID = p.ProjectID)`;
-        values.push(req.user.userID);
+        values = [req.user.userID];
     }
 
     database.query(query, values, (err, employeeResults) => {

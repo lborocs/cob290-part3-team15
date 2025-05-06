@@ -8,27 +8,28 @@ function StatisticsField({selectedProject, tasks, employees}) {
     const isOverview = selectedProject.title === "Overview";
 
     // Filter by tasks on this project
-    const projectTasks = tasks.filter(task => task.project === selectedProject.id);
+    const statsTasks = isOverview ? tasks : tasks.filter(task => task.project === selectedProject.id);
 
     // Filter by employees who have a task on this project or lead this project
-    const projectMembers = employees.filter(employee => tasks.some(task => task.assignee === employee.id && task.project === selectedProject.id) || selectedProject.leader === employee.id);
-
+    const statsEmployees = isOverview ? employees :
+        employees.filter(employee =>
+            tasks.some(task => task.assignee === employee.id && task.project === selectedProject.id)
+            || selectedProject.leader === employee.id);
 
     return (
         <div className="lg:col-start-6 lg:row-start-2 lg:col-span-6 lg:row-span-5 rounded-3xl lg:grid lg:grid-cols-6 lg:grid-rows-4 flex flex-col gap-4 w-full">
             <>
-                {isOverview
-                    ?
+                {isOverview ?
                     <div className="flex items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 w-full">
                         <p className="text-3xl text-center">Select a project to view details</p>
                     </div>
                     :
-                    <StatisticsFieldCarousel project={ selectedProject }/>
+                    <StatisticsFieldCarousel
+                        project={ selectedProject }
+                    />
                 }
-
-
-                <TasksList tasks={ isOverview ? tasks : projectTasks }/>
-                <StatisticsFieldBottom employees={ isOverview ? employees : projectMembers}/>
+                <TasksList tasks={ statsTasks }/>
+                <StatisticsFieldBottom employees={ statsEmployees }/>
             </>
         </div>
     );
