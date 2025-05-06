@@ -1,38 +1,74 @@
 import React from 'react'
+import QuickStatisticItem from "./QuickStatisticItem.jsx";
 
-function QuickStatistics({ title, statisticValue }) {
-    const [displayValue, setDisplayValue] = React.useState(0);
+function QuickStatistics({ selectedProject, projects, employees, tasks }) {
 
-    React.useEffect(() => {
-        let start = 0;
-        const duration = 1500; // Animation duration in milliseconds
-        const startTime = performance.now();
-        const hasPercentSign = typeof statisticValue === 'string' && statisticValue.trim().endsWith('%');
-        const numericValue = parseFloat(statisticValue) || 0; // Parse statisticValue as a number
+    // Build the quick statistics
+    let statsArr = [];
 
-        const animate = (currentTime) => {
-            const elapsedTime = currentTime - startTime;
-            const progress = Math.min(elapsedTime / duration, 1); // Clamp progress between 0 and 1
-            const easedProgress = progress * (2 - progress); // Ease-out curve
-            const currentValue = Math.round(easedProgress * numericValue);
-
-            setDisplayValue(hasPercentSign ? `${currentValue}%` : currentValue);
-
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            }
+    if (selectedProject.title === "Overview") {
+        // project count statistic
+        const projectCount = projects.length;
+        const projectCountStat = {
+            id: 'overview-projects',
+            title: 'Projects',
+            value: projectCount,
         };
+        statsArr.push(projectCountStat);
 
-        setDisplayValue(hasPercentSign ? '0%' : 0); // Ensure percent sign is there at the start
-        requestAnimationFrame(animate);
-    }, [statisticValue]);
+        // employee count statistic
+        const employeeCountStat = {
+            id: 'overview-employees',
+            title: 'Employees',
+            value: employees.length,
+        };
+        statsArr.push(employeeCountStat);
+
+        // task count statistic
+        const taskCount = tasks.length;
+        const taskCountStat = {
+            id: 'overview-tasks',
+            title: 'Tasks',
+            value: taskCount,
+        };
+        statsArr.push(taskCountStat);
+    }
+    else {
+        const projectTasks = tasks.filter(task => task.project === selectedProject.id);
+        // project task count statistic
+        const taskCount = projectTasks.length;
+        const taskCountStat = {
+            id: `project-${selectedProject.title}-tasks`,
+            title: 'Tasks Total',
+            value: taskCount,
+        };
+        statsArr.push(taskCountStat);
+
+        // project completion percentage statistic
+        const completedTasks = projectTasks.filter(task => task.status === 'Completed').length;
+        let taskCompletionPercentage = Math.round((completedTasks / taskCount) * 100).toString();
+        const taskCompletionStat = {
+            id: `project-${selectedProject.title}-task-completion`,
+            title: 'Task Completion',
+            value: taskCompletionPercentage + '%',
+        };
+        statsArr.push(taskCompletionStat);
+    }
+
 
     return (
-        <div className="col-span-1 row-span-1 bg-secondary/50 rounded-3xl p-2 flex flex-col justify-center border-1 border-blackFaded"> 
-            <p className="text-sm font-bold text-center text-wrap">{title}</p>
-            <h2 className='text-3xl font-bold text-center text-text sm:text-2xl md:text-3xl'>{displayValue}</h2>
+        <div className="col-start-2 row-start-3 col-span-4 w-full">
+            <div className="grid grid-cols-3 gap-4 mt-4 w-full">
+                {statsArr.map((stat) => (
+                    <QuickStatisticItem
+                        key={stat.id}
+                        title={stat.title}
+                        statisticValue={stat.value}
+                    />
+                ))}
+            </div>
         </div>
     );
 }
 
-export default QuickStatistics
+export default QuickStatistics;
