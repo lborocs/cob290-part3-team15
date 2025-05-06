@@ -5,7 +5,7 @@ const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
 
-// Get the full details of all projects or all projects assigned to a user
+// Get the full details of all projects or all projects led by a user
 router.get("/getEmployeeProjects",authenticateToken,(req,res) => {
 
     // first get the projects
@@ -14,7 +14,7 @@ router.get("/getEmployeeProjects",authenticateToken,(req,res) => {
     let values = [];
     // if the user is not a manager, we need to filter the projects by the user
     if (req.user.role !== "Manager") {
-        query += ` WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID=? AND pu.ProjectID=p.ProjectID)`;
+        query += ` WHERE p.LeaderID = ?`;
         values = [req.user.userID];
     }
 
@@ -32,13 +32,12 @@ router.get("/getOverviewEmployees",authenticateToken,(req,res) => {
     let query = `SELECT u.UserID as 'id', u.Forename as 'forename', u.Surname as 'surname'
                  FROM users as u`;
     let values = [];
-    // TODO this currently gets all employees on all projects the user is on regardless of if they lead that project
     // if the user is not a manager, we need to get all of the employees only on projects led by this user
     if (req.user.role !== "Manager") {
-        query += ` INNER JOIN project_users as pu ON pu.UserID = u.UserID 
-                   WHERE EXISTS (SELECT pu.ProjectID, pu.UserID
-                               FROM project_users AS pu
-                               WHERE pu.UserID = ? AND pu.ProjectID = pu.ProjectID)`;
+        query += ` INNER JOIN projects as p ON p.LeaderID = ?
+                    WHERE EXISTS (SELECT pu.ProjectID, pu.UserID
+                                  FROM project_users AS pu
+                                  WHERE pu.UserID = u.UserID AND pu.ProjectID = p.ProjectID)`;
         values = [req.user.userID];
     }
 
@@ -56,10 +55,9 @@ router.get("/getOverviewTasks",authenticateToken,(req,res) => {
     let query = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline'
                         FROM tasks as t`;
     let values = [];
-    // TODO this currently shows tasks on all projects the user is on regardless of if they lead that project
     // if the user is not a manager, we need to filter only the tasks on projects they lead
     if (req.user.role !== "Manager") {
-        query += ` WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID=? AND pu.ProjectID=t.ProjectID)`;
+        query += ` WHERE EXISTS (SELECT p.ProjectID FROM projects AS p WHERE p.LeaderID = ? AND p.ProjectID = t.ProjectID)`;
         values = [req.user.userID];
     }
 
@@ -69,16 +67,6 @@ router.get("/getOverviewTasks",authenticateToken,(req,res) => {
         }
 
         res.send({tasks: taskResults});
-    });
-});
-
-// TODO unused
-// Get the IDs of all projects led by a user
-router.get("/getUserLedProjects",authenticateToken,(req,res) => {
-    const query=`SELECT ProjectID FROM projects WHERE projects.LeaderID=?`;
-    const values = [req.user.userID];
-    database.query(query, values, (err, results) => {
-        res.send({results: results});
     });
 });
 

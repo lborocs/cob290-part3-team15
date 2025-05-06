@@ -28,15 +28,10 @@ function Analytics({ user }) {
                 const accessToken = localStorage.getItem('accessToken');
 
                 if (selectedProject.title === 'Overview') {
-                    // TODO we shouldn't get all the data at once in the overview, just get the employees/projects and get the rest when needed
                     // this is a function for when the page is in overview mode
-                    let filter = "all";
 
                     // If not a manager, filter queries for that employee
                     // and get the list of led projects
-                    if (user.role !== "Manager") {
-                        filter = user.userID;
-                    }
 
                     const responseProjects = await axios.get(`/api/analytics/employees/getEmployeeProjects`, {
                         headers: { Authorization: `Bearer ${accessToken}` },

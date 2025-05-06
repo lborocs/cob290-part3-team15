@@ -5,6 +5,23 @@ const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
 
+// Get quick statistics for a user on the project side, possibly filtered by project
+router.get("/getQuickStatistics",authenticateToken,(req,res) => {
+    const projectId = req.query.id;
+    let query = "";
+
+    // Get overview stats if no project is selected
+    if (!projectId) {
+        // For managers and team leaders, we get the number of projects, employees and tasks
+        query = ``
+
+        // For team leaders, we filter by projects they lead
+        if (req.user.role !== "Manager") {
+
+        }
+    }
+});
+
 // this gets the details of the selected project
 router.get("/getProjectDetails", authenticateToken, (req, res) => {
     const query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description' FROM projects as p WHERE p.ProjectID=?`;
