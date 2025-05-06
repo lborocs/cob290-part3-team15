@@ -179,4 +179,40 @@ router.put("/updateMessage",authenticateToken,(req,res) => {
   });
 });
 
+router.put("/hideMessage",authenticateToken,(req,res) => {
+  const query="UPDATE group_messages SET isDeleted=1 WHERE MessageID=? AND Sender=?";
+  const id = req.user.userID;
+  const messageID= req.body.id;
+
+  //Stop bad inputs
+  if (isNaN(id) || isNaN(messageID)) {
+      return res.status(400).json({ error: "Invalid ID" });
+  }
+
+  const values = [messageID,id];
+  database.query(query, values, err => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Failed to hide message" });
+      }
+      //Get all group members to ping them for updates
+      const groupUserQuery = "SELECT UserID,GroupID FROM group_users WHERE GroupID=(SELECT GroupID FROM group_messages WHERE messageID=?)"
+      const groupUserQueryValues=[messageID]
+      database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+        if (err){
+          return res.status(500).json({ error: "Failed to refresh correctly" });
+        }
+        else if (results.length===0){
+          return res.status(403).json({ error: "Group not found or has no members" });
+        }
+        for (let i=0;i<results.length;i++){
+          const groupID = results[i].GroupID;
+          const userID = results[i].UserID;
+          alertEdit(userID,groupID,messageID,"group_messages","Message Deleted");
+        }
+        return res.status(200).json({ success: true, message: "Message deleted successfully" });
+      });
+  });
+});
+
 module.exports = router;
