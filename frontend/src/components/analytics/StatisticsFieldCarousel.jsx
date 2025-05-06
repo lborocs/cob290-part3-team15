@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PieChart from './PieChart';
-import BarChart from './BarChart';
-import HorizontalBarChart from './HorizontalBarChart';
-import LineChart from './LineChart';
-import EmployeeHoursChart from './EmployeeHoursChart';
-import EmployeeProjectsChart from './EmployeeProjectsChart';
+import PieChart from './charts/PieChart.jsx';
+import BarChart from './charts/BarChart.jsx';
+import HorizontalBarChart from './charts/HorizontalBarChart.jsx';
+import LineChart from './charts/LineChart.jsx';
+import EmployeeHoursChart from './charts/EmployeeHoursChart.jsx';
+import EmployeeProjectsChart from './charts/EmployeeProjectsChart.jsx';
 
 // Dummy data for the charts
 const dummyData = {
