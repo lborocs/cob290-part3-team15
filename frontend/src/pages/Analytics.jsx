@@ -219,11 +219,9 @@ function Analytics({ user }) {
                             )}
                         </div>
 
-                        <div className="col-start-2 row-start-3 col-span-4 w-full">
-                            <QuickStatistics
-                                quickStatistics={quickStatistics}
-                            />
-                        </div>
+                        <QuickStatistics
+                            quickStatistics={quickStatistics}
+                        />
 
                         <SearchBox
                             projects={projects}
@@ -273,11 +271,9 @@ function Analytics({ user }) {
                             )}
                         </div>
 
-                        <div className="col-start-2 row-start-3 col-span-4 w-full">
-                            <QuickStatistics
+                        <QuickStatistics
                                 quickStatistics={quickStatistics}
-                            />
-                        </div>
+                        />
 
                         <SearchBox
                             projects={projects}
