@@ -1,6 +1,7 @@
-import React from 'react'
+import React from 'react';
 import { useState } from 'react';
-import ProjectCard from './ProjectCard'; // Assuming ProjectCard is the component for individual projects
+import ProjectCard from './ProjectCard';
+import { FiSearch } from 'react-icons/fi';
 
 function SearchBox({ projects, onProjectSelect, selectedProject }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,35 +12,41 @@ function SearchBox({ projects, onProjectSelect, selectedProject }) {
   );
 
   return (
-    <div className="col-start-2 row-start-4 col-span-4 row-span-3 bg-secondary/40 rounded-3xl p-4 flex flex-col justify-start">
-      <input
-        type="text"
-        placeholder="Search projects..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="p-2 rounded-3xl border border-gray-300 mb-4"
-      />
-      <div
-        className="flex flex-wrap gap-2 overflow-y-auto justify-between"
+    <div className="col-start-2 row-start-4 col-span-4 row-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
+      <div className="relative mb-6">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <FiSearch className="text-gray-400" />
+        </div>
+        <input
+          type="text"
+          placeholder="Search projects..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-accentOrange focus:border-transparent"
+        />
+      </div>
 
-        style={{ maxHeight: '300px' }}
-      >
-        {filteredProjects.map(project => (
-          <div
-            key={project.id}
-            className="flex-1 min-w-[30%] max-w-[30%] box-border"
-          >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2">
+        {filteredProjects.length > 0 ? (
+          filteredProjects.map(project => (
             <ProjectCard 
+              key={project.id}
               title={project.title}
               description={project.description}
-              onClick={(passedProject=project) => onProjectSelect(passedProject)} // Accept an argument in case we want to reset project to overview
-              isSelected={selectedProject.title===project.title}
+              onClick={() => onProjectSelect(project)}
+              isSelected={selectedProject?.title === project.title}
             />
+          ))
+        ) : (
+          <div className="col-span-full flex flex-col items-center justify-center py-8 text-gray-400">
+            <FiSearch className="text-3xl mb-2" />
+            <p>No projects found</p>
+
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
 }
 
-export default SearchBox
+export default SearchBox;
