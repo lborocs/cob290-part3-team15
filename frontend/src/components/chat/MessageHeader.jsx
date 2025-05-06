@@ -35,12 +35,14 @@ export default function Header({ name, selectedID, mode }) {
                     <div>User: {name}</div>
                     <ProfileCard displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={""} id={selectedID} status={"offline"}/>
                     <div className="flex items-center gap-2 mt-2">
-                        <button
-                            className="bg-accentOrange hover:bg-orangeHover text-text font-bold py-2 px-4 rounded"
-                            onClick={() => setDropdownVisible(!dropdownVisible)}
-                            ref={refs.setReference}
-                        >
-                        </button>
+                        {mode === "group_messages" && (
+                            <button
+                                className="bg-accentOrange hover:bg-orangeHover text-text font-bold py-2 px-4 rounded"
+                                onClick={() => setDropdownVisible(!dropdownVisible)}
+                                ref={refs.setReference}
+                            >
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
