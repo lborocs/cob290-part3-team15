@@ -21,7 +21,7 @@ const dummyData = {
     { project: 'Project Gamma', tasks: 5 },
   ],
   'line': [ 
-    { employee: "John Doe", hours: 15 },
+    { employee: "Ryan Gosling", hours: 15 },
     { employee: "Steve Roggers", hours: 42 },
     { employee: "Toby Maguire", hours: 6 },
     { employee: "Hugh Jackman", hours: 39 }
@@ -52,7 +52,7 @@ function StatisticsFieldCarousel({ selectedProject }) {
     },
     {
       type: 'line',
-      title: 'Hours Worked by User',
+      title: 'Hours Worked by Member',
       description: 'Total hours worked by each team member',
       endpoint: '/api/analytics/projects/getUserWeeklyHours',
       component: LineChart,

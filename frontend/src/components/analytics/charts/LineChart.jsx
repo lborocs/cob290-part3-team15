@@ -5,21 +5,7 @@ const LineChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
-    if (!data || data.length === 0) {
-      console.warn("No data provided to LineChart");
-      return;
-    }
-
-    // Validate and format data
-    const validatedData = data.map(item => ({
-      employee: item.employee || 'Unknown',
-      hours: Number(item.hours) || 0
-    })).filter(item => !isNaN(item.hours));
-
-    if (validatedData.length === 0) {
-      console.error("Invalid data format for LineChart");
-      return;
-    }
+    if (!data || data.length === 0) return;
 
     // Dimensions and margins
     const width = ref.current.parentElement.offsetWidth;
@@ -52,12 +38,12 @@ const LineChart = ({ data }) => {
 
     // Scales
     const x = d3.scaleBand()
-      .domain(validatedData.map(d => d.employee))
+      .domain(data.map(d => d.employee))
       .range([0, innerWidth])
       .padding(0.2);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(validatedData, d => d.hours) * 1.1])
+      .domain([0, d3.max(data, d => d.hours) * 1.1])
       .nice()
       .range([innerHeight, 0]);
 
@@ -82,7 +68,7 @@ const LineChart = ({ data }) => {
 
     // Draw the line path with animation
     const path = g.append('path')
-      .datum(validatedData)
+      .datum(data)
       .attr('fill', 'none')
       .attr('stroke', colors.line)
       .attr('stroke-width', 3)
@@ -99,7 +85,7 @@ const LineChart = ({ data }) => {
 
     // Add circles with animation
     g.selectAll('.dot')
-      .data(validatedData)
+      .data(data)
       .enter()
       .append('circle')
       .attr('class', 'dot')
