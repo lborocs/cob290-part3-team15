@@ -16,8 +16,6 @@ function Content({ message }) {
 }
 
 function SelfMessage({ message, setEditing, setEditingMessage, editingMessage, toggleDropdown, dropdownRefs, SetisHovered, isHovered }) {
-  const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the modal
-  const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
   const messageRef = useRef(null);
   const[z,selectedZ]=useState(false); // State to control the z-index of the message
 
@@ -41,19 +39,6 @@ function SelfMessage({ message, setEditing, setEditingMessage, editingMessage, t
   const setRefs = (element) => {
     dropdownRefs.setReference(element);
     hoverRefs.setReference(element);
-  };
-
-
-  
-
-  const openHideModal = () => {
-    setMessageToHide(message); // Set the message to be hidden
-    setIsHideModalOpen(true); // Open the modal
-  };
-
-  const closeHideModal = () => {
-    setMessageToHide(null); // Clear the message
-    setIsHideModalOpen(false); // Close the modal
   };
 
   //Anti Right Click
@@ -96,17 +81,7 @@ function SelfMessage({ message, setEditing, setEditingMessage, editingMessage, t
               )}
               <Content message={message}/>
               {message.isEdited==1 && (<p className="text-right text-xs text-light text-gray-400 select-none">edited</p>)}
-            </div>
-            {
-              isHideModalOpen && (
-              <HideMessageModal
-                open={isHideModalOpen}
-                onClose={closeHideModal}
-                message={messageToHide}
-              />
-              )
-            }
-              
+            </div>  
           </div>
         </div>
       </div>
@@ -198,7 +173,9 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const sentByUser = parseInt(messageContent.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
   const [isDropdownOpen, setDropdownOpen] = useState(false); // State to track the open dropdown
-  
+  const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
+  const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the hide modal
+
   const toggleDropdown = () => {
     setDropdownOpen((prev) => {
       if (prev) {setTimeout(() => setDropdownOpen(false), 0);return prev;} //Close 1 Render Later (Stops dismiss instantly refiring this)
@@ -227,11 +204,15 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
 
   
 
-  
-  const openHideModal = () => {
-    setMessageToHide(messageContent); // Set the message to be hidden
+  const openHideModal = (messageID) => {
+    setMessageToHide(messageID); // Set the message to be hidden
     setIsHideModalOpen(true); // Open the modal
   };
+
+  const closeHideModal = () => {
+    setMessageToHide(null); // Clear the message
+    setIsHideModalOpen(false); // Close the modal
+  }
 
   return (
     
@@ -247,10 +228,18 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
           message={messageContent} // Pass the message to the dropdown
           setEditing={sentByUser ? setEditing : null}
           setEditingMessage={sentByUser ? setEditingMessage : null}
-          openHideModal={openHideModal}
+          openHideModal={() => openHideModal(messageContent.messageID)} // Pass the function to open the modal with the message ID
           refs={dropdownRefs} 
           floatingStyles={dropdownStyles}
         />
+        )}
+        {isHideModalOpen && (
+          <HideMessageModal
+            open={isHideModalOpen}
+            onClose={closeHideModal}
+            messageID={messageToHide}
+            mode={mode} // Pass the mode to the modal
+          />
         )}
     </>
 

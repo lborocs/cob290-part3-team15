@@ -1,10 +1,23 @@
 import Modal from "../other/Modal";
-
-function HideMessageModal({ open, onClose, message }) {
-    const handleHide = () => {
+import axios from "axios";
+function HideMessageModal({ open, onClose, messageID, mode }) {
+    const handleHide = async() => {
         // Logic to hide the message
-        console.log("Hiding message:", message);
-        onClose();
+        try {
+            // API call to hide the message
+            const accessToken = localStorage.getItem('accessToken');
+            const headers = {headers: {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}}
+            const body = {id: messageID};
+            const response = await axios.put(`/api/chat/${mode}/hideMessage`, body, headers);
+            if (response.data.success) {
+                console.log("Message hidden successfully");
+                onClose();
+            } else {
+                console.error("Failed to hide message:");
+            }
+        } catch (error) {
+            console.error("Error hiding message:", error);
+        }
     }
     return (
         <Modal open={open} onClose={onClose}>

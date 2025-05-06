@@ -136,4 +136,33 @@ router.put("/updateMessage",authenticateToken,(req,res) => {
     });
 });
 
+router.put("/hideMessage",authenticateToken,(req,res) => {
+    const query="UPDATE direct_messages SET isDeleted=1 WHERE MessageID=? AND Sender=?";
+    const id = req.user.userID;
+    const messageID= req.body.id;
+
+    //Stop bad inputs
+    if (isNaN(id) || isNaN(messageID)) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
+
+    const values = [messageID,id];
+    database.query(query, values, err => {
+        if (err) {
+            return res.status(500).json({ error: "Failed to hide message" });
+        }
+        //Get Target user ID
+        const getTargetQuery = "SELECT Recipient FROM direct_messages WHERE MessageID=? AND Sender=?";
+        database.query(getTargetQuery, [messageID,id], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: "Failed to retrieve target user" });
+            }
+            const targetID = results[0].Recipient;
+            alertMessage(targetID,id,"Message deleted","direct_messages");
+            alertMessage(id,targetID,"Message deleted","direct_messages");
+            return res.status(200).json({ success: true, message: "Message hidden successfully" });
+        });
+    });
+});
+
 module.exports = router;
