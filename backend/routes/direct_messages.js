@@ -160,6 +160,7 @@ router.put("/hideMessage",authenticateToken,(req,res) => {
             const targetID = results[0].Recipient;
             alertMessage(targetID,id,"Message deleted","direct_messages");
             alertMessage(id,targetID,"Message deleted","direct_messages");
+            alertEdit(id,targetID,messageID,"direct_messages","Message deleted");
             return res.status(200).json({ success: true, message: "Message hidden successfully" });
         });
     });
