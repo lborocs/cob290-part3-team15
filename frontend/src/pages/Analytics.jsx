@@ -13,7 +13,7 @@ import QuickStatisticItem from "../components/analytics/QuickStatisticItem.jsx";
 function Analytics({ user }) {
     const navigate = useNavigate();
     const selectable = false;
-    const [UserRole, setUserRole] = useState(user.role);
+    const [userRole, setUserRole] = useState(user.role);
     const activeTab = "Analytics";
     const [personalStatus, setPersonalStatus] = useState("Offline");
     const [selectedProject, setSelectedProject] = useState({ title: 'Overview' });
@@ -22,147 +22,129 @@ function Analytics({ user }) {
     const [employees, setEmployees] = useState([]);
     const [tasks, setTasks] = useState([]);
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const accessToken = localStorage.getItem('accessToken');
+    // Fetch all data to be displayed
+    const fetchData = async() => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
 
-                if (selectedProject.title === 'Overview') {
-                    // this is a function for when the page is in overview mode
+            // Build the quick statistics data
+            let statsArr = [];
 
-                    // If not a manager, filter queries for that employee
-                    // and get the list of led projects
+            // Get all projects/ all led projects
+            const responseProjects = await axios.get(`/api/analytics/projects/getEmployeeProjects`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
 
-                    const responseProjects = await axios.get(`/api/analytics/employees/getEmployeeProjects`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
+            if (responseProjects?.data?.projects.length > 0) {
 
-                    let statsArr = [];
-
-                    if (responseProjects?.data?.projects) {
-                        setProjects(responseProjects.data.projects);
-
-                        const projectCount = responseProjects.data.projects.length;
-                        const projectCountStat = {
-                            id: 'overview-projects',
-                            title: 'Projects',
-                            value: projectCount,
-                        };
-                        statsArr.push(projectCountStat);
-                    }
-
-                    const responseEmployees = await axios.get(`/api/analytics/employees/getOverviewEmployees`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
-                    
-
-                    if (responseEmployees?.data?.employees) {
-                        // remove duplicates from the employees array
-                        const uniqueEmployees = responseEmployees.data.employees.filter((employee, index, self) =>
-                            index === self.findIndex((e) => (
-                                e.id === employee.id
-                            ))
-                        );
-                        setEmployees(uniqueEmployees);
-                        
-                        // if they have employees under them and they are not a manger, it is good to assume they are a Team leader
-                        if (user.role !== "Manager" && responseEmployees?.data?.employees) {
-                            setUserRole("Team Leader");
-                        }
-
-                        // employee count statistic
-                        const employeeCountStat = {
-                            id: 'overview-employees',
-                            title: 'Employees',
-                            value: uniqueEmployees.length,
-                        };
-                        statsArr.push(employeeCountStat);
-                    }
-
-                    const responseTasks = await axios.get(`/api/analytics/employees/getOverviewTasks`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
-
-                    if (responseTasks?.data?.tasks) {
-                        // remove duplicates from the tasks array
-                        const uniqueTasks = responseTasks.data.tasks.filter((task, index, self) =>
-                            index === self.findIndex((t) => (
-                                t.id === task.id
-                            ))
-                        );
-                        setTasks(uniqueTasks);
-
-                        // task count statistic
-                        const taskCount = responseTasks.data.tasks.length;
-                        const taskCountStat = {
-                            id: 'overview-tasks',
-                            title: 'Tasks',
-                            value: taskCount,
-                        };
-                        statsArr.push(taskCountStat);
-                    }
-
-                    setQuickStatistics(statsArr);
-                } else {
-                    // or we get just the selected project
-
-                    // get project details
-                    const responseDetails = await axios.get(`/api/analytics/projects/getProjectDetails?id=${selectedProject.id}`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
-
-                    if (responseDetails?.data) {
-                        const projectDetails = responseDetails.data.project;
-                        // TODO use this
-                    }
-
-                    // get project members
-                    const responseMembers = await axios.get(`/api/analytics/projects/getProjectMembers?id=${selectedProject.id}`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
-
-                    if (responseMembers?.data) {
-                        const projectEmployees = responseMembers.data.employees;
-                        console.log(projectEmployees)
-                        setEmployees(projectEmployees);
-                    }
-
-                    // get project tasks
-                    const responseTasks = await axios.get(`/api/analytics/projects/getProjectTasks?id=${selectedProject.id}`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
-
-                    if (responseTasks?.data) {
-                        const projectTasks = responseTasks.data.tasks;
-                        setTasks(projectTasks);
-
-                        // add statistics for the selected project
-                        const taskCount = projectTasks.length;
-                        const taskCountStat = {
-                            id: `project-${selectedProject.title}-tasks`,
-                            title: 'Tasks Total',
-                            value: taskCount,
-                        };
-
-                        // another statistic showing the percentage of tasks completed
-                        const completedTasks = projectTasks.filter(task => task.status === 'Completed').length;
-                        let taskCompletionPercentage = Math.round((completedTasks / taskCount) * 100).toString();
-                        const taskCompletionStat = {
-                            id: `project-${selectedProject.title}-task-completion`,
-                            title: 'Task Completion',
-                            value: taskCompletionPercentage + '%',
-                        };
-
-                        setQuickStatistics([taskCountStat, taskCompletionStat]);
-                    }
+                // If the user leads any projects, set them as a team leader
+                if (user.role !== "Manager") {
+                    setUserRole("Team Leader");
                 }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }
 
+                setProjects(responseProjects.data.projects);
+
+                const projectCount = responseProjects.data.projects.length;
+                const projectCountStat = {
+                    id: 'overview-projects',
+                    title: 'Projects',
+                    value: projectCount,
+                };
+                statsArr.push(projectCountStat);
+            }
+
+            // Get all employees/ all employees on led projects
+            const responseEmployees = await axios.get(`/api/analytics/projects/getOverviewEmployees`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+
+            if (responseEmployees?.data?.employees) {
+                setEmployees(responseEmployees.data.employees);
+
+                // employee count statistic
+                const employeeCountStat = {
+                    id: 'overview-employees',
+                    title: 'Employees',
+                    value: responseEmployees.data.employees.length,
+                };
+                statsArr.push(employeeCountStat);
+            }
+
+            const responseTasks = await axios.get(`/api/analytics/projects/getOverviewTasks`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+
+            if (responseTasks?.data?.tasks) {
+                // remove duplicates from the tasks array
+                const uniqueTasks = responseTasks.data.tasks.filter((task, index, self) =>
+                        index === self.findIndex((t) => (
+                            t.id === task.id
+                        ))
+                );
+                setTasks(uniqueTasks);
+
+                // task count statistic
+                const taskCount = responseTasks.data.tasks.length;
+                const taskCountStat = {
+                    id: 'overview-tasks',
+                    title: 'Tasks',
+                    value: taskCount,
+                };
+                statsArr.push(taskCountStat);
+            }
+
+            setQuickStatistics(statsArr);
+            /* else if (false) {
+           // or we get just the selected project
+
+           // get project members
+           const responseMembers = await axios.get(`/api/analytics/projects/getProjectMembers?id=${selectedProject.id}`, {
+               headers: { Authorization: `Bearer ${accessToken}` },
+           });
+
+           if (responseMembers?.data) {
+               const projectEmployees = responseMembers.data.employees;
+               console.log(projectEmployees)
+               setEmployees(projectEmployees);
+           }
+
+           // get project tasks
+           const responseTasks = await axios.get(`/api/analytics/projects/getProjectTasks?id=${selectedProject.id}`, {
+               headers: { Authorization: `Bearer ${accessToken}` },
+           });
+
+           if (responseTasks?.data) {
+               const projectTasks = responseTasks.data.tasks;
+               setTasks(projectTasks);
+
+               // add statistics for the selected project
+               const taskCount = projectTasks.length;
+               const taskCountStat = {
+                   id: `project-${selectedProject.title}-tasks`,
+                   title: 'Tasks Total',
+                   value: taskCount,
+               };
+
+               // another statistic showing the percentage of tasks completed
+               const completedTasks = projectTasks.filter(task => task.status === 'Completed').length;
+               let taskCompletionPercentage = Math.round((completedTasks / taskCount) * 100).toString();
+               const taskCompletionStat = {
+                   id: `project-${selectedProject.title}-task-completion`,
+                   title: 'Task Completion',
+                   value: taskCompletionPercentage + '%',
+               };
+
+               setQuickStatistics([taskCountStat, taskCompletionStat]);
+           }
+       } */
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+
+    useEffect(() => {
         fetchData();
-    }, [selectedProject, user.role, user.userID]);
+    }, [selectedProject, user]);
 
     useEffect(() => {
         connectSocket();
@@ -181,7 +163,7 @@ function Analytics({ user }) {
 
     return (
         <div className="flex h-screen w-screen">
-            {UserRole === "Team Leader" || UserRole === "Manager" ? (
+            {userRole === "Team Leader" || userRole === "Manager" ? (
                 <>
                     <Navbar
                         userID={user.userID}
@@ -194,7 +176,7 @@ function Analytics({ user }) {
                     <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
                         <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
                             <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
-                            <h3 className='text-2xl text-start mt-0 '>{UserRole}</h3>
+                            <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>
                             <h5 className='text-start text-text font-bold cursor-pointer mt-2 w-1/2'
                                 onClick={() => setUserRole("Employee")}
                             >
@@ -244,7 +226,7 @@ function Analytics({ user }) {
                     <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
                         <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
                             <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
-                            <h3 className='text-2xl text-start mt-0 '>{UserRole}</h3>
+                            <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>
                             {projects.length > 1 && (
                                 <h5 className='text-start text-text font-bold cursor-pointer mt-2 w-1/2'
                                     onClick={() => setUserRole("Team Leader")}

@@ -31,7 +31,7 @@ const chartConfig = [
     type: 'line',
     title: 'Hours Worked by User',
     description: 'Total hours worked by each team member',
-    endpoint: '/api/analytics/employees/getUserWeeklyHours',
+    endpoint: '/api/analytics/projects/getUserWeeklyHours',
     component: LineChart,
   },
   {
