@@ -106,6 +106,15 @@ function Chat({ user }){
         } 
     }
 
+
+    //Stupid edge, hate edge
+    const [isEdge, setIsEdge] = useState(false);
+    useEffect(() => {
+        if (/Edg\/\d+/.test(navigator.userAgent)) {
+          setIsEdge(true);
+        }
+    }, []);
+
     useEffect(() => {
         connectSocket();
         const socket = getSocket();
@@ -198,7 +207,7 @@ function Chat({ user }){
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
-                        <div className="flex flex-col bg-transparent justify-center shadow-md">
+                        <div className="flex flex-col bg-transparent justify-center shadow-md" style={isEdge ? { paddingRight: '15px' } : {}}>
                             <MessageBox userID = {userID} selectedID={selectedID} mode={mode} editing={editing} editingMessage={editingMessage} setEditingMessage={setEditingMessage} setEditing={setEditing}/>
                         </div>
                     </div>
