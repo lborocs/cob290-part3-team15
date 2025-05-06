@@ -5,7 +5,6 @@ const {authenticateToken} = require("../exports/authenticate");
 
 router.use(express.json()) // for parsing 'application/json'
 
-// TODO change this to get details from the project ID not title
 // this gets the details of the selected project
 router.get("/getProjectDetails", authenticateToken, (req, res) => {
     const query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description' FROM projects as p WHERE p.ProjectID=?`;
@@ -51,8 +50,6 @@ router.get("/getProjectMembers", authenticateToken, (req, res) => {
     });
 });
 
-
-
 // Query to get tasks for the project
 router.get("/getProjectTasks", authenticateToken, (req, res) => {
     const query = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline' FROM tasks as t WHERE t.ProjectID=?`;
@@ -72,6 +69,7 @@ router.get("/getProjectTasks", authenticateToken, (req, res) => {
     });
 });
 
+// TODO unused
 // get the hours of work completed on a project x weeks ago
 router.get("/getProjectWeeklyHours",authenticateToken,(req,res) => {
     const query=`SELECT
@@ -95,6 +93,7 @@ router.get("/getProjectWeeklyHours",authenticateToken,(req,res) => {
     });
 });
 
+// TODO unused
 // Get the total hours of work in the project scope x weeks ago
 router.get("/getProjectWeeklyScope",authenticateToken,(req,res) => {
     const query=`SELECT
