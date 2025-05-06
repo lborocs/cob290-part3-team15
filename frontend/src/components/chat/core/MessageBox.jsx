@@ -71,8 +71,8 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
   }
 
   return (
-    <>
-    <form className="max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center flex flex-col items-center border border-black rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition" onSubmit={onSubmit}>
+    <div className="max-w-[max(1500px,100%)] w-[min(1500px,100%)] bg-[#f2ede5] px-5 lg:border-r-1 lg:border-l-1 pb-2 border-blackFaded self-center flex flex-col items-center">
+    <form className="w-[min(1500px,100%)] self-center flex flex-col items-center border border-black rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition" onSubmit={onSubmit}>
         {editing && (
           <span className="flex justify-between items-center max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center p-1 rounded-t-lg bg-black/30 text-white">
             <div className="flex truncate">
@@ -97,7 +97,7 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
         <button type="submit" className="p-2 text-white rounded-full flex items-center" id="submit_message_button" onClick={onSubmit}><BsSend className="w-5 h-5 text-gray-300 hover:text-gray-400 transition-all"/></button>
         </div>
     </form>
-  </>
+  </div>
   );
   
 }
