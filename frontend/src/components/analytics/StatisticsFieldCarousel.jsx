@@ -140,7 +140,7 @@ function StatisticsFieldCarousel({ project }) {
   return (
     <div className="flex items-center justify-between p-6 bg-secondary/50 rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
       <button
-        className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/50"
+        className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
         onClick={() => handleNavigation('left')}
       >
         ←
