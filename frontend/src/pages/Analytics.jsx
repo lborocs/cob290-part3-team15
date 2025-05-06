@@ -37,7 +37,7 @@ function Analytics({ user }) {
                         filter = user.userID;
                     }
 
-                    const responseProjects = await axios.get(`/api/analytics/employees/getEmployeeProjects?filter=${filter}`, {
+                    const responseProjects = await axios.get(`/api/analytics/employees/getEmployeeProjects`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
 
@@ -55,7 +55,7 @@ function Analytics({ user }) {
                         statsArr.push(projectCountStat);
                     }
 
-                    const responseEmployees = await axios.get(`/api/analytics/employees/getOverviewEmployees?filter=${filter}`, {
+                    const responseEmployees = await axios.get(`/api/analytics/employees/getOverviewEmployees`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
                     
@@ -83,7 +83,7 @@ function Analytics({ user }) {
                         statsArr.push(employeeCountStat);
                     }
 
-                    const responseTasks = await axios.get(`/api/analytics/employees/getOverviewTasks?filter=${filter}`, {
+                    const responseTasks = await axios.get(`/api/analytics/employees/getOverviewTasks`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
 

@@ -11,12 +11,11 @@ router.get("/getEmployeeProjects",authenticateToken,(req,res) => {
     // first get the projects
     let query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description'
                  FROM projects as p`;
-    const filter = req.query.filter;
     let values = [];
     // if the user is not a manager, we need to filter the projects by the user
-    if (filter !== "all") {
+    if (req.user.role !== "Manager") {
         query += ` WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID=? AND pu.ProjectID=p.ProjectID)`;
-        values = [filter];
+        values = [req.user.userID];
     }
 
     database.query(query, values, (err, projectResults) => {
@@ -32,16 +31,15 @@ router.get("/getEmployeeProjects",authenticateToken,(req,res) => {
 router.get("/getOverviewEmployees",authenticateToken,(req,res) => {
     let query = `SELECT u.UserID as 'id', u.Forename as 'forename', u.Surname as 'surname'
                  FROM users as u`;
-    const filter = req.query.filter;
     let values = [];
     // TODO this currently gets all employees on all projects the user is on regardless of if they lead that project
     // if the user is not a manager, we need to get all of the employees only on projects led by this user
-    if (filter !== "all") {
+    if (req.user.role !== "Manager") {
         query += ` INNER JOIN project_users as pu ON pu.UserID = u.UserID 
                    WHERE EXISTS (SELECT pu.ProjectID, pu.UserID
                                FROM project_users AS pu
                                WHERE pu.UserID = ? AND pu.ProjectID = pu.ProjectID)`;
-        values = [filter];
+        values = [req.user.userID];
     }
 
     database.query(query, values, (err, employeeResults) => {
@@ -57,13 +55,12 @@ router.get("/getOverviewTasks",authenticateToken,(req,res) => {
     // get all the tasks for all of the projects the user is on, again, if they are a manager, get all the tasks for all the projects
     let query = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline'
                         FROM tasks as t`;
-    const filter = req.query.filter;
     let values = [];
     // TODO this currently shows tasks on all projects the user is on regardless of if they lead that project
     // if the user is not a manager, we need to filter only the tasks on projects they lead
-    if (filter !== "all") {
+    if (req.user.role !== "Manager") {
         query += ` WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID=? AND pu.ProjectID=t.ProjectID)`;
-        values = [filter];
+        values = [req.user.userID];
     }
 
     database.query(query, values, (err, taskResults) => {
