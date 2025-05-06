@@ -87,7 +87,6 @@ router.get("/getUserTasks",authenticateToken,(req,res) => {
     });
 });
 
-// TODO should filter by project too
 // Get the hours of work completed by a given user x weeks ago
 router.get("/getUserWeeklyHours",authenticateToken,(req,res) => {
     const query=`SELECT
