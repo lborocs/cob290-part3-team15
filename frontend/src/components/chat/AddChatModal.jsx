@@ -4,7 +4,7 @@ import { BsChevronLeft, BsChevronRight, BsSearch } from "react-icons/bs";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
 
-function AddChatModal({ open, onClose, userID }) {
+function AddChatModal({ open, onClose, setSelectedID,setMode }) {
     const [searchInput, setInput] = useState("");
     const [selectedPeople, setSelectedPeople] = useState([]);
     const [isGroupMode, setIsGroupMode] = useState(false); // State to track if group mode is enabled
@@ -120,6 +120,8 @@ function AddChatModal({ open, onClose, userID }) {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axios.post('/api/chat/createGroup', { targets: targets, name: "New Group"}, { headers: { Authorization: `Bearer ${accessToken}` } });
             if (response?.data?.success) {
+                setMode("group_messages")
+                setSelectedID(response?.data?.id)
                 onClose();
             }
         } 
@@ -132,6 +134,8 @@ function AddChatModal({ open, onClose, userID }) {
                 const accessToken = localStorage.getItem('accessToken');
                 const response = await axios.post('/api/chat/startChat', { target: target}, { headers: { Authorization: `Bearer ${accessToken}` } });
                 if (response?.data?.success) {
+                    setMode("direct_messages")
+                    setSelectedID(target)
                     onClose();
                 }
             } 

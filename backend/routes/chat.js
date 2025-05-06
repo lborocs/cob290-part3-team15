@@ -294,7 +294,7 @@ router.post("/createGroup",authenticateToken,(req,res) => {
                     }
                     alertMessage(target,groupId,`You have been added to ${name}`,'group_messages',true);
                     if (i === 0) {
-                        return res.status(200).json({ success: "Group created successfully" });
+                        return res.status(200).json({ success: "Group created successfully",id:groupId});
                     }
                 });
             }
@@ -304,7 +304,7 @@ router.post("/createGroup",authenticateToken,(req,res) => {
 });
 
 router.post("/startChat",authenticateToken,(req,res) => {
-    const activateChat = "INSERT IGNORE INTO active_chats (UserID,Target) VALUES (?,?)";
+    const activateChat = "INSERT IGNORE INTO active_chats (UserID,Target,LastRead) VALUES (?,?,NOW())";
     const id = req.user.userID;
     const target = req.body.target;
 
