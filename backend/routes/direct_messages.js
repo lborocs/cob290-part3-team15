@@ -94,8 +94,8 @@ router.post("/sendMessage",authenticateToken,(req,res) => {
             database.query(activeChatQuery, activeChat2, () => {});
 
         
-            alertMessage(target,id,text,'direct_messages');
-            alertMessage(id,target,text,'direct_messages');
+            alertMessage(target,id,text,'direct_messages',true);
+            alertMessage(id,target,text,'direct_messages',true);
             res.status(200).json({ success: "Message sent successfully" });
         }
         else res.status(500).json({ error: "Server rejected message" });

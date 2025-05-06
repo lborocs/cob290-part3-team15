@@ -30,8 +30,8 @@ const removeUser = (socketId) => {
 };
 
 // Ping a user on all active devices
-const alertMessage = (userId,target,message,type) => {
-    notificationAlert(userId,target,message,type);
+const alertMessage = (userId,target,message,type,notify) => {
+    if(notify){notificationAlert(userId,target,message,type)};
     if (connectedClients[userId]) {
         connectedClients[userId].forEach(socketId => {
             io.to(socketId).emit('newMessage', {message:"New Message!"});

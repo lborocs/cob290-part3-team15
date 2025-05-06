@@ -110,18 +110,33 @@ function AddChatModal({ open, onClose, userID }) {
         if (targets.length > 1) {
             addNewGroup(targets);
         }
-        onClose();
+        else if (targets.length==1){
+            startChat(targets[0])
+        }
       };
 
     const addNewGroup = async (targets) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axios.post('/api/chat/createGroup', { targets: targets, name: "New Group!"}, { headers: { Authorization: `Bearer ${accessToken}` } });
+            const response = await axios.post('/api/chat/createGroup', { targets: targets, name: "New Group"}, { headers: { Authorization: `Bearer ${accessToken}` } });
             if (response?.data?.success) {
                 onClose();
             }
         } 
         catch (error) {}
+    }
+
+    const startChat = async (target) => {
+        if(!isGroupMode){
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                const response = await axios.post('/api/chat/startChat', { target: target}, { headers: { Authorization: `Bearer ${accessToken}` } });
+                if (response?.data?.success) {
+                    onClose();
+                }
+            } 
+            catch (error) {}
+        }
     }
 
 
@@ -190,7 +205,7 @@ function AddChatModal({ open, onClose, userID }) {
                         <label
                             key={person.id}
                             className="flex w-full items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
-                            onClick={() => console.log(person.name)}
+                            onClick={() => startChat(person.id)}
                         >
                             <div
                                 className={`flex flex-col w-8 h-8 rounded-full items-center ${colors[Object.keys(colors)[person.id % Object.keys(colors).length]]} mr-4`}

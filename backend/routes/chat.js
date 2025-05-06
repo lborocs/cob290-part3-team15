@@ -83,7 +83,7 @@ router.get("/getChats",authenticateToken,(req,res) => {
                         IFNULL(unread.UnreadCount, 0) AS notifications
                     FROM active_chats
                     LEFT JOIN users 
-                        ON users.UserID = active_chats.Target 
+                        ON users.UserID = active_chats.Target
                     LEFT JOIN (
                         SELECT 
                             dm.Content,
@@ -292,12 +292,32 @@ router.post("/createGroup",authenticateToken,(req,res) => {
                     if (err) {
                         return res.status(500).json({ error: "Error adding user to group" });
                     }
-                    alertMessage(target,groupId,`You have been added to ${name}`,'group_messages');
+                    alertMessage(target,groupId,`You have been added to ${name}`,'group_messages',true);
                     if (i === 0) {
                         return res.status(200).json({ success: "Group created successfully" });
                     }
                 });
             }
+        }
+        else return res.status(500).json({ error: "Server rejected message" });
+    });
+});
+
+router.post("/startChat",authenticateToken,(req,res) => {
+    const activateChat = "INSERT IGNORE INTO active_chats (UserID,Target) VALUES (?,?)";
+    const id = req.user.userID;
+    const target = req.body.target;
+
+    //Stop bad inputs
+    if (isNaN(id) || isNaN(target)){
+        return res.status(400).json({ error: "Invalid input" });
+    }
+
+    const activateChatValues = [id,target];
+    database.query(activateChat, activateChatValues, (err, result) => {
+        if (!err) {
+            alertMessage(id,target,`Chat Initiated`,'direct_messages',false);
+            return res.status(200).json({ success: "Chat created successfully" });
         }
         else return res.status(500).json({ error: "Server rejected message" });
     });
