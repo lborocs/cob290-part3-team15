@@ -60,7 +60,6 @@ const EmployeeProjectsChart = ({ data }) => {
       .attr('fill', '#FF9F40')
       .on('mouseenter', function(_, d) {
         d3.select(this).attr('fill', '#E67E22');
-        // Show tooltip
         g.append('text')
           .attr('class', 'bar-tooltip')
           .attr('x', x(d.tasks) + 10)
@@ -72,7 +71,6 @@ const EmployeeProjectsChart = ({ data }) => {
       })
       .on('mouseleave', function() {
         d3.select(this).attr('fill', '#FF9F40');
-        // Remove tooltip
         g.selectAll('.bar-tooltip').remove();
       })
       .transition()

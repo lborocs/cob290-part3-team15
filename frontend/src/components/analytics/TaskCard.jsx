@@ -27,7 +27,7 @@ function TaskCard( { task } ) {
                 </div>
 
                 <div className="flex flex-col items-end">
-                    <span className={`px-2 py-1 text-xs rounded-full ${priorityClasses[task.priority]}`}>
+                    <span className={`text-xs rounded-full ${priorityClasses[task.priority]}`}>
                         Priority: {task.priority}
                     </span>
                     <span className="text-end text-xs text-gray-600 mt-1">

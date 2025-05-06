@@ -63,7 +63,6 @@ const EmployeeHoursChart = ({ data }) => {
       .attr('fill', '#36A2EB')
       .on('mouseenter', function(_, d) {
         d3.select(this).attr('fill', '#2980B9');
-        // Show tooltip
         g.append('text')
           .attr('class', 'bar-tooltip')
           .attr('x', x(d.week) + x.bandwidth() / 2)
@@ -75,7 +74,6 @@ const EmployeeHoursChart = ({ data }) => {
       })
       .on('mouseleave', function() {
         d3.select(this).attr('fill', '#36A2EB');
-        // Remove tooltip
         g.selectAll('.bar-tooltip').remove();
       })
       .transition()

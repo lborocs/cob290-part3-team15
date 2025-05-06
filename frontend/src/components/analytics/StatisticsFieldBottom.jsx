@@ -3,18 +3,16 @@ import { useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { FiSearch } from 'react-icons/fi';
 
-function StatisticsFieldBottom( { employees } ) {
+function StatisticsFieldBottom({ employees }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // looping through the employees to get the id, forename and surname
   const dummyEmployees = employees.map((employee) => ({
     id: employee.id,
     name: `${employee.forename} ${employee.surname}`,
     profilePicture: faker.image.avatar(),
-
-    // TODO: Make a call for the statistics of the employee
     tasksGiven: Math.floor(Math.random() * 100),
     tasksDue: Math.floor(Math.random() * 100),
     tasksCompleted: Math.floor(Math.random() * 100),
@@ -24,66 +22,92 @@ function StatisticsFieldBottom( { employees } ) {
     employee.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // When a new project is selected, deselect any selected user
   useEffect(() => {
     setSelectedUser(null);
   }, [employees]);
 
   return (
-    <div className="flex flex-col w-full col-span-4 row-span-2 bg-secondary/40 p-4 rounded-3xl">
+    <div className="flex flex-col w-full col-span-4 row-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
       {!selectedUser ? (
         <>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Team Members</h3>
-          <input
-            type="text"
-            placeholder="Search employee..."
-            className="border border-gray-300 mb-4 bg-secondary/40 rounded-3xl p-2"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <div className="grid grid-cols-2 gap-4 overflow-y-auto h-full">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-semibold text-gray-800">Team Members</h3>
+            <span className="px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium">
+              {filteredEmployees.length} {filteredEmployees.length === 1 ? 'member' : 'members'}
+            </span>
+          </div>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiSearch className="text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search employee..."
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 overflow-y-auto pr-2">
             {filteredEmployees.map((employee) => (
               <div
                 key={employee.id}
-                className="flex items-center p-2 bg-white rounded-md shadow cursor-pointer hover:shadow-md hover:bg-gray-100 transition-all duration-200"
-                style={{ maxHeight: '60px' }}
+                className="flex items-center p-3 bg-white rounded-xl border border-gray-100 shadow-xs hover:shadow-md hover:border-orange-200 transition-all duration-200 cursor-pointer"
                 onClick={() => setSelectedUser(employee)}
               >
                 <img
                   src={employee.profilePicture}
                   alt={employee.name}
-                  className="w-10 h-10 rounded-full mr-3"
+                  className="w-10 h-10 rounded-full mr-3 object-cover"
                 />
-                <span className="text-sm">{employee.name}</span>
+                <div>
+                  <p className="text-sm font-medium text-gray-800">{employee.name}</p>
+                  <p className="text-xs text-gray-500">{employee.tasksCompleted} tasks completed</p>
+                </div>
               </div>
             ))}
           </div>
         </>
       ) : (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col h-full">
           <div
-              onClick={() => {
-                setSelectedUser(null);
-                setSearchTerm(''); // Clear the search bar to reset
-              }}
-              className="flex flex-col mb-4 p-2 bg-white rounded-md shadow cursor-pointer hover:shadow-md hover:bg-gray-100 transition-all duration-200"
+            onClick={() => {
+              setSelectedUser(null);
+              setSearchTerm('');
+            }}
+            className="flex flex-col mb-4 p-2 bg-white rounded-md shadow cursor-pointer hover:shadow-md hover:bg-gray-100 transition-all duration-200"
           >
             Back
           </div>
-          <div className="flex items-center mb-4">
+
+          <div className="flex flex-col items-center mb-4">
+          <div className="flex items-center">
             <img
               src={selectedUser.profilePicture}
               alt={selectedUser.name}
-              className="w-12 h-12 rounded-full mr-4"
+              className="w-14 h-14 rounded-full mr-4 object-cover border-2 border-orange-100"
             />
             <div>
-              <h2 className="text-lg font-bold">{selectedUser.name}</h2>
-              <p>Tasks Given: {selectedUser.tasksGiven}</p>
-              <p>Tasks Due: {selectedUser.tasksDue}</p>
-              <p>Tasks Completed: {selectedUser.tasksCompleted}</p>
+              <h2 className="font-bold text-gray-800">{selectedUser.name}</h2>
+              <div className="flex gap-4 mt-1">
+                <span className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full">
+                  {selectedUser.tasksGiven} Given
+                </span>
+                <span className="text-xs bg-amber-50 text-amber-600 px-2 py-1 rounded-full">
+                  {selectedUser.tasksDue} Due
+                </span>
+                <span className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full">
+                  {selectedUser.tasksCompleted} Completed
+                </span>
+              </div>
             </div>
           </div>
-          <div style={{ width: '100%', height: '400px' }}>
+        </div>
+              
+
+          <div className="flex-grow -mt-2">
             <Bar
               data={{
                 labels: ['Tasks Given', 'Tasks Due', 'Tasks Completed'],
@@ -95,13 +119,25 @@ function StatisticsFieldBottom( { employees } ) {
                       selectedUser.tasksDue,
                       selectedUser.tasksCompleted,
                     ],
-                    backgroundColor: ['#4CAF50', '#FFC107', '#2196F3'],
+                    backgroundColor: ['#3B82F6', '#F59E0B', '#10B981'],
                   },
                 ],
               }}
               options={{
                 responsive: true,
                 maintainAspectRatio: false,
+                scales: {
+                  x: {
+                    grid: {
+                      display: false,
+                    },
+                  },
+                },
+                plugins: {
+                  legend: {
+                    display: false, // This hides the key
+                  },
+                },
               }}
             />
           </div>
