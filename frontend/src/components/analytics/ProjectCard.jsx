@@ -10,7 +10,7 @@ function ProjectCard({ title, description, onClick, isSelected }) {
     return (
       <div
         className={`p-2 rounded-md shadow-sm flex flex-col hover:cursor-pointer transition-all duration-200 relative z-10
-        ${isSelected ? 'bg-accentOrange hover:bg-accentOrange/70' : 'bg-white/85 hover:bg-gray-100'}  
+        ${isSelected ? 'bg-accentOrange/40 hover:bg-accentOrange/60' : 'bg-white/85 hover:bg-gray-100'}  
         ${isExpanded ? '' : 'h-24'}`}
         style={isExpanded ? { height: 'auto' } : {}}
         onClick={() => {

@@ -12,6 +12,7 @@ import StatisticsField from "../components/analytics/StatisticsField.jsx";
 function Analytics({ user }) {
     const navigate = useNavigate();
     const selectable = false;
+    const [UserRole, setUserRole] = useState(user.role);
     const activeTab = "Analytics";
     const [personalStatus, setPersonalStatus] = useState("Offline");
     const [selectedProject, setSelectedProject] = useState({ title: 'Overview' });
@@ -57,6 +58,7 @@ function Analytics({ user }) {
                     const responseEmployees = await axios.get(`/api/analytics/employees/getOverviewEmployees?filter=${filter}`, {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     });
+                    
 
                     if (responseEmployees?.data?.employees) {
                         // remove duplicates from the employees array
@@ -66,6 +68,11 @@ function Analytics({ user }) {
                             ))
                         );
                         setEmployees(uniqueEmployees);
+                        
+                        // if they have employees under them and they are not a manger, it is good to assume they are a Team leader
+                        if (user.role !== "Manager" && responseEmployees?.data?.employees) {
+                            setUserRole("Team Leader");
+                        }
 
                         // employee count statistic
                         const employeeCountStat = {
@@ -178,55 +185,128 @@ function Analytics({ user }) {
 
     return (
         <div className="flex h-screen w-screen">
-            <Navbar
-                userID={user.userID}
-                selectable={selectable}
-                isSelected={null}
-                setIsSelected={null}
-                activeTab={activeTab}
-                status={personalStatus}
-            />
-            <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
-                <WelcomeMessage userName={user.name} roleLabel={user.role} />
+            {UserRole === "Team Leader" || UserRole === "Manager" ? (
+                <>
+                    <Navbar
+                        userID={user.userID}
+                        selectable={selectable}
+                        isSelected={null}
+                        setIsSelected={null}
+                        activeTab={activeTab}
+                        status={personalStatus}
+                    />
+                    <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
+                        <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
+                            <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
+                            <h3 className='text-2xl text-start mt-0 '>{UserRole}</h3>
+                            <h5 className='text-start text-text font-bold cursor-pointer mt-2 w-1/2'
+                                onClick={() => setUserRole("Employee")}
+                            >
+                                Go to your Employee dashboard
+                            </h5>
+                        </div>
 
-                <div className="lg:col-span-6 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-start">
-                    <span className={"py-1 pr-2"}>{selectedProject.title}</span>
-                    {selectedProject.title !== 'Overview' && (
-                        <button
-                            onClick={() => setSelectedProject({ title: 'Overview' })}
-                            className="px-5 py-2 ml-2 h-full bg-accentOrange text-black text-sm rounded-md shadow-sm hover:bg-accentOrange/70"
-                        >
-                            Back
-                        </button>
-                    )}
-                </div>
+                        <div className="lg:col-span-4 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-between">
+                            <span className={"py-1 pr-2"}>{selectedProject.title}</span>
+                            {selectedProject.title !== 'Overview' && (
+                                <button
+                                    onClick={() => setSelectedProject({ title: 'Overview' })}
+                                    className="px-2 py-1 bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
+                                >
+                                    Back to Overview
+                                </button>
+                            )}
+                        </div>
 
-                <div className="col-start-2 row-start-3 col-span-4 w-full">
-                    <div className="grid grid-cols-3 gap-4 mt-4 w-full">
-                        {quickStatistics.map((stat) => (
-                            <QuickStatistics
-                                key={stat.id}
-                                title={stat.title}
-                                statisticValue={stat.value}
-                            />
-                        ))}
+                        <div className="col-start-2 row-start-3 col-span-4 w-full">
+                            <div className="grid grid-cols-3 gap-4 mt-4 w-full">
+                                {quickStatistics.map((stat) => (
+                                    <QuickStatistics
+                                        key={stat.id}
+                                        title={stat.title}
+                                        statisticValue={stat.value}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        <SearchBox
+                            projects={projects}
+                            onProjectSelect={setSelectedProject}
+                            selectedProject={selectedProject}
+                        />
+
+                        <StatisticsField
+                            selectedProject={selectedProject}
+                            tasks={tasks}
+                            employees={employees}
+                        />
                     </div>
-                </div>
+                </>
+            ) : (
+                <>
+                    <Navbar
+                        userID={user.userID}
+                        selectable={selectable}
+                        isSelected={null}
+                        setIsSelected={null}
+                        activeTab={activeTab}
+                        status={personalStatus}
+                    />
+                    <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
+                        <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
+                            <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
+                            <h3 className='text-2xl text-start mt-0 '>{UserRole}</h3>
+                            {projects.length > 1 && (
+                                <h5 className='text-start text-text font-bold cursor-pointer mt-2 w-1/2'
+                                    onClick={() => setUserRole("Team Leader")}
+                                >
+                                    Go to your Team Leader dashboard
+                                </h5>
+                            )}
+                        </div>
 
-                <SearchBox
-                    projects={projects}
-                    onProjectSelect={setSelectedProject}
-                    selectedProject={selectedProject}
-                />
+                        <div className="lg:col-span-4 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-between">
+                            <span className={"py-1 pr-2"}>{selectedProject.title}</span>
+                            {selectedProject.title !== 'Overview' && (
+                                <button
+                                    onClick={() => setSelectedProject({ title: 'Overview' })}
+                                    className="px-2 py-1 bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
+                                >
+                                    Back to Overview
+                                </button>
+                            )}
+                        </div>
 
-                <StatisticsField
-                    selectedProject={selectedProject}
-                    tasks={tasks}
-                    employees={employees}
-                />
-            </div>
+                        <div className="col-start-2 row-start-3 col-span-4 w-full">
+                            <div className="grid grid-cols-3 gap-4 mt-4 w-full">
+                                {quickStatistics.map((stat) => (
+                                    <QuickStatistics
+                                        key={stat.id}
+                                        title={stat.title}
+                                        statisticValue={stat.value}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        <SearchBox
+                            projects={projects}
+                            onProjectSelect={setSelectedProject}
+                            selectedProject={selectedProject}
+                        />
+
+                        <StatisticsField
+                            selectedProject={selectedProject}
+                            tasks={tasks}
+                            employees={employees}
+                        />
+                    </div>
+                </>
+            )}
         </div>
-    );
+    )
+    
 }
 
 export default Auth(Analytics);

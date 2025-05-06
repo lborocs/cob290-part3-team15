@@ -63,7 +63,7 @@ function TasksList({ tasks }) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search tasks..."
-          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-accentOrange focus:ring-1 focus:ring-accentOrange"
+          className="w-full pl-10 pr-4 py-2 rounded-2xl border border-gray-200 focus:outline-none focus:border-accentOrange focus:ring-1 focus:ring-accentOrange"
           />
       </div>
 

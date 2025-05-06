@@ -6,8 +6,8 @@ const BarChart = ({ data }) => {
 
   useEffect(() => {
     const width = ref.current.parentElement.offsetWidth;
-    const height = 220;
-    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+    const height = 260; // Increased height to accommodate the legend
+    const margin = { top: 20, right: 20, bottom: 60, left: 60 }; // Adjusted bottom margin
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -33,7 +33,7 @@ const BarChart = ({ data }) => {
       .attr('transform', `translate(0,${innerHeight})`)
       .call(d3.axisBottom(x));
 
-    // Add Y-axis with label
+    // Add label to Y-axis
     g.append('g')
       .call(d3.axisLeft(y).ticks(y.domain()[1]))
       .append('text')
@@ -44,30 +44,30 @@ const BarChart = ({ data }) => {
       .attr('fill', '#333')
       .text('Total Tasks Given');
 
-    // Add bars with two colors (stacked)
+    // Add bars for each group
     const barGroups = g.selectAll('.bar-group')
       .data(data)
       .enter()
       .append('g')
       .attr('class', 'bar-group');
 
-    // Not completed tasks (bottom part of the stack)
+    // Not completed tasks
     barGroups.append('rect')
       .attr('class', 'bar-not-completed')
       .attr('x', d => x(d.label))
       .attr('width', x.bandwidth())
       .attr('y', d => y(d.tasksAssigned))
       .attr('height', d => innerHeight - y(d.tasksAssigned))
-      .attr('fill', '#FF6384'); // Red for not completed
+      .attr('fill', '#FF6384');
 
-    // Completed tasks (top part of the stack)
+    // Completed tasks
     barGroups.append('rect')
       .attr('class', 'bar-completed')
       .attr('x', d => x(d.label))
       .attr('width', x.bandwidth())
       .attr('y', d => y(d.tasksCompleted))
       .attr('height', d => innerHeight - y(d.tasksCompleted))
-      .attr('fill', '#4CAF50'); // Green for completed
+      .attr('fill', '#4CAF50'); 
 
     // Add value text
     barGroups.append('text')
@@ -75,21 +75,21 @@ const BarChart = ({ data }) => {
       .attr('x', d => x(d.label) + x.bandwidth() / 2)
       .attr('y', d => y(d.tasksAssigned) - 5)
       .attr('text-anchor', 'middle')
-      .text(d => d.tasksAssigned) // Show total tasks
+      .text(d => d.tasksAssigned)
       .style('fill', '#333')
       .style('font-size', '10px')
       .style('font-weight', 'bold');
 
-    // Add legend
+    // Add legend below the chart
     const legend = svg.append('g')
-      .attr('transform', `translate(${innerWidth - 100}, 10)`);
+      .attr('transform', `translate(${margin.left}, ${height - 40})`); // Positioned below the chart
 
     legend.append('rect')
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', 15)
       .attr('height', 15)
-      .attr('fill', '#4CAF50'); // Green for completed
+      .attr('fill', '#4CAF50'); 
 
     legend.append('text')
       .attr('x', 20)
@@ -99,15 +99,15 @@ const BarChart = ({ data }) => {
       .style('fill', '#333');
 
     legend.append('rect')
-      .attr('x', 0)
-      .attr('y', 20)
+      .attr('x', 100)
+      .attr('y', 0)
       .attr('width', 15)
       .attr('height', 15)
-      .attr('fill', '#FF6384'); // Red for not completed
+      .attr('fill', '#FF6384'); 
 
     legend.append('text')
-      .attr('x', 20)
-      .attr('y', 32)
+      .attr('x', 120)
+      .attr('y', 12)
       .text('Not Completed')
       .style('font-size', '12px')
       .style('fill', '#333');
