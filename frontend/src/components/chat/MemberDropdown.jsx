@@ -40,13 +40,27 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
         getPeople();
     }, [selectedID,mode])
 
-    const handleDelete = (target) => {
-        if(target.id===userID){
-            console.log("Self Removal (Terminate): ",target.id)
-        }
-        else{
-            console.log(target.id)
-        }
+    const handleDelete = async (target) => {
+        if(mode==="group_messages"){
+            if(target.id===userID){
+                console.log("Self Removal (Terminate): ",target.id)
+            }
+            else{
+                try {
+                    const accessToken = localStorage.getItem('accessToken');
+
+                    const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
+                    const body    = { group: selectedID, target:target.id};
+                    const response = await axios.delete('/api/chat/group_messages/removeMember', { headers:headers, data: body });
+                    if (response?.data?.success) {
+                        setMode("group_messages")
+                        setSelectedID(response?.data?.id)
+                        onClose();
+                    }
+                } 
+                catch (error) {}
+            }
+    }
     }
 
     return (

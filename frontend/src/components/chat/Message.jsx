@@ -17,7 +17,6 @@ function Content({ message }) {
 
 function SelfMessage({ message, setEditing, setEditingMessage, editingMessage, toggleDropdown, dropdownRefs, SetisHovered, isHovered }) {
   const messageRef = useRef(null);
-  const[z,selectedZ]=useState(false); // State to control the z-index of the message
 
   const isToday = new Date(message.timestamp).toDateString() === new Date().toDateString();
   const isYesterday = (() => {const yesterday = new Date();yesterday.setDate(new Date().getDate() - 1);return new Date(message.timestamp).toDateString() === yesterday.toDateString()})();
@@ -50,7 +49,7 @@ function SelfMessage({ message, setEditing, setEditingMessage, editingMessage, t
   }; 
   
   return(
-    <div className={`flex flex-col w-full ${z ? "z-10" : "z-0"}`}>
+    <div className={`flex flex-col w-full`}>
       {message.isNewDay && (
         <div className="flex items-center my-4">
           <div className="flex-grow border-t text-gray-400/50"></div>
@@ -163,6 +162,31 @@ function OtherMessage({ message, toggleDropdown, dropdownRefs, SetisHovered, isH
   )
 }
 
+function SystemMessage({ message }) {
+  const isToday = new Date(message.timestamp).toDateString() === new Date().toDateString();
+  const isYesterday = (() => {const yesterday = new Date();yesterday.setDate(new Date().getDate() - 1);return new Date(message.timestamp).toDateString() === yesterday.toDateString()})();
+  const formattedTime = 
+    isToday ? `${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`
+            : isYesterday ? `Yesterday at ${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`
+            : `${String(new Date(message.timestamp).getDate()).padStart(2, '0')}/${String(new Date(message.timestamp).getMonth() + 1).padStart(2, '0')} ${String(new Date(message.timestamp).getHours()).padStart(2, '0')}:${String(new Date(message.timestamp).getMinutes()).padStart(2, '0')}`;
+
+  return(
+    <div className={`flex flex-col w-full`}>
+    {message.isNewDay && (
+      <div className="flex items-center my-4">
+        <div className="flex-grow border-t text-gray-400/50"></div>
+        <span className="px-4 text-sm text-gray-500 whitespace-nowrap select-none">
+          {new Date(message.timestamp).toLocaleDateString(undefined, {day: 'numeric',month: 'long',year: 'numeric',})}
+        </span>
+        <div className="flex-grow border-t text-gray-400/50"></div>
+      </div>
+    )}
+    <div className="h-8">
+      <p className="text-text font-light">{message.content}</p>
+    </div>
+    </div>
+  )
+}
 
 
 
@@ -172,6 +196,7 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
   //const [message,setMessage]=useState(messageContent);
   const [isHovered, SetisHovered] = useState(false); // Default is not hovered
   const sentByUser = parseInt(messageContent.user) === parseInt(userID); // Check if the message was sent by the user, parses as int and uses base 10 (denary/decimal)
+  const isSystem = messageContent?.isSystem ?? false;
   const [isDropdownOpen, setDropdownOpen] = useState(false); // State to track the open dropdown
   const [messageToHide, setMessageToHide] = useState(null); // State to store the message to be hidden
   const [isHideModalOpen, setIsHideModalOpen] = useState(false); // State to control the hide modal
@@ -217,7 +242,12 @@ function Message({ messageContent , userID , mode, setEditing, setEditingMessage
   return (
     
     <>
-      {sentByUser ? 
+
+      {
+      isSystem?
+      <SystemMessage message={messageContent}/>
+      :
+      sentByUser ? 
       <SelfMessage message={messageContent}
       setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs} SetisHovered={SetisHovered} isHovered={isHovered}/> 
       : <OtherMessage message={messageContent} toggleDropdown={toggleDropdown} dropdownRefs={dropdownRefs} SetisHovered={SetisHovered} isHovered={isHovered}/>}

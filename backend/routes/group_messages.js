@@ -7,8 +7,14 @@ const {authenticateToken} = require("../exports/authenticate");
 router.use(express.json()) // for parsing 'application/json'
 
 router.get("/getMessages",authenticateToken,(req,res) => {
-    const query=`SELECT group_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,group_messages.Content as content,group_messages.Sender as user, group_messages.Timestamp as timestamp, group_messages.isEdited as isEdited
-                 FROM group_messages 
+    const query=`SELECT group_messages.messageID as messageID,
+                  CONCAT(users.Forename,users.Surname) as name,
+                  group_messages.Content as content,
+                  group_messages.Sender as user,
+                  group_messages.Timestamp as timestamp,
+                  group_messages.isEdited as isEdited,
+                  group_messages.isSystem as isSystem
+                 FROM group_messages
                  LEFT JOIN users ON group_messages.Sender=users.UserID 
                  INNER JOIN group_users ON group_messages.GroupID=group_users.GroupID
                  WHERE group_messages.GroupID=? AND group_users.UserID=? AND group_messages.isDeleted=0
@@ -40,7 +46,13 @@ router.get("/getMessages",authenticateToken,(req,res) => {
 });
 
 router.get("/getMessagesAfter",authenticateToken,(req,res) => {
-  const query=`SELECT group_messages.messageID as messageID,CONCAT(users.Forename,users.Surname) as name,group_messages.Content as content,group_messages.Sender as user, group_messages.Timestamp as timestamp, group_messages.isEdited as isEdited
+  const query=`SELECT group_messages.messageID as messageID,
+                CONCAT(users.Forename,users.Surname) as name,
+                group_messages.Content as content,
+                group_messages.Sender as user,
+                group_messages.Timestamp as timestamp,
+                group_messages.isEdited as isEdited,
+                group_messages.isSystem as isSystem
                FROM group_messages 
                LEFT JOIN users ON group_messages.Sender=users.UserID 
                INNER JOIN group_users ON group_messages.GroupID=group_users.GroupID
@@ -267,6 +279,7 @@ router.get("/getMembers",authenticateToken,(req,res) => {
 
 router.delete("/removeMember",authenticateToken,(req,res) => {
   const id = req.user.userID;
+  const user = req.user.name;
   const group = req.body.group;
   const target = req.body.target
 
@@ -287,17 +300,47 @@ router.delete("/removeMember",authenticateToken,(req,res) => {
   const query = `DELETE FROM group_users WHERE GroupID = ? AND UserID = ?`;
   const values = [group, target];
 
-  database.query(query, values, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to remove member" });
+  const nameQuery = "SELECT CONCAT(users.Forename,' ',users.Surname) as name FROM users LEFT JOIN group_users ON group_users.UserID=users.UserID WHERE users.UserID=? AND group_users.GroupID=?"
+  const nameValues= [target,group] 
+  //Get the name of the target whilst also verifying they exist
+  database.query(nameQuery, nameValues, (err, results) => {
+    if(err){return res.status(500).json({ error: "Failed to verify target user" });}
+    else if(results.length<1){return res.status(400).json({ error: "Target does not exist" });}
+    else{
+      const targetName=results[0].name
+      //Remove the target
+      database.query(query, values, (err, results) => {
+        if (err) {return res.status(500).json({ error: "Failed to remove member" });}
+        else{
+          const systemQuery = "INSERT INTO group_messages (Sender,GroupID,Content,isSystem) VALUES (?,?,?,?)";
+          const systemValues= [id,group,`${user} removed ${targetName} from the group`,true]
+          //Insert a system message
+          database.query(systemQuery, systemValues, (err, results) => {
+            if(err){return res.status(500).json({ error: "Failed to send system message" });}
+            else{
+              //Get all group members to ping them for updates
+              const groupUserQuery = "SELECT UserID FROM group_users WHERE GroupID=?"
+              const groupUserQueryValues=[group]
+              database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+                if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
+                else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
+                for (let i=0;i<results.length;i++){
+                  const userID = results[i].UserID;
+                  alertMessage(userID,group,`User Removal`,'group_messages',true);
+                }
+                return res.status(200).json({ success: true, message: "User Removed" });
+              });
+            }
+          })
+        }
+      });
     }
-    alertMessage(target,group,`Removed from group`,'group_messages',false);
-    return res.status(200).json({ success: true });
-  });
+  })
 });
 
 router.post("/addMember",authenticateToken,(req,res) => {
   const id = req.user.userID;
+  const user = req.user.name;
   const group = req.body.group;
   const target = req.body.target
 
@@ -318,17 +361,48 @@ router.post("/addMember",authenticateToken,(req,res) => {
   const query = `INSERT IGNORE INTO group_users (GroupID,UserID) VALUES (?,?)`;
   const values = [group, target];
 
-  database.query(query, values, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to add member" });
+
+  const nameQuery = "SELECT CONCAT(users.Forename,' ',users.Surname) as name FROM users WHERE UserID=?"
+  const nameValues= [target] 
+  //Get the name of the target whilst also verifying they exist
+  database.query(nameQuery, nameValues, (err, results) => {
+    if(err){return res.status(500).json({ error: "Failed to verify target user" });}
+    else if(results.length<1){return res.status(400).json({ error: "Target does not exist" });}
+    else{
+      const targetName=results[0].name
+      //Add the target
+      database.query(query, values, (err, results) => {
+        if (err) {return res.status(500).json({ error: "Failed to add member" });}
+        else{
+          const systemQuery = "INSERT INTO group_messages (Sender,GroupID,Content,isSystem) VALUES (?,?,?,?)";
+          const systemValues= [id,group,`${user} added ${targetName} to the group`,true]
+          //Insert a system message
+          database.query(systemQuery, systemValues, (err, results) => {
+            if(err){return res.status(500).json({ error: "Failed to send system message" });}
+            else{
+              //Get all group members to ping them for updates
+              const groupUserQuery = "SELECT UserID,GroupID FROM group_users WHERE GroupID=?"
+              const groupUserQueryValues=[group]
+              database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+                if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
+                else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
+                for (let i=0;i<results.length;i++){
+                  const userID = results[i].UserID;
+                  alertMessage(userID,group,`New user Added`,'group_messages',true);
+                }
+                return res.status(200).json({ success: true, message: "User Added" });
+              });
+            }
+          })
+        }
+      });
     }
-    alertMessage(target,group,`Added to group`,'group_messages',true);
-    return res.status(200).json({ success: true });
-  });
+  })
 });
 
 router.post("/updateName",authenticateToken,(req,res) => {
   const id = req.user.userID;
+  const user = req.user.name;
   const group = req.body.group;
   const name = req.body.name
 
@@ -341,6 +415,7 @@ router.post("/updateName",authenticateToken,(req,res) => {
   const ownershipQuery = `SELECT 1 FROM groups WHERE Owner = ? AND GroupID = ?`;
   const ownershipValues = [id, group];
 
+
   database.query(ownershipQuery, ownershipValues, (err, results) => {
     if (err) return res.status(500).json({ error: "Failed to verify ownership" });
     if (results.length === 0) {return res.status(403).json({ error: "You are not the owner of this group." })}
@@ -350,10 +425,28 @@ router.post("/updateName",authenticateToken,(req,res) => {
   const values = [name, group];
 
   database.query(query, values, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to add member" });
+    if (err) {return res.status(500).json({ error: "Failed to add member" });}
+    else{
+      const systemQuery = "INSERT INTO group_messages (Sender,GroupID,Content,isSystem) VALUES (?,?,?,?)";
+      const systemValues= [id,group,`${user} renamed group to ${name}`,true]
+      database.query(systemQuery, systemValues, (err, results) => {
+        if(err){return res.status(500).json({ error: "Failed to send system message" });}
+        else{
+          //Get all group members to ping them for updates
+          const groupUserQuery = "SELECT UserID,GroupID FROM group_users WHERE GroupID=?"
+          const groupUserQueryValues=[group]
+          database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+            if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
+            else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
+            for (let i=0;i<results.length;i++){
+              const userID = results[i].UserID;
+              alertMessage(userID,group,`Group Rename`,'group_messages',true);
+            }
+            return res.status(200).json({ success: true, message: "Rename successful" });
+          });
+        }
+      })
     }
-    return res.status(200).json({ success: true });
   });
 });
 

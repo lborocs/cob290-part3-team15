@@ -270,6 +270,7 @@ router.post("/createGroup",authenticateToken,(req,res) => {
     const createGroup = "INSERT INTO groups (Name,Owner) VALUES (?,?)";
     const addUser = "INSERT INTO group_users (GroupID,UserID) VALUES (?,?)";
     const id = req.user.userID;
+    const user = req.user.name
     const targets = req.body.targets;
     const name = req.body.name;
 
@@ -283,21 +284,27 @@ router.post("/createGroup",authenticateToken,(req,res) => {
         if (!err) {
             const groupId = result.insertId;
             const usersToAdd = [id, ...targets];
-
-            for (let i=usersToAdd.length-1; i>=0; i--) {
-                const target = usersToAdd[i];
-                //Add user to group_users table
-                const addUserValues = [groupId, target];
-                database.query(addUser, addUserValues, (err) => {
-                    if (err) {
-                        return res.status(500).json({ error: "Error adding user to group" });
+            const systemQuery = "INSERT INTO group_messages (Sender,GroupID,Content,isSystem) VALUES (?,?,?,?)";
+            const systemValues= [id,groupId,`${user} created this group`,true]
+            database.query(systemQuery, systemValues, (err, result) => {
+                if (!err) {
+                    for (let i=usersToAdd.length-1; i>=0; i--) {
+                        const target = usersToAdd[i];
+                        //Add user to group_users table
+                        const addUserValues = [groupId, target];
+                        database.query(addUser, addUserValues, (err) => {
+                            if (err) {
+                                return res.status(500).json({ error: "Error adding user to group" });
+                            }
+                            alertMessage(target,groupId,`You have been added to ${name}`,'group_messages',false);
+                            if (i === 0) {
+                                return res.status(200).json({ success: "Group created successfully",id:groupId});
+                            }
+                        });
                     }
-                    alertMessage(target,groupId,`You have been added to ${name}`,'group_messages',true);
-                    if (i === 0) {
-                        return res.status(200).json({ success: "Group created successfully",id:groupId});
-                    }
-                });
-            }
+                }
+                else return res.status(500).json({ error: "Server rejected message" });
+            })
         }
         else return res.status(500).json({ error: "Server rejected message" });
     });
@@ -357,6 +364,9 @@ router.get("/getNotifications",authenticateToken,(req,res) => {
         res.send({results: totalUnread});
     });
 })
+
+
+
 
 
 module.exports = router;

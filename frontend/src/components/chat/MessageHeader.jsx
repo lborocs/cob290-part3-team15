@@ -34,15 +34,13 @@ export default function Header({ name, selectedID, mode, userID }) {
                 <div className="flex flex-col text-lg font-semibold">
                     {/*<div>User: {name}</div>*/}
                     <div className="flex items-center self-center gap-2">
-                        {(
                             <button
-                                className={`bg-accentOrange hover:bg-orangeHover text-text font-bold px-4 rounded border-blackFaded hover:border-blackFaded border-1 ${dropdownVisible?"z-50":""}`}
+                                className={`bg-accentOrange hover:bg-orangeHover text-text font-bold px-4 rounded border-blackFaded border-1 ${dropdownVisible?"z-50":""}`}
                                 onClick={() => setDropdownVisible(!dropdownVisible)}
                                 ref={refs.setReference}
                             >
                                 <ProfileCard displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={""} id={selectedID} status={"offline"}/>
                             </button>
-                        )}
                     </div>
                 </div>
             </div>
