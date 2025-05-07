@@ -4,6 +4,7 @@ import MemberDropdown from "./MemberDropdown.jsx";
 import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate } from "@floating-ui/react";
 import AddMemberModal from "../chat/AddMemberModal";
 import RemoveMemberModal from "../chat/RemoveMemberModal";
+import axios from "axios";
 // components/chat/core/Header.jsx
 export default function Header({ name, selectedID, mode, userID, refresh }) {
     // You can customize this logic however you want
@@ -37,7 +38,6 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
     }); 
 
     const handleDelete = async (target) => {
-        console.log("Deleting: ",target)
         if(mode==="group_messages"){
             if(target.id===userID){
                 console.log("Self Removal (Terminate): ",target.id)
