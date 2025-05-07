@@ -269,6 +269,7 @@ router.get("/getPeople",authenticateToken,(req,res) => {
 router.post("/createGroup",authenticateToken,(req,res) => {
     const createGroup = "INSERT INTO groups (Name,Owner) VALUES (?,?)";
     const addUser = "INSERT INTO group_users (GroupID,UserID) VALUES (?,?)";
+    const addSelf = "INSERT INTO group_users (GroupID,UserID,LastRead) VALUES (?,?,NOW())";
     const id = req.user.userID;
     const user = req.user.name
     const targets = req.body.targets;
@@ -292,7 +293,7 @@ router.post("/createGroup",authenticateToken,(req,res) => {
                         const target = usersToAdd[i];
                         //Add user to group_users table
                         const addUserValues = [groupId, target];
-                        database.query(addUser, addUserValues, (err) => {
+                        database.query(i==0?addSelf:addUser, addUserValues, (err) => {
                             if (err) {
                                 return res.status(500).json({ error: "Error adding user to group" });
                             }

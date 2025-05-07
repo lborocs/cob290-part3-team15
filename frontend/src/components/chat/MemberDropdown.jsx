@@ -5,7 +5,7 @@ import {useState,useEffect} from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
 
-function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID}) {
+function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID,refresh}) {
     const [leader,setLeader] = useState(-1)
     const [items,setItems] = useState([])
 
@@ -29,6 +29,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
 
     const getPeople = async() => {
         try{
+        console.log("Attempted to refresh")
         const accessToken = localStorage.getItem('accessToken');
         const response = await axios.get(`/api/chat/${mode}/getMembers?target=${selectedID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
         if (response?.data?.results){
@@ -53,7 +54,12 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
     //Onload
     useEffect(()=>{
         getPeople();
-    }, [selectedID,mode])
+    }, [selectedID,mode,refresh])
+
+    //Refresh
+    /*useEffect(()=>{
+        getPeople();
+    }, [refresh]) */
 
     const handleDelete = async (target) => {
         if(mode==="group_messages"){
