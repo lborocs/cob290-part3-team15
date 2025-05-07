@@ -122,6 +122,15 @@ function Chat({ user }){
     
             socket.on('newMessage', (data) => { //NOTE - This is suitable, a lot of data needs to be double checked here
                 setRefresh(previous => previous + 1);
+                if(data?.deletion){
+                    console.log(data.deletion)
+                    console.log(data.deletion.target)
+
+                    if(data.deletion.target===userID && data.deletion.group===selectedID && mode==="group_messages"){
+                        setSelectedID(-1)
+                        setMode("direct_messages")
+                    }
+                }
             });
 
             socket.on('editMessage', (data) => { //NOTE - If the active message list is the one being edited.. AND ONLY in this situation refresh. Include a timestamp to make it "unique" each time

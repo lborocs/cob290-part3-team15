@@ -324,9 +324,10 @@ router.delete("/removeMember",authenticateToken,(req,res) => {
               database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
                 if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
                 else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
-                for (let i=0;i<results.length;i++){
-                  const userID = results[i].UserID;
-                  alertMessage(userID,group,`User Removal`,'group_messages',true);
+                const resultsAndTarget=[{UserID:target},... results]
+                for (let i=0;i<resultsAndTarget.length;i++){
+                  const userID = resultsAndTarget[i].UserID;
+                  alertMessage(userID,group,`User Removal`,'group_messages',true,{target:target,group:group});
                 }
                 return res.status(200).json({ success: true, message: "User Removed" });
               });
