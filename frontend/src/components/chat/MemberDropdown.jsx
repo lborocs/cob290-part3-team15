@@ -39,7 +39,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name}) {
             {/* Goes through each item in the list and maps items to a key value*/}
             {items.map((item, index) => (
                 <div
-                className={`group flex justify-between bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 font-bold ${mode=="group_messages"?"hover:bg-orangeHover cursor-pointer":""}  rounded-md text-gray-700 mb-1`}
+                className={`group flex justify-between bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 font-bold ${mode=="group_messages"?"cursor-pointer":""} hover:bg-orangeHover rounded-md text-gray-700 mb-1`}
                 key={index} // Add a unique key for each item
                 >
                     {icons[index] && <span className={`w-10 h-10 ${iconColours[index]} rounded-full text-white flex items-center justify-center mr-3`}>{icons[index]}</span>} {/* Check if icon exists before rendering */}
@@ -49,6 +49,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name}) {
                     {mode=="group_messages"?<BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={componentsFunctions[index]} />:<></>}
                 </div>
             ))}
+            {mode==="group_messages" &&
             <div className="flex justify-center mt-4">
                 <button
                     className="group w-8 h-8 bg-accentOrange hover:bg-orangeHover rounded-full flex items-center justify-center shadow-md"
@@ -58,6 +59,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name}) {
                     <BsPersonFillAdd className="w-6 h-6 hidden group-hover:block"/>
                 </button>
             </div>
+            }
         </div>
 
         <div className="fixed inset-0 z-40 pointer-events-auto"></div>
