@@ -181,7 +181,7 @@ function SystemMessage({ message }) {
         <div className="flex-grow border-t text-gray-400/50"></div>
       </div>
     )}
-    <div className="h-8">
+    <div className="flex min-h-8 my-2">
       <p className="text-text font-light">{message.content}</p>
     </div>
     </div>
