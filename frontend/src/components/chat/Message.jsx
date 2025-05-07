@@ -67,7 +67,7 @@ function SelfMessage({ message, setEditing, setEditingMessage, editingMessage, t
         </div>
         }
         <div ref={messageRef}>
-          <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} mb-2 rounded-lg border border-2 border-accentGreen/80 px-4 py-2 text-base font-medium bg-accentGreen/50 relative`} onContextMenu={HandleRightClick} ref={setRefs}>
+          <div className={`${editingMessage?.messageID == message.messageID ? "border-1 border-green-400 ": ""} mb-2 rounded-lg border border-2 border-accentGreenBorder px-4 py-2 text-base font-medium bg-accentGreen relative`} onContextMenu={HandleRightClick} ref={setRefs}>
             <div className="self-start text-pretty break-all">
               {isHovered && (
                 <div ref={hoverRefs.setFloating} style={hoverStyles}>
