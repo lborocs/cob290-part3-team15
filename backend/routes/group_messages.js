@@ -429,7 +429,7 @@ router.post("/updateName",authenticateToken,(req,res) => {
     if (err) {return res.status(500).json({ error: "Failed to add member" });}
     else{
       const systemQuery = "INSERT INTO group_messages (Sender,GroupID,Content,isSystem) VALUES (?,?,?,?)";
-      const systemValues= [id,group,`${user} renamed group to ${name}`,true]
+      const systemValues= [id,group,`${user} renamed the group to ${name}`,true]
       database.query(systemQuery, systemValues, (err, results) => {
         if(err){return res.status(500).json({ error: "Failed to send system message" });}
         else{

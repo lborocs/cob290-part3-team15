@@ -5,7 +5,7 @@ import {useState,useEffect} from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
 
-function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID,refresh, openRemoveMemberModal, openAddMemberModal, openRenameModal, openLeaveModal}) {
+function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,userID,refresh, openRemoveMemberModal, openAddMemberModal, openRenameModal, openLeaveModal}) {
     const [leader,setLeader] = useState(-1)
     const [items,setItems] = useState([])
     const colors = {
@@ -28,7 +28,6 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
 
     const getPeople = async() => {
         try{
-        console.log("Attempted to refresh")
         const accessToken = localStorage.getItem('accessToken');
         const response = await axios.get(`/api/chat/${mode}/getMembers?target=${selectedID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
         if (response?.data?.results){
@@ -108,7 +107,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
             }
         </div>
 
-        <div className="fixed inset-0 z-20 pointer-events-auto bg-blue-300/50"></div>
+        <div className="fixed inset-0 z-20 pointer-events-auto"></div>
         </>
     );
 }

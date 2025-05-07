@@ -1,10 +1,17 @@
 import Modal from "../other/Modal";
 import { useState } from "react";
 import axios from "axios";
-function RenameModal({ open, chatID, onClose, refs, floatingStyles, chatName }) {
+function RenameModal({ open, chatID, onClose, refs, floatingStyles, chatName,selectedID }) {
     const [newChatName, setNewChatName] = useState(chatName);
     const handleRename = async () => {
         try {
+            const accessToken = localStorage.getItem('accessToken');
+            const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
+            const body    = { group: selectedID, name:newChatName};
+            const response = await axios.post('/api/chat/group_messages/updateName', body,headers);
+            if (response?.data?.success) {
+                //setFullPeopleList(getPeople())                
+            }
             console.log("Renaming chat to: ", newChatName);
             onClose(); // Close the modal
         }

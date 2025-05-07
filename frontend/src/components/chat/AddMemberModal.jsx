@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { BsSearch } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
 
-function AddMemberModal({ open, onClose, refs, floatingStyles}) {
+function AddMemberModal({ open, onClose, refs, floatingStyles,selectedID}) {
     const [searchInput, setInput] = useState("");
     const [selectedPeople, setSelectedPeople] = useState([]);
     const [people, setPeople] = useState([]); // Limited list of people
@@ -74,7 +74,7 @@ function AddMemberModal({ open, onClose, refs, floatingStyles}) {
     const getPeople = async (query='') => {
         try{
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axios.get(`/api/chat/getPeople?filter=${encodeURIComponent(query)}`,{headers: { Authorization: `Bearer ${accessToken}` }});
+            const response = await axios.get(`/api/chat/getPeopleOutsideGroup?group=${encodeURIComponent(selectedID)}&filter=${encodeURIComponent(query)}`,{headers: { Authorization: `Bearer ${accessToken}` }});
             if (response?.data?.results){
                 return response.data.results;
                 }
@@ -97,7 +97,13 @@ function AddMemberModal({ open, onClose, refs, floatingStyles}) {
 
     const handleSubmit = async (target) => {
         try {
-            console.log(target);
+            const accessToken = localStorage.getItem('accessToken');
+            const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
+            const body    = { group: selectedID, target:target};
+            const response = await axios.post('/api/chat/group_messages/addMember', body,headers);
+            if (response?.data?.success) {
+                //setFullPeopleList(getPeople())                
+            }
             onClose(); // Close the modal
         } catch (error) {}
     }

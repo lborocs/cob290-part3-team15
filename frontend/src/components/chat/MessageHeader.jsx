@@ -1,5 +1,5 @@
 import ProfileCard from "../accounts/ProfileCard";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import MemberDropdown from "./MemberDropdown.jsx";
 import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate } from "@floating-ui/react";
 import AddMemberModal from "../chat/AddMemberModal";
@@ -8,8 +8,9 @@ import RenameModal from "../chat/RenameModal";
 import LeaveModal from "../chat/LeaveModal";
 import axios from "axios";
 // components/chat/core/Header.jsx
-export default function Header({ name, selectedID, mode, userID, refresh }) {
+export default function Header({ selectedID, mode, userID, refresh,setSelectedID,setMode }) {
     // You can customize this logic however you want
+    const [name,setName] = useState("");
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [RemoveMemberModalOpen, setRemoveMemberModalOpen] = useState(false);
     const [AddMemberModalOpen, setAddMemberModalOpen] = useState(false);
@@ -44,7 +45,19 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
     const handleDelete = async (target) => {
         if(mode==="group_messages"){
             if(target.id===userID){
-                console.log("Self Removal (Terminate): ",target.id)
+                try{
+                    const accessToken = localStorage.getItem('accessToken');
+                    const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
+                    const body = {target:selectedID,type:"group_messages",};
+                    const response = await axios.delete('/api/chat/removeChat', { headers:headers, data: body });
+                    if (response?.data?.success){
+                    setChats((prevChats) => {
+                        return prevChats.filter(chat => !(chat.target === target && chat.type === type));
+                    });
+                    }
+                }
+                catch (error) {//Already Handled
+              }
             }
             else{
                 try {
@@ -54,8 +67,6 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
                     const body    = { group: selectedID, target:target.id};
                     const response = await axios.delete('/api/chat/group_messages/removeMember', { headers:headers, data: body });
                     if (response?.data?.success) {
-                        setMode("group_messages")
-                        setSelectedID(response?.data?.id)
                         setDropdownVisible(false)
                     }
                 } 
@@ -63,6 +74,36 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
             }
         }
     }
+
+    const getName = async () => {
+        try{
+            const accessToken = localStorage.getItem('accessToken');
+        
+            const response = await axios.get(`/api/chat/getName?target=${encodeURIComponent(selectedID)}&type=${encodeURIComponent(mode)}`, {headers: { Authorization: `Bearer ${accessToken}` }});
+            if (response?.data?.results){
+              setName(response.data.results[0].name);
+            } 
+            else {
+                setName("")
+            }
+        }
+          catch (error) {
+            if (error.response?.data?.error === "User is not a member of the group") {
+                setSelectedID(-1);
+                setMode("direct_messages")
+            }
+        }
+    }
+
+    //Full Refresh handler
+      useEffect(()=>{
+        getName();
+    }, [refresh])
+
+      useEffect(()=>{
+        if(selectedID>0)
+        getName();
+      }, [selectedID,mode])
 
     const openRemoveMemberModal = (target) => {
         setSelectedMember(target);
@@ -123,10 +164,10 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
                 <RemoveMemberModal open={RemoveMemberModalOpen} onClose={closeRemoveMemberModal} removeFunction={() => handleDelete(selectedMember)} refs={refs} floatingStyles={floatingStyles}/>
             )}
             {AddMemberModalOpen && (
-                <AddMemberModal open={AddMemberModalOpen} onClose={closeAddMemberModal} refs={refs} floatingStyles={floatingStyles}/>
+                <AddMemberModal open={AddMemberModalOpen} onClose={closeAddMemberModal} refs={refs} floatingStyles={floatingStyles} selectedID={selectedID}/>
             )}
             {RenameModalOpen && (
-                <RenameModal open={RenameModalOpen} onClose={closeRenameModal} chatID={selectedID} refs={refs} floatingStyles={floatingStyles} chatName={name}/>
+                <RenameModal open={RenameModalOpen} onClose={closeRenameModal} chatID={selectedID} refs={refs} floatingStyles={floatingStyles} chatName={name} selectedID={selectedID}/>
             )}
             {LeaveModalOpen && (
                 <LeaveModal open={LeaveModalOpen} onClose={closeLeaveModal} leaveFunction={() => handleDelete(selectedMember)} refs={refs} floatingStyles={floatingStyles} chatName={name} isSelf={true}/>

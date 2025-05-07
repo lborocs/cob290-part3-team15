@@ -9,7 +9,7 @@ import ProfileCard from '../../accounts/ProfileCard.jsx';
 import LeaveDropdown from '../LeaveDropdown.jsx';
 import LeaveModal from '../LeaveModal.jsx';
 
-const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpdate,containerRef,setName,setSidebarVisible}) => {
+const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpdate,containerRef,setSidebarVisible}) => {
   const [chats,setChats] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [dropdownChat, setDropdownChat] = useState(null); // Stores the chat for the dropdown
@@ -152,7 +152,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
         {filteredChats.map((chat) => (
           <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 min-h-20 max-h-20 gap-2 group`} onContextMenu={(e) => HandleRightClick(e,chat)}>
             <button className="flex w-full h-full pt-1 pl-2 pr-1 text-text rounded"
-              onClick={() => {setSelectedID(chat.target); setMode(chat.type); setName(chat.name);setSidebarVisible(false);setChats(prevChats => prevChats.map(c =>c.target === chat.target && c.type === chat.type? { ...c, notifications: 0 }: c));}}>
+              onClick={() => {setSelectedID(chat.target); setMode(chat.type);setSidebarVisible(false);setChats(prevChats => prevChats.map(c =>c.target === chat.target && c.type === chat.type? { ...c, notifications: 0 }: c));}}>
               <div className="w-15 h-15 min-w-15 max-w-15 my-auto">
                   <ProfileCard displayBG={selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange group-hover:bg-orangeHover"} type={chat.type === "group_messages" ? "Group" : "" } id={chat.target} status={chat.status}/>
               </div>

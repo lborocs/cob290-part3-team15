@@ -180,7 +180,7 @@ router.get("/getMembers",authenticateToken,(req,res) => {
     }
   
     //Verify group membership
-    const query=`SELECT CONCAT(users.Forename,' ',users.Surname) as name FROM users WHERE UserID=?`
+    const query=`SELECT CONCAT(users.Forename,' ',users.Surname) as name, users.UserID as id FROM users WHERE UserID=?`
     const values=[target]
   
     database.query(query, values, (err, results) => {

@@ -293,6 +293,43 @@ router.get("/getPeople",authenticateToken,(req,res) => {
     });
 });
 
+router.get("/getPeopleOutsideGroup",authenticateToken,(req,res) => {
+    const id = req.user.userID;
+    const group = req.query.group;
+    const filter = req.query.filter;
+
+    const query = `SELECT UserID as id, CONCAT(Forename, ' ', Surname) as name
+                FROM users
+                WHERE UserID != ?
+                ${filter ? 'AND LOWER(CONCAT(Forename, " ", Surname)) LIKE LOWER(?)' : ''}
+                    AND UserID NOT IN (
+                SELECT UserID FROM group_users WHERE GroupID = ?)
+                LIMIT 30`;
+
+
+    //Stop bad ID's 
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
+    }
+
+    const values = filter?[id,`%${filter}%`,group] : [id,group] ;
+
+    //Verify group membership
+    const membershipQuery=`SELECT 1 FROM group_users WHERE UserID=? AND GroupID=?`
+    const membershipValues=[id,group]
+    database.query(membershipQuery, membershipValues, (err, results) => {
+        if (err) {return res.status(500).json({ error: "Error verifying membership" });}
+        else{
+            database.query(query, values, (err, results) => {
+                if (err) {return res.status(500).json({ error: "Error verifying membership" });}
+                else{
+                    return res.status(200).json({ results: results });
+                }
+            });
+        }
+    })
+});
+
 router.post("/createGroup",authenticateToken,(req,res) => {
     const createGroup = "INSERT INTO groups (Name,Owner) VALUES (?,?)";
     const addUser = "INSERT INTO group_users (GroupID,UserID) VALUES (?,?)";
@@ -393,7 +430,55 @@ router.get("/getNotifications",authenticateToken,(req,res) => {
     });
 })
 
+router.get("/getName",authenticateToken,(req,res) => {
+    const id = req.user.userID;
+    const user = req.user.name;
+    const target = req.query.target;
+    const type = req.query.type;
+    //Stop bad ID's 
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
+    }
 
+    
+    switch (type) {
+        case "direct_messages":{
+            const query="SELECT CONCAT(users.Forename,' ',users.Surname) as name FROM users WHERE users.UserID=?"
+            const values = [target];
+            database.query(query, values, (err, results) => {
+                if (err) {return res.status(500).json({ error: "Error getting user" });}
+                else{
+                    return res.status(200).json({ results: results });
+                }
+            });
+            break;
+        }
+        case "group_messages":{
+            const query="SELECT Name as name FROM groups WHERE GroupID=?"
+            const values=[target];
+            //Group Membership / Refresh information
+            const groupUserQuery = "SELECT 1 FROM group_users WHERE GroupID=?"
+
+            //Check If the user is allowed to see members
+            database.query(groupUserQuery, values, (err, results) =>{
+                if(err){return res.status(500).json({ error: "Error verifying group membership" });}
+                else if (results.length===0){return res.status(403).json({ error: "User is not a member of the group" });}
+                else{
+                    database.query(query, values, (err, results) =>{
+                        if(err){return res.status(500).json({ error: "Error getting group name" });}
+                        else{
+                            return res.status(200).json({ results: results });
+                        }
+                    })
+                }
+            })
+            break;
+        }
+        default:{
+            return res.status(400).json({ error: "Invalid request type!" });
+        }
+    }
+})
 
 
 
