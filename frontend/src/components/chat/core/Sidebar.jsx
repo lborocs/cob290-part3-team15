@@ -129,9 +129,9 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
           <p className="font-bold text-[18px] h-7 text-text w-full text-left select-none">{chats.length} Chat{chats.length>1 ?  "s" :""}</p>
         </div>
         <div className="flex flex-row items-center">
-          <div className="flex justify-center items-center bg-accentOrange hover:bg-orangeHover border-1 border-black/20 w-10 h-10 rounded-full mr-2">
+          {/*<div className="flex justify-center items-center bg-accentOrange hover:bg-orangeHover border-1 border-black/20 w-10 h-10 rounded-full mr-2">
             <p className="text-text font-bold">?</p>
-          </div>
+          </div>*/}
           <div className="flex justify-center items-center bg-accentOrange hover:bg-orangeHover border-1 border-black/20 w-10 h-10 rounded-full mr-2">
             <CreateChat userID={userID} setSelectedID={setSelectedID} setMode={setMode}/>
           </div>

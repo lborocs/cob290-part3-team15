@@ -36,7 +36,7 @@ export default function Header({ name, selectedID, mode, userID }) {
                     <div className="flex items-center self-center gap-2">
                         {(
                             <button
-                                className="bg-accentOrange hover:bg-orangeHover text-text font-bold px-4 rounded border-blackFaded border-1 z-50"
+                                className={`bg-accentOrange hover:bg-orangeHover text-text font-bold px-4 rounded border-blackFaded hover:border-blackFaded border-1 ${dropdownVisible?"z-50":""}`}
                                 onClick={() => setDropdownVisible(!dropdownVisible)}
                                 ref={refs.setReference}
                             >
