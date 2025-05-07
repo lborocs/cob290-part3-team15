@@ -5,10 +5,9 @@ import {useState,useEffect} from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
 
-function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID,refresh}) {
+function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID,refresh, openRemoveMemberModal}) {
     const [leader,setLeader] = useState(-1)
     const [items,setItems] = useState([])
-
     const colors = {
         blue : 'bg-blue-500/60',
         green : 'bg-green-500/60', 
@@ -61,29 +60,6 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
         getPeople();
     }, [refresh]) */
 
-    const handleDelete = async (target) => {
-        if(mode==="group_messages"){
-            if(target.id===userID){
-                console.log("Self Removal (Terminate): ",target.id)
-            }
-            else{
-                try {
-                    const accessToken = localStorage.getItem('accessToken');
-
-                    const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
-                    const body    = { group: selectedID, target:target.id};
-                    const response = await axios.delete('/api/chat/group_messages/removeMember', { headers:headers, data: body });
-                    if (response?.data?.success) {
-                        setMode("group_messages")
-                        setSelectedID(response?.data?.id)
-                        onClose();
-                    }
-                } 
-                catch (error) {}
-            }
-    }
-    }
-
     return (
         <>
         <div
@@ -104,8 +80,8 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
                         </span>
                         {mode=="group_messages"&&leader==userID?
                         leader===item.id?
-                        <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:
-                        <BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:<></>}
+                        <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (openRemoveMemberModal(item))} />:
+                        <BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (openRemoveMemberModal(item))} />:<></>}
                     </div>
                 )
             })}

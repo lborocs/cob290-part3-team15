@@ -2,11 +2,15 @@ import ProfileCard from "../accounts/ProfileCard";
 import { useState } from "react";
 import MemberDropdown from "./MemberDropdown.jsx";
 import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate } from "@floating-ui/react";
+import AddMemberModal from "../chat/AddMemberModal";
+import RemoveMemberModal from "../chat/RemoveMemberModal";
 // components/chat/core/Header.jsx
 export default function Header({ name, selectedID, mode, userID, refresh }) {
     // You can customize this logic however you want
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    
+    const [RemoveMemberModalOpen, setRemoveMemberModalOpen] = useState(false);
+    const [AddMemberModalOpen, setAddMemberModalOpen] = useState(false);
+    const [selectedMember, setSelectedMember] = useState(null);
     // Floating UI for dropdown
     const { refs, floatingStyles, context } = useFloating({
         middleware: [
@@ -27,7 +31,45 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
         open: dropdownVisible,
         onOpenChange: setDropdownVisible
     });
-    useDismiss(context, {outsidePressEvent: "mousedown",}); 
+    useDismiss(context, {
+        outsidePressEvent: "mousedown",
+        ignoreElements: [refs.floating], // Ignore the modal
+    }); 
+
+    const handleDelete = async (target) => {
+        if(mode==="group_messages"){
+            if(target.id===userID){
+                console.log("Self Removal (Terminate): ",target.id)
+            }
+            else{
+                try {
+                    const accessToken = localStorage.getItem('accessToken');
+
+                    const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
+                    const body    = { group: selectedID, target:target.id};
+                    const response = await axios.delete('/api/chat/group_messages/removeMember', { headers:headers, data: body });
+                    if (response?.data?.success) {
+                        setMode("group_messages")
+                        setSelectedID(response?.data?.id)
+                        setDropdownVisible(false)
+                    }
+                } 
+                catch (error) {}
+            }
+        }
+    }
+
+    const openRemoveMemberModal = (target) => {
+        setSelectedMember(target);
+        setRemoveMemberModalOpen(true);
+        setDropdownVisible(false);
+    }
+
+    const closeRemoveMemberModal = () => {
+        setRemoveMemberModalOpen(false);
+        setSelectedMember(null);
+    }
+
     return (
         <>
             <div className="bg-orangeFaded w-full h-[60px] flex justify-center items-center px-4 border-b-2 border-blackFaded">
@@ -45,9 +87,15 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
                 </div>
             </div>
             {dropdownVisible && (
-                <MemberDropdown onClose={() => setDropdownVisible(false)} refs={refs} floatingStyles={floatingStyles} mode={mode} selectedID={selectedID} name={name} userID={userID} refresh={refresh}/>
+                <MemberDropdown onClose={() => setDropdownVisible(false)} refs={refs} floatingStyles={floatingStyles} mode={mode} selectedID={selectedID} name={name} userID={userID} refresh={refresh} openRemoveMemberModal={openRemoveMemberModal}/>
             )
             }
+            {RemoveMemberModalOpen && (
+                <RemoveMemberModal open={RemoveMemberModalOpen} onClose={closeRemoveMemberModal} removeFunction={() => handleDelete(selectedMember)} refs={refs} floatingStyles={floatingStyles}/>
+            )}
+            {AddMemberModalOpen && (
+                <AddMemberModal open={AddMemberModalOpen} onClose={() => setAddMemberModalOpen(false)} onAddMember={() => console.log("Adding member...")} refs={refs} floatingStyles={floatingStyles}/>
+            )}
         </>
     );
 }
