@@ -205,6 +205,7 @@ function Chat({ user }){
                 :<></>}
                 
                 {/*Main Chat Area*/}
+                {selectedID!==-1 ?
                 <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full bg-cover bg-center`} style={{ backgroundImage: `url(${chatBackground})` }} onContextMenu={HandleRightClick}>
                     {/* <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div> */}
                     <Header name={chatName} mode={mode} selectedID={selectedID} userID={userID} refresh={refresh} />
@@ -217,6 +218,9 @@ function Chat({ user }){
                         </div>
                     </div>
                 </div>
+                :
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full bg-cover bg-center`} style={{ backgroundImage: `url(${chatBackground})` }} onContextMenu={HandleRightClick}></div>
+                }
             </div>  
         </div>
     )
