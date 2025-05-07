@@ -98,7 +98,7 @@ function AddMemberModal({ open, onClose, refs, floatingStyles,selectedID}) {
     const handleSubmit = async (target) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
+            const headers = {headers: {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}}
             const body    = { group: selectedID, target:target};
             const response = await axios.post('/api/chat/group_messages/addMember', body,headers);
             if (response?.data?.success) {

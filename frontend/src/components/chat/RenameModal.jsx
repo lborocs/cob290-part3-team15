@@ -6,7 +6,7 @@ function RenameModal({ open, chatID, onClose, refs, floatingStyles, chatName,sel
     const handleRename = async () => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const headers = {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}
+            const headers = {headers: {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json',}}
             const body    = { group: selectedID, name:newChatName};
             const response = await axios.post('/api/chat/group_messages/updateName', body,headers);
             if (response?.data?.success) {
