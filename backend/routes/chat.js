@@ -145,8 +145,8 @@ router.get("/getChats",authenticateToken,(req,res) => {
                     JOIN group_users gu ON gu.GroupID = g.GroupID
                     LEFT JOIN group_messages gm 
                         ON gm.GroupID = g.GroupID
-                        AND gm.Timestamp = (
-                            SELECT MAX(Timestamp)
+                        AND gm.MessageID = (
+                            SELECT MAX(MessageID)
                             FROM group_messages
                             WHERE GroupID = g.GroupID AND group_messages.isDeleted=0
                         )

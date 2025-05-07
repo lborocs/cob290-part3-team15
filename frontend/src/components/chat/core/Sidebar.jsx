@@ -148,12 +148,12 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
       </div>
 
       {/*Chat List*/}
-      <div className="flex flex-col h-full px-2 space-y-2 overflow-y-auto pb-5 pt-4" >
+      <div className="flex flex-col h-full px-2 space-y-2 overflow-y-auto pb-5 pt-1 mt-3" >
         {filteredChats.map((chat) => (
-          <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 gap-2 group`} onContextMenu={(e) => HandleRightClick(e,chat)}>
+          <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 min-h-20 max-h-20 gap-2 group`} onContextMenu={(e) => HandleRightClick(e,chat)}>
             <button className="flex w-full h-full pt-1 pl-2 pr-1 text-text rounded"
               onClick={() => {setSelectedID(chat.target); setMode(chat.type); setName(chat.name);setSidebarVisible(false);setChats(prevChats => prevChats.map(c =>c.target === chat.target && c.type === chat.type? { ...c, notifications: 0 }: c));}}>
-              <div className="w-15 h-15 my-auto">
+              <div className="w-15 h-15 min-w-15 max-w-15 my-auto">
                   <ProfileCard displayBG={selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange group-hover:bg-orangeHover"} type={chat.type === "group_messages" ? "Group" : "" } id={chat.target} status={chat.status}/>
               </div>
               <div className="flex flex-1 flex-col justify-start h-full pl-2 relative">
