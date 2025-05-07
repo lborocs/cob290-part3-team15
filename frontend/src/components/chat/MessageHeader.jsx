@@ -37,6 +37,7 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
     }); 
 
     const handleDelete = async (target) => {
+        console.log("Deleting: ",target)
         if(mode==="group_messages"){
             if(target.id===userID){
                 console.log("Self Removal (Terminate): ",target.id)
