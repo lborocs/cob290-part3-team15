@@ -229,27 +229,38 @@ router.get("/getMembers",authenticateToken,(req,res) => {
   const membershipValues=[id,group]
 
   database.query(membershipQuery, membershipValues, (err, results) => {
-    if (!err){
+    if (err){return res.status(500).json({ error: "Failed to verify membership" });}
+    else{
       if (results.length < 1) {
         return res.status(403).json({ error: "You are not a member" });
       }
       const query = "SELECT CONCAT(users.Forename,' ',users.Surname) as name, group_users.UserID as id FROM group_users LEFT JOIN users ON users.UserID=group_users.UserID WHERE GroupID = ?"
       const values = [group];
       database.query(query, values, (err, results) => {
-        if(!err){
+        if(err){return res.status(500).json({ error: "Failed to get users" });}
+        else{
           const postResults = results.map(member => {
             if (Number(member.id) === id) {
               return { ...member, name: `${member.name} (You)` };
             }
             return member;
           });
-          return res.status(200).json({ results: postResults });
+          const leaderQuery = "SELECT Owner as owner from Groups WHERE GroupID=?"
+          database.query(leaderQuery, values, (err, results) => {
+            if(err){
+              return res.status(500).json({ error: "Failed to get Leader" });
+              
+            }
+            else{
+              if (results.length < 1) {
+                return res.status(403).json({ error: "There is no leader. (Please report, this shouldn't happen)" });
+              }
+
+              return res.status(200).json({ results: postResults, owner:results[0].owner });
+            }
+          })
         }
-        return res.status(500).json({ error: "Failed to get users" });
       });
-    }
-    else{
-      return res.status(500).json({ error: "Failed to verify membership" });
     }
   });
 });

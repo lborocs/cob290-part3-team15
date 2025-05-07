@@ -3,8 +3,9 @@ import {useState,useEffect} from "react";
 import axios from "axios";
 
 function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID}) {
-    
+    const [leader,setLeader] = useState(-1)
     const [items,setItems] = useState([])
+
     const componentsFunctions = [() => console.log("Member 1"), () => console.log("Member 2"), null];
     const icons = [<BsFillPersonFill className="w-6 h-6"/>, <BsFillPersonFill className="w-6 h-6"/>, <BsFillPersonFill className="w-6 h-6"/>]; // Add icons if needed
     const iconColours = ['bg-green-500', 'bg-blue-500', 'bg-red-500'];
@@ -16,9 +17,16 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
         const response = await axios.get(`/api/chat/${mode}/getMembers?target=${selectedID}`, {headers: { Authorization: `Bearer ${accessToken}` }});
         if (response?.data?.results){
             setItems(response.data.results)
+            if(response.data?.owner){
+                setLeader(response.data?.owner)
+            }
+            else{
+                setLeader(-1)
+            }
         }
         else{
             setMessages([]);
+            setLeader(-1)
         }
         }
         catch (error) {
@@ -48,17 +56,17 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
             {/* Goes through each item in the list and maps items to a key value*/}
             {items.map((item, index) => (
                 <div
-                className={`group flex justify-between bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 font-bold ${mode=="group_messages"?"cursor-pointer":""} hover:bg-orangeHover rounded-md text-gray-700 mb-1`}
+                className={`group flex justify-between bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 ${leader==item.id?"font-black":"font-bold"} ${mode=="group_messages"&&leader==userID?"cursor-pointer":""} hover:bg-orangeHover rounded-md text-gray-700 mb-1`}
                 key={index} // Add a unique key for each item
                 >
                     {icons[index] && <span className={`w-10 h-10 ${iconColours[index]} rounded-full text-white flex items-center justify-center mr-3`}>{icons[index]}</span>} {/* Check if icon exists before rendering */}
                     <span>
                         {item.name}
                     </span>
-                    {mode=="group_messages"?<BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:<></>}
+                    {mode=="group_messages"&&leader==userID?<BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:<></>}
                 </div>
             ))}
-            {mode==="group_messages" &&
+            {mode==="group_messages" && leader==userID &&
             <div className="flex justify-center mt-4">
                 <button
                     className="group w-8 h-8 bg-accentOrange hover:bg-orangeHover rounded-full flex items-center justify-center shadow-md"
