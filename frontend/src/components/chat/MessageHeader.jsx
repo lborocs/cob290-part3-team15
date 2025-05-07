@@ -5,6 +5,7 @@ import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate } fro
 import AddMemberModal from "../chat/AddMemberModal";
 import RemoveMemberModal from "../chat/RemoveMemberModal";
 import RenameModal from "../chat/RenameModal";
+import LeaveModal from "../chat/LeaveModal";
 import axios from "axios";
 // components/chat/core/Header.jsx
 export default function Header({ name, selectedID, mode, userID, refresh }) {
@@ -13,6 +14,7 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
     const [RemoveMemberModalOpen, setRemoveMemberModalOpen] = useState(false);
     const [AddMemberModalOpen, setAddMemberModalOpen] = useState(false);
     const [RenameModalOpen, setRenameModalOpen] = useState(false);
+    const [LeaveModalOpen, setLeaveModalOpen] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
     // Floating UI for dropdown
     const { refs, floatingStyles, context } = useFloating({
@@ -87,6 +89,15 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
     const closeRenameModal = () => {
         setRenameModalOpen(false);
     }
+    const openLeaveModal = (target) => {
+        setSelectedMember(target);
+        setLeaveModalOpen(true);
+        setDropdownVisible(false);
+    }
+    const closeLeaveModal = () => {
+        setLeaveModalOpen(false);
+        setSelectedMember(null);
+    }
 
     return (
         <>
@@ -105,7 +116,7 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
                 </div>
             </div>
             {dropdownVisible && (
-                <MemberDropdown onClose={() => setDropdownVisible(false)} refs={refs} floatingStyles={floatingStyles} mode={mode} selectedID={selectedID} name={name} userID={userID} refresh={refresh} openRemoveMemberModal={openRemoveMemberModal} openAddMemberModal={openAddMemberModal} openRenameModal={openRenameModal}/>
+                <MemberDropdown onClose={() => setDropdownVisible(false)} refs={refs} floatingStyles={floatingStyles} mode={mode} selectedID={selectedID} name={name} userID={userID} refresh={refresh} openRemoveMemberModal={openRemoveMemberModal} openAddMemberModal={openAddMemberModal} openRenameModal={openRenameModal} openLeaveModal={openLeaveModal}/>
             )
             }
             {RemoveMemberModalOpen && (
@@ -116,6 +127,9 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
             )}
             {RenameModalOpen && (
                 <RenameModal open={RenameModalOpen} onClose={closeRenameModal} chatID={selectedID} refs={refs} floatingStyles={floatingStyles} chatName={name}/>
+            )}
+            {LeaveModalOpen && (
+                <LeaveModal open={LeaveModalOpen} onClose={closeLeaveModal} leaveFunction={() => handleDelete(selectedMember)} refs={refs} floatingStyles={floatingStyles} chatName={name} isSelf={true}/>
             )}
         </>
     );

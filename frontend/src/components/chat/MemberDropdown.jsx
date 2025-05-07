@@ -5,7 +5,7 @@ import {useState,useEffect} from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
 
-function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID,refresh, openRemoveMemberModal, openAddMemberModal, openRenameModal}) {
+function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID,refresh, openRemoveMemberModal, openAddMemberModal, openRenameModal, openLeaveModal}) {
     const [leader,setLeader] = useState(-1)
     const [items,setItems] = useState([])
     const colors = {
@@ -80,7 +80,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
                         </span>
                         {mode=="group_messages"&&leader==userID?
                         leader===item.id?
-                        <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (openRemoveMemberModal(item))} />:
+                        <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (openLeaveModal(item))} />:
                         <BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (openRemoveMemberModal(item))} />:<></>}
                     </div>
                 )
