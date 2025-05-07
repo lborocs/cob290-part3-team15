@@ -4,6 +4,7 @@ import MemberDropdown from "./MemberDropdown.jsx";
 import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate } from "@floating-ui/react";
 import AddMemberModal from "../chat/AddMemberModal";
 import RemoveMemberModal from "../chat/RemoveMemberModal";
+import RenameModal from "../chat/RenameModal";
 import axios from "axios";
 // components/chat/core/Header.jsx
 export default function Header({ name, selectedID, mode, userID, refresh }) {
@@ -114,7 +115,7 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
                 <AddMemberModal open={AddMemberModalOpen} onClose={closeAddMemberModal} refs={refs} floatingStyles={floatingStyles}/>
             )}
             {RenameModalOpen && (
-                <RenameModal open={RenameModalOpen} onClose={closeRenameModal} refs={refs} floatingStyles={floatingStyles}/>
+                <RenameModal open={RenameModalOpen} onClose={closeRenameModal} chatID={selectedID} refs={refs} floatingStyles={floatingStyles} chatName={name}/>
             )}
         </>
     );
