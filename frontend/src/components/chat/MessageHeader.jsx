@@ -11,6 +11,7 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [RemoveMemberModalOpen, setRemoveMemberModalOpen] = useState(false);
     const [AddMemberModalOpen, setAddMemberModalOpen] = useState(false);
+    const [RenameModalOpen, setRenameModalOpen] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
     // Floating UI for dropdown
     const { refs, floatingStyles, context } = useFloating({
@@ -71,6 +72,21 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
         setSelectedMember(null);
     }
 
+    const openAddMemberModal = () => {
+        setAddMemberModalOpen(true);
+        setDropdownVisible(false);
+    }
+    const closeAddMemberModal = () => {
+        setAddMemberModalOpen(false);
+    }
+    const openRenameModal = () => {
+        setRenameModalOpen(true);
+        setDropdownVisible(false);
+    }
+    const closeRenameModal = () => {
+        setRenameModalOpen(false);
+    }
+
     return (
         <>
             <div className="bg-orangeFaded w-full h-[60px] flex justify-center items-center px-4 border-b-2 border-blackFaded">
@@ -88,14 +104,17 @@ export default function Header({ name, selectedID, mode, userID, refresh }) {
                 </div>
             </div>
             {dropdownVisible && (
-                <MemberDropdown onClose={() => setDropdownVisible(false)} refs={refs} floatingStyles={floatingStyles} mode={mode} selectedID={selectedID} name={name} userID={userID} refresh={refresh} openRemoveMemberModal={openRemoveMemberModal}/>
+                <MemberDropdown onClose={() => setDropdownVisible(false)} refs={refs} floatingStyles={floatingStyles} mode={mode} selectedID={selectedID} name={name} userID={userID} refresh={refresh} openRemoveMemberModal={openRemoveMemberModal} openAddMemberModal={openAddMemberModal} openRenameModal={openRenameModal}/>
             )
             }
             {RemoveMemberModalOpen && (
                 <RemoveMemberModal open={RemoveMemberModalOpen} onClose={closeRemoveMemberModal} removeFunction={() => handleDelete(selectedMember)} refs={refs} floatingStyles={floatingStyles}/>
             )}
             {AddMemberModalOpen && (
-                <AddMemberModal open={AddMemberModalOpen} onClose={() => setAddMemberModalOpen(false)} onAddMember={() => console.log("Adding member...")} refs={refs} floatingStyles={floatingStyles}/>
+                <AddMemberModal open={AddMemberModalOpen} onClose={closeAddMemberModal} refs={refs} floatingStyles={floatingStyles}/>
+            )}
+            {RenameModalOpen && (
+                <RenameModal open={RenameModalOpen} onClose={closeRenameModal} refs={refs} floatingStyles={floatingStyles}/>
             )}
         </>
     );

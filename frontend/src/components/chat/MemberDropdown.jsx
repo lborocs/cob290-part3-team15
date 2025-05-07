@@ -5,7 +5,7 @@ import {useState,useEffect} from "react";
 import axios from "axios";
 import { FaUser } from "react-icons/fa";
 
-function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID,refresh, openRemoveMemberModal}) {
+function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID,refresh, openRemoveMemberModal, openAddMemberModal, openRenameModal}) {
     const [leader,setLeader] = useState(-1)
     const [items,setItems] = useState([])
     const colors = {
@@ -89,14 +89,14 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
             <div className="flex justify-evenly mt-4">
                 <button
                     className="group w-11 h-11 bg-accentOrange hover:bg-orangeHover rounded-full flex items-center justify-center shadow-md"
-                    onClick={() => console.log("Add Member")}
+                    onClick={() => openRenameModal()}
                 >
                     <IoPricetagsOutline className=" w-8 h-8 pr-[2px] pt-[3px] group-hover:hidden"/>
                     <IoPricetagsSharp className="w-8 h-8 pr-[2px] pt-[3px] hidden group-hover:block"/>
                 </button>
                 <button
                     className="group w-11 h-11 bg-accentOrange hover:bg-orangeHover rounded-full flex items-center justify-center shadow-md"
-                    onClick={() => console.log("Add Member")}
+                    onClick={() => openAddMemberModal()}
                 >
                     <BsPersonAdd className=" w-8 h-8 group-hover:hidden"/>
                     <BsPersonFillAdd className="w-8 h-8 hidden group-hover:block"/>
