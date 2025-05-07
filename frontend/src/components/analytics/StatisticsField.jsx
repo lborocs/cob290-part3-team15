@@ -28,11 +28,13 @@ function StatisticsField({selectedProject, tasks, employees}) {
                         selectedProject={ selectedProject }
                     />
                 }
-                <TasksList tasks={ statsTasks }/>
-                <StatisticsFieldBottom
-                    selectedProject={ selectedProject }
+                <TasksList
                     employees={ statsEmployees }
-                    tasks={ tasks }
+                    tasks={ statsTasks }
+                />
+                <StatisticsFieldBottom
+                    employees={ statsEmployees }
+                    tasks={ statsTasks }
                 />
             </>
         </div>

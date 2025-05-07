@@ -2,13 +2,20 @@ import React, { useState } from 'react';
 import TaskCard from './TaskCard';
 import { FiSearch, FiCalendar } from 'react-icons/fi';
 
-function TasksList({ tasks }) {
+function TasksList({ employees, tasks }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [dueDateFilter, setDueDateFilter] = useState('any');
   const [searchQuery, setSearchQuery] = useState('');
   const today = new Date();
 
-  const dueDateFilteredTasks = tasks.filter(task => {
+  const addedDetailsTasks = tasks.map(task => {
+    const assignee = employees.find(employee => employee.id === task.assignee);
+    let newTask = task;
+    newTask.assigneeName = `${assignee?.forename} ${assignee?.surname}`
+    return newTask;
+  });
+
+  const dueDateFilteredTasks = addedDetailsTasks.filter(task => {
     const dueDate = new Date(task.deadline);
     if (dueDateFilter === 'today') {
       return dueDate.toDateString() === today.toDateString();

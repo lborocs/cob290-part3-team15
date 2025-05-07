@@ -4,19 +4,16 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { FiSearch, FiUsers, FiX } from 'react-icons/fi';
 
-function StatisticsFieldBottom({ selectedProject, employees, tasks }) {
+function StatisticsFieldBottom({ employees, tasks }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalOpacity, setModalOpacity] = useState(0);
 
-  const dummyEmployees = employees.map(employee =>  {
+  const dummyEmployees = employees.map(employee => {
 
-    let employeeTasks = tasks.filter((task) => task.assignee === employee.id);
-    if (selectedProject.title !== "Overview") {
-      employeeTasks = employeeTasks.filter((task) => task.project === selectedProject.id);
-    }
+    const employeeTasks = tasks.filter((task) => task.assignee === employee.id);
 
     const tasksGiven = employeeTasks.length;
     const tasksDue = employeeTasks.filter((task) => task.status !== "Completed").length;
