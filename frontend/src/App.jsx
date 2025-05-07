@@ -10,11 +10,6 @@ const PageDoesNotExist = lazy(() => import('./pages/PageDoesNotExist'));
 const Chat = lazy(() => import('./pages/Chat'));
 const Analytics = lazy(() => import('./pages/Analytics'));
 
-
-
-const Playground = lazy(() => import('./pages/Playground'));
-
-
 function App() {
   return (
     <>
@@ -26,11 +21,7 @@ function App() {
         <Route path="/landing" element={<Landing/>}/>
         {/*Our subsystems (Import page and replace the <Landing/> part)*/}
         <Route path="/chat" element={<Chat/>}/>
-        <Route path="/data" element={<Landing/>}/>
         <Route path="/analytics" element={<Analytics/>}/>
-
-        {/*Extra*/}
-        <Route path="/playground" element={<Playground/>}/>
 
         {/*Catch case, everything else goes to PageDoesNotExist.jsx*/}
         <Route path="*" element={<PageDoesNotExist/>}/>
