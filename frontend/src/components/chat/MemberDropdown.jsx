@@ -3,10 +3,24 @@ import { IoPricetagsOutline,IoPricetagsSharp } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import {useState,useEffect} from "react";
 import axios from "axios";
+import { FaUser } from "react-icons/fa";
 
 function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID}) {
     const [leader,setLeader] = useState(-1)
     const [items,setItems] = useState([])
+
+    const colors = {
+        blue : 'bg-blue-500/60',
+        green : 'bg-green-500/60', 
+        red : 'bg-red-400/60',
+        pink : 'bg-pink-500/40', 
+        purple : 'bg-purple-500/40',
+        gray : 'bg-gray-500/70',
+    }
+    
+    const colorKeys = Object.keys(colors);
+    const colorBasedOnId = selectedID % colorKeys.length;
+    const color = colors[colorKeys[colorBasedOnId]];
 
     const componentsFunctions = [() => console.log("Member 1"), () => console.log("Member 2"), null];
     const icons = [<BsFillPersonFill className="w-6 h-6"/>, <BsFillPersonFill className="w-6 h-6"/>, <BsFillPersonFill className="w-6 h-6"/>]; // Add icons if needed
@@ -70,21 +84,25 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
         className="w-auto absolute bg-backgroundOrange rounded-lg p-2 z-30 border border-accentOrange" {...(refs?.setFloating ? { ref: refs.setFloating } : {})} {...(floatingStyles ? { style: floatingStyles } : {})}>
             <div className="px-1 font-bold text-lg text-left">Members</div>
             {/* Goes through each item in the list and maps items to a key value*/}
-            {items.map((item, index) => (
-                <div
-                className={`group flex justify-between bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 ${leader==item.id?"font-black":"font-bold"} ${mode=="group_messages"&&leader==userID?"cursor-pointer":""} hover:bg-orangeHover rounded-md text-gray-700 mb-1`}
-                key={index} // Add a unique key for each item
-                >
-                    {icons[index] && <span className={`w-10 h-10 ${iconColours[index]} rounded-full text-white flex items-center justify-center mr-3`}>{icons[index]}</span>} {/* Check if icon exists before rendering */}
-                    <span>
-                        {item.name}
-                    </span>
-                    {mode=="group_messages"&&leader==userID?
-                    leader===item.id?
-                    <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:
-                    <BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:<></>}
-                </div>
-            ))}
+            {items.map((item, index) => {
+                const colorIndex = item.id % colorKeys.length;
+                const itemColor = colors[colorKeys[colorIndex]];
+                return (
+                    <div
+                    className={`group flex bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 ${leader==item.id?"font-black":"font-bold"} ${mode=="group_messages"&&leader==userID?"cursor-pointer":""} hover:bg-orangeHover rounded-md text-gray-700 mb-1`}
+                    key={index} // Add a unique key for each item
+                    >
+                        {<div className={`flex items-center justify-center w-10 h-10 rounded-full mr-3 ${itemColor}`}><FaUser className="w-6 h-6 text-white" /></div>} {/* Check if icon exists before rendering */}
+                        <span>
+                            {item.name}
+                        </span>
+                        {mode=="group_messages"&&leader==userID?
+                        leader===item.id?
+                        <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:
+                        <BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:<></>}
+                    </div>
+                )
+            })}
             {mode==="group_messages" && leader==userID &&
             <div className="flex justify-evenly mt-4">
                 <button

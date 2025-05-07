@@ -47,7 +47,7 @@ CREATE TABLE `active_chats` (
 
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
-INSERT INTO `active_chats` VALUES (1,2,'2025-05-07 11:06:10','2025-05-07 13:01:28');
+INSERT INTO `active_chats` VALUES (1,2,'2025-05-07 11:06:10','2025-05-07 15:31:07');
 INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28','2025-05-07 11:06:10');
 INSERT INTO `active_chats` VALUES (2,1,'2025-05-06 19:11:05','2025-05-07 12:38:15');
 INSERT INTO `active_chats` VALUES (2,3,'2025-04-20 07:07:03','2025-05-06 19:18:43');
@@ -157,7 +157,7 @@ CREATE TABLE `group_messages` (
   KEY `Group is Group` (`GroupID`),
   CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,6 +203,8 @@ INSERT INTO `group_messages` VALUES (34,1,4,'Mr Mime removed Aylin Stacie from t
 INSERT INTO `group_messages` VALUES (35,1,4,'Mr Mime removed Laurencia Kaya from the group','2025-05-07 13:35:23',0,0,1);
 INSERT INTO `group_messages` VALUES (36,1,4,'Mr Mime removed Alhassan Fareeha from the group','2025-05-07 13:35:26',0,0,1);
 INSERT INTO `group_messages` VALUES (37,1,4,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 13:35:28',0,0,1);
+INSERT INTO `group_messages` VALUES (38,1,5,'Mr Mime removed Faker Realman from the group','2025-05-07 15:08:53',0,0,1);
+INSERT INTO `group_messages` VALUES (39,1,5,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 15:08:54',0,0,1);
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,21 +233,19 @@ CREATE TABLE `group_users` (
 
 LOCK TABLES `group_users` WRITE;
 /*!40000 ALTER TABLE `group_users` DISABLE KEYS */;
-INSERT INTO `group_users` VALUES (1,1,'2025-05-07 11:06:01');
-INSERT INTO `group_users` VALUES (1,2,'2025-05-07 13:01:27');
+INSERT INTO `group_users` VALUES (1,1,'2025-05-07 15:08:01');
+INSERT INTO `group_users` VALUES (1,2,'2025-05-07 15:31:19');
 INSERT INTO `group_users` VALUES (1,3,'2025-05-07 11:05:58');
-INSERT INTO `group_users` VALUES (1,4,'2025-05-07 13:37:01');
-INSERT INTO `group_users` VALUES (1,5,'2025-05-07 13:34:42');
-INSERT INTO `group_users` VALUES (1,6,'2025-05-07 13:34:38');
+INSERT INTO `group_users` VALUES (1,4,'2025-05-07 15:31:10');
+INSERT INTO `group_users` VALUES (1,5,'2025-05-07 15:31:13');
+INSERT INTO `group_users` VALUES (1,6,'2025-05-07 15:31:18');
 INSERT INTO `group_users` VALUES (2,1,'2025-05-07 11:57:07');
 INSERT INTO `group_users` VALUES (2,2,'2025-05-07 12:29:35');
 INSERT INTO `group_users` VALUES (2,3,'2025-04-21 17:55:05');
 INSERT INTO `group_users` VALUES (2,5,'2025-05-07 12:38:42');
 INSERT INTO `group_users` VALUES (3,1,'2025-04-20 07:27:11');
-INSERT INTO `group_users` VALUES (3,5,NULL);
 INSERT INTO `group_users` VALUES (4,2,'2025-05-06 21:09:49');
 INSERT INTO `group_users` VALUES (4,3,'2025-05-06 21:09:50');
-INSERT INTO `group_users` VALUES (4,5,NULL);
 /*!40000 ALTER TABLE `group_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -454,4 +454,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-07 14:38:29
+-- Dump completed on 2025-05-07 16:39:04
