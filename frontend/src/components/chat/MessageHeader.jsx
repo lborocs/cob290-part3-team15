@@ -3,7 +3,7 @@ import { useState } from "react";
 import MemberDropdown from "./MemberDropdown.jsx";
 import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate } from "@floating-ui/react";
 // components/chat/core/Header.jsx
-export default function Header({ name, selectedID, mode }) {
+export default function Header({ name, selectedID, mode, userID }) {
     // You can customize this logic however you want
     const [dropdownVisible, setDropdownVisible] = useState(false);
     
@@ -47,7 +47,7 @@ export default function Header({ name, selectedID, mode }) {
                 </div>
             </div>
             {dropdownVisible && (
-                <MemberDropdown onClose={() => setDropdownVisible(false)} refs={refs} floatingStyles={floatingStyles} mode={mode} selectedID={selectedID} name={name}/>
+                <MemberDropdown onClose={() => setDropdownVisible(false)} refs={refs} floatingStyles={floatingStyles} mode={mode} selectedID={selectedID} name={name} userID={userID}/>
             )
             }
         </>

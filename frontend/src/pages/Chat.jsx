@@ -193,7 +193,7 @@ function Chat({ user }){
                 {/*Main Chat Area*/}
                 <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full bg-cover bg-center`} style={{ backgroundImage: `url(${chatBackground})` }} onContextMenu={HandleRightClick}>
                     {/* <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div> */}
-                    <Header name={chatName} mode={mode} selectedID={selectedID} />
+                    <Header name={chatName} mode={mode} selectedID={selectedID} userID={userID} />
                     <div className="flex flex-col flex-1 h-[calc(100%-100px)] min-h-[calc(100%-100px)] max-h-[calc(100%-100px)] max-w-full">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>

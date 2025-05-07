@@ -2,7 +2,7 @@ import { BsFillPersonFill, BsPersonAdd, BsPersonFillAdd, BsX } from "react-icons
 import {useState,useEffect} from "react";
 import axios from "axios";
 
-function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name}) {
+function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,userID}) {
     
     const [items,setItems] = useState([])
     const componentsFunctions = [() => console.log("Member 1"), () => console.log("Member 2"), null];
@@ -31,6 +31,15 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name}) {
         getPeople();
     }, [selectedID,mode])
 
+    const handleDelete = (target) => {
+        if(target.id===userID){
+            console.log("Self Removal (Terminate): ",target.id)
+        }
+        else{
+            console.log(target.id)
+        }
+    }
+
     return (
         <>
         <div
@@ -46,7 +55,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name}) {
                     <span>
                         {item.name}
                     </span>
-                    {mode=="group_messages"?<BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={componentsFunctions[index]} />:<></>}
+                    {mode=="group_messages"?<BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:<></>}
                 </div>
             ))}
             {mode==="group_messages" &&
