@@ -217,7 +217,7 @@ router.put("/hideMessage",authenticateToken,(req,res) => {
 
 router.get("/getMembers",authenticateToken,(req,res) => {
   const id = req.user.userID;
-  const group = req.query.group;
+  const group = req.query.target;
 
   //Stop bad ID's 
   if (isNaN(id) || isNaN(group)) {
@@ -231,25 +231,33 @@ router.get("/getMembers",authenticateToken,(req,res) => {
   database.query(membershipQuery, membershipValues, (err, results) => {
     if (!err){
       if (results.length < 1) {
-        return res.status(500).json({ error: "You are not a member" });
+        return res.status(403).json({ error: "You are not a member" });
       }
       const query = "SELECT CONCAT(users.Forename,' ',users.Surname) as name, group_users.UserID as id FROM group_users LEFT JOIN users ON users.UserID=group_users.UserID WHERE GroupID = ?"
-      const values = [target];
+      const values = [group];
       database.query(query, values, (err, results) => {
         if(!err){
-          res.send({results: results});
+          const postResults = results.map(member => {
+            if (Number(member.id) === id) {
+              return { ...member, name: `${member.name} (You)` };
+            }
+            return member;
+          });
+          return res.status(200).json({ results: postResults });
         }
         return res.status(500).json({ error: "Failed to get users" });
       });
     }
-    return res.status(500).json({ error: "Failed to verify membership" });
+    else{
+      return res.status(500).json({ error: "Failed to verify membership" });
+    }
   });
 });
 
-router.get("/removeMember",authenticateToken,(req,res) => {
+router.delete("/removeMember",authenticateToken,(req,res) => {
   const id = req.user.userID;
-  const group = req.query.group;
-  const target = req.query.target
+  const group = req.body.group;
+  const target = req.body.target
 
   //Stop bad ID's 
   if (isNaN(id) || isNaN(group) || isNaN(target)) {
@@ -277,10 +285,10 @@ router.get("/removeMember",authenticateToken,(req,res) => {
   });
 });
 
-router.get("/addMember",authenticateToken,(req,res) => {
+router.post("/addMember",authenticateToken,(req,res) => {
   const id = req.user.userID;
-  const group = req.query.group;
-  const target = req.query.target
+  const group = req.body.group;
+  const target = req.body.target
 
   //Stop bad ID's 
   if (isNaN(id) || isNaN(group) || isNaN(target)) {
@@ -308,10 +316,10 @@ router.get("/addMember",authenticateToken,(req,res) => {
   });
 });
 
-router.get("/updateName",authenticateToken,(req,res) => {
+router.post("/updateName",authenticateToken,(req,res) => {
   const id = req.user.userID;
-  const group = req.query.group;
-  const name = req.query.name
+  const group = req.body.group;
+  const name = req.body.name
 
   //Stop bad ID's 
   if (isNaN(id) || isNaN(group)) {

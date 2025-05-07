@@ -166,4 +166,35 @@ router.put("/hideMessage",authenticateToken,(req,res) => {
     });
 });
 
+
+router.get("/getMembers",authenticateToken,(req,res) => {
+    const id = req.user.userID;
+    const name =req.user.name+" (You)";
+    const target = req.query.target;
+
+    const self = [{id:id,name:name}]
+  
+    //Stop bad ID's 
+    if (isNaN(id) || isNaN(target)) {
+      return res.status(400).json({ error: "Bad request" });
+    }
+  
+    //Verify group membership
+    const query=`SELECT CONCAT(users.Forename,' ',users.Surname) as name FROM users WHERE UserID=?`
+    const values=[target]
+  
+    database.query(query, values, (err, results) => {
+      if (!err){
+        if (results.length < 1) {
+          return res.status(404).json({ error: "User Does Not Exist" });
+        }
+        const final = self.concat(results)
+        return res.status(200).json({ results: final });
+      }
+      else{
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+  });
+
 module.exports = router;
