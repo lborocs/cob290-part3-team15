@@ -148,7 +148,7 @@ function StatisticsFieldBottom({ selectedProject, employees, tasks }) {
                 <img
                   src={selectedUser?.profilePicture}
                   alt={selectedUser?.name}
-                  className="w-24 h-24 rounded-full object-cover border-4 border-orange-100 shadow-sm"
+                  className="w-24 h-24 rounded-full object-cover border border-gray-200 shadow-sm"
                 />
                 <div className="text-center sm:text-left">
                   <h2 className="text-2xl px-8 items-center font-bold text-gray-800 mb-1">{selectedUser?.name}</h2>
