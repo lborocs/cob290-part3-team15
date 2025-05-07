@@ -1,4 +1,5 @@
 import { BsFillPersonFill, BsPersonAdd, BsPersonFillAdd, BsX } from "react-icons/bs";
+import { MdDeleteForever } from "react-icons/md";
 import {useState,useEffect} from "react";
 import axios from "axios";
 
@@ -63,7 +64,10 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
                     <span>
                         {item.name}
                     </span>
-                    {mode=="group_messages"&&leader==userID?<BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:<></>}
+                    {mode=="group_messages"&&leader==userID?
+                    leader===item.id?
+                    <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:
+                    <BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (handleDelete(item))} />:<></>}
                 </div>
             ))}
             {mode==="group_messages" && leader==userID &&
