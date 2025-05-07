@@ -10,10 +10,12 @@ router.use(express.json()) // for parsing 'application/json'
 // TODO unused
 // Get all tasks assigned to a user
 router.get("/getUserTasks",authenticateToken,(req,res) => {
+    print("getUserTasks called");
     const query=`SELECT ProjectID, AssigneeID, Title, Status, Priority, HoursRequired, Deadline, CompletionDate FROM tasks WHERE tasks.AssigneeID=?`;
     const id = req.query.target;
 
-    //Stop bad inputs
+    print("getUserTasks called with id: ", id);
+
     if (isNaN(id)) {
         return res.status(400).json({ error: "Invalid ID" });
     }

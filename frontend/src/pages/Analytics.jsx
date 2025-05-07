@@ -1,12 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {use, useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import Auth from "../components/login/Auth.jsx";
 import Navbar from '../components/navigation/Navbar.jsx';
 import {connectSocket, disconnectSocket, getSocket} from '../socket';
 import axios from "axios";
+import EmployeeQuickStatistics from "../components/analytics/EmployeeQuickStatistics.jsx";
 import QuickStatistics from "../components/analytics/QuickStatistics.jsx";
 import SearchBox from "../components/analytics/SearchBox.jsx";
+import EmployeeStatisticsField from "../components/analytics/EmployeeStatisticsField.jsx";
 import StatisticsField from "../components/analytics/StatisticsField.jsx";
+
 
 function Analytics({ user }) {
     const navigate = useNavigate();
@@ -60,11 +63,12 @@ function Analytics({ user }) {
 
             if (responseEmployees?.data?.employees) {
                 setEmployees(responseEmployees.data.employees);
+                console.log("Employees:", responseEmployees.data.employees);    
             }
 
-            // get all tasks all tasks on led projects
+            // get all tasks all tasks on led projects if manager all projects
             const responseTasks = await axios.get(`/api/analytics/projects/getTasks`, {
-                headers: { Authorization: `Bearer ${accessToken}` },
+                headers: { Authorization: `Bearer ${accessToken}` },        
             });
 
             if (responseTasks?.data?.tasks) {
@@ -159,7 +163,7 @@ function Analytics({ user }) {
                     )}
                 </div>
 
-                {userRole === "Team Leader" ? (
+                {userRole === "Team Leader" || userRole === "Manager"? (
                     <>
                         <QuickStatistics
                             selectedProject={selectedProject}
@@ -182,10 +186,9 @@ function Analytics({ user }) {
                     </>
                 ) : (
                     <>
-                        <QuickStatistics
+                        <EmployeeQuickStatistics
                             selectedProject={selectedProject}
                             projects={projects}
-                            employees={employees}
                             tasks={personalTasks}
                         />
 
@@ -195,7 +198,7 @@ function Analytics({ user }) {
                             selectedProject={selectedProject}
                         />
 
-                        <StatisticsField
+                        <EmployeeStatisticsField
                             selectedProject={selectedProject}
                             tasks={personalTasks}
                             employees={employees}

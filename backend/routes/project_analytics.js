@@ -7,9 +7,10 @@ router.use(express.json()) // for parsing 'application/json'
 
 
 
-// Get the full details of all projects or all projects led by this user
+// Get the full details of all projects the user is on including ones they are team leaders of
 router.get("/getProjects",authenticateToken,(req,res) => {
-
+    // this query is never called for the manager, use the getProjectsByLeader route instead
+    
     let query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description', p.LeaderID as 'leader'
                  FROM projects as p`;
     let values = [];
@@ -20,8 +21,6 @@ router.get("/getProjects",authenticateToken,(req,res) => {
                     WHERE pu.UserID = ?`;
         values = [req.user.userID];
     }
-
-    // no need for a filter for managers
 
     database.query(query, values, (err, projectResults) => {
         if (err) {
@@ -36,9 +35,13 @@ router.get("/getProjects",authenticateToken,(req,res) => {
 // employees and team leaders
 router.get("/getProjectsByLeader",authenticateToken,(req,res) => {
     // where the leader is the user
-    const query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description', p.LeaderID as 'leader'
-                   FROM projects as p
-                   WHERE p.LeaderID = ?`;
+    let query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description', p.LeaderID as 'leader'
+                 FROM projects as p`;
+    if (req.user.role === "Manager") {
+        // No filter for managers, they get all projects
+    } else {
+        query += ` WHERE p.LeaderID = ?`;
+    }
     const values = [req.user.userID];
     database.query(query, values, (err, projectResults) => {
         if (err) {

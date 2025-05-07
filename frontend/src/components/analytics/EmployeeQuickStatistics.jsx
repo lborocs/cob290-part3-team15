@@ -1,7 +1,7 @@
 import React from 'react'
 import QuickStatisticItem from "./QuickStatisticItem.jsx";
 
-function QuickStatistics({ selectedProject, projects, employees, tasks }) {
+function QuickStatistics({ selectedProject, projects, tasks }) {
 
     // Build the quick statistics
     let statsArr = [];
@@ -14,24 +14,26 @@ function QuickStatistics({ selectedProject, projects, employees, tasks }) {
             title: 'Projects',
             value: projectCount,
         };
-        statsArr.push(projectCountStat);
-
-        // employee count statistic
-        const employeeCountStat = {
-            id: 'overview-employees',
-            title: 'Employees',
-            value: employees.length,
-        };
-        statsArr.push(employeeCountStat);
-
+        statsArr.push(projectCountStat); 
+        
         // task count statistic
         const taskCount = tasks.length;
         const taskCountStat = {
             id: 'overview-tasks',
-            title: 'All Tasks',
+            title: 'Personal Tasks',
             value: taskCount,
         };
         statsArr.push(taskCountStat);
+
+        // task overdue statistic
+        const taskOverview = tasks.filter(task => task.status === 'In Progress' || task.status === 'Completed').length;
+        const taskOverviewStat = {
+            id: 'overdue-tasks',
+            title: 'Tasks Overdue',
+            value: taskOverview,
+        };
+        statsArr.push(taskOverviewStat);
+
     }
     else {
         const projectTasks = tasks.filter(task => task.project === selectedProject.id);
@@ -39,7 +41,7 @@ function QuickStatistics({ selectedProject, projects, employees, tasks }) {
         const taskCount = projectTasks.length;
         const taskCountStat = {
             id: `project-${selectedProject.title}-tasks`,
-            title: 'Tasks',
+            title: 'Tasks Total',
             value: taskCount,
         };
         statsArr.push(taskCountStat);
@@ -54,7 +56,7 @@ function QuickStatistics({ selectedProject, projects, employees, tasks }) {
         };
         statsArr.push(taskCompletionStat);
 
-        // project overdis count statistic
+        // project overdue count statistic
         const overdueTasks = projectTasks.filter(task => task.dueDate < new Date()).length;
         const overdueTasksStat = {
             id: `project-${selectedProject.title}-overdue-tasks`,
