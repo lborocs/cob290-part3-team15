@@ -36,7 +36,7 @@ function Analytics({ user }) {
         try {
             const accessToken = localStorage.getItem('accessToken');
 
-            // all prokects this user is on
+            // all projects this user is on
             const responseProjects = await axios.get(`/api/analytics/projects/getProjects`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
             });
@@ -123,7 +123,7 @@ function Analytics({ user }) {
                 <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
                     <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
                     <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>
-                    { userRole !== "Manager" && ( 
+                    { userRole !== "Manager" && ledProjects.length > 0 && (
                         <div className="flex items-center mt-4">
                             <div className="flex border-2 border-accentOrange rounded-full overflow-hidden">
                                 <button
