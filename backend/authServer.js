@@ -83,7 +83,7 @@ app.post('/login', (req, res) => {
 
 //authToken with packaged details + 1 hour expire time (Can be refreshed though)
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.SECRET_TOKEN, { expiresIn: '1h' })
+  return jwt.sign(user, process.env.SECRET_TOKEN, { expiresIn: '15m' })
 }
 
 app.listen(port, "0.0.0.0", () => {

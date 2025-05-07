@@ -169,6 +169,7 @@ router.get("/getChats",authenticateToken,(req,res) => {
 router.delete("/removeChat",authenticateToken,(req,res) => {
     var query ="";
     const id = req.user.userID;
+    const user = req.user.name;
     const target = req.body.target;
     const type = req.body.type;
     //Stop bad ID's 
@@ -192,26 +193,52 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
         }
         case "group_messages":{
             //Filler
-            const groupSizeQuery=`SELECT COUNT(*) as count FROM group_users WHERE GroupID=?`;
-            database.query(groupSizeQuery, [target], (err, results) => {
+            const groupOwnershipQuery=`SELECT 1 FROM groups WHERE Owner=? AND GroupID=?`;
+            database.query(groupOwnershipQuery, [id,target], (err, results) => {
                 if (err) {
                     return res.status(500).json({ error: "Error checking group size" });
                 }
-                const groupSize = results[0].count;
-                if (groupSize <= 2) {
-                    // If the group size is 2 or less, the result would be 1 or less, so delete the group
-                    query=`DELETE FROM group_users WHERE GroupID=?`;
+                const groupSize = results.length
+                if (groupSize > 0 ) {
+                    // If there is a result, you're the owner; the group must be deleted
+                    query=`DELETE FROM groups WHERE GroupID=?`;
                     values=[target]
                 }
                 else{
                     query=`DELETE FROM group_users WHERE UserID=? AND GroupID=?`;
                 }
-                database.query(query, values, (err, results) => {
-                    if (!err) {
-                        return res.status(200).json({ success: "Succesfully Left Group" });
-                    } else {
-                        return res.status(400).json({ error: "Error leaving group" });
-                    }
+
+                //Get all group members to ping them for updates
+                const groupUserQuery = "SELECT UserID FROM group_users WHERE GroupID=?"
+                const groupUserQueryValues=[target]
+                database.query(groupUserQuery, groupUserQueryValues, (err, memberResults) => {
+                    if (err){return res.status(500).json({ error: "Failed to get users" });}
+                    else if (memberResults.length===0){return res.status(404).json({ error: "Group not found or has no members" })}
+                    database.query(query, values, (err, results) => {
+                        var systemQuery = "SELECT 1 FROM users WHERE UserID=?";
+                        var systemValues= [id]
+                        if (err) {return res.status(400).json({ error: "Error leaving group" });}
+                        else if (groupSize<1) {
+                            systemQuery = "INSERT INTO group_messages (Sender,GroupID,Content,isSystem) VALUES (?,?,?,?)";
+                            systemValues= [id,target,`${user} left the group`,true]
+                        }
+                        //Insert a system message
+                        database.query(systemQuery, systemValues, (err, results) => {
+                            if(err){return res.status(500).json({ error: "Failed to send system message" });}
+                            else{
+                                for (let i=0;i<memberResults.length;i++){
+                                const userID = memberResults[i].UserID;
+                                if(groupSize<1){
+                                    alertMessage(userID,target,`User Removal`,'group_messages',true);
+                                }
+                                else{
+                                    alertMessage(userID,target,`User Removal`,'group_messages',true,{target:userID,group:target});
+                                }
+                                }
+                                return res.status(200).json({ success: true, message: "User Removed" });
+                            }
+                        });
+                    })
                 });
             });
             break;

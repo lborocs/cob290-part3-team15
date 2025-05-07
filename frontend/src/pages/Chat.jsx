@@ -126,7 +126,7 @@ function Chat({ user }){
                     console.log(data.deletion)
                     console.log(data.deletion.target)
 
-                    if(data.deletion.target===userID && data.deletion.group===selectedID && mode==="group_messages"){
+                    if(data.deletion.target===userIDRef.current && data.deletion.group===selectedIDRef.current && modeRef.current==="group_messages"){
                         setSelectedID(-1)
                         setMode("direct_messages")
                     }
@@ -162,6 +162,7 @@ function Chat({ user }){
     //ITS STATIC... I HAVE TO USE REFERENCES.....
     const selectedIDRef = useRef();
     const modeRef = useRef();
+    const userIDRef = useRef();
 
     useEffect(() => {
         selectedIDRef.current = selectedID;
@@ -170,6 +171,10 @@ function Chat({ user }){
     useEffect(() => {
         modeRef.current = mode;
     }, [mode]);
+
+    useEffect(() => {
+        userIDRef.current = userID;
+    }, [userID]);
 
     const attemptToSetEditedValue = (data) => {
         if (data.targetID===selectedIDRef.current && data.targetID!==null && data.type===modeRef.current) { 
@@ -200,6 +205,7 @@ function Chat({ user }){
                 :<></>}
                 
                 {/*Main Chat Area*/}
+                {selectedID!==-1 ?
                 <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full bg-cover bg-center`} style={{ backgroundImage: `url(${chatBackground})` }} onContextMenu={HandleRightClick}>
                     {/* <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div> */}
                     <Header name={chatName} mode={mode} selectedID={selectedID} userID={userID} refresh={refresh} />
@@ -212,6 +218,11 @@ function Chat({ user }){
                         </div>
                     </div>
                 </div>
+                :
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full bg-cover bg-center`} style={{ backgroundImage: `url(${chatBackground})` }} onContextMenu={HandleRightClick}>
+                    <div className="bg-orangeFaded w-full h-[60px] flex justify-center items-center px-4 border-b-2 border-blackFaded"></div>
+                </div>
+                }
             </div>  
         </div>
     )
