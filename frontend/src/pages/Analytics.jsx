@@ -15,22 +15,42 @@ function Analytics({ user }) {
     const activeTab = "Analytics";
     const [personalStatus, setPersonalStatus] = useState("Offline");
     const [selectedProject, setSelectedProject] = useState({ title: 'Overview' });
+
+    // this will be for all projects a user is on
     const [projects, setProjects] = useState([]);
+    // this will be for all projects a user is a team member of
+    // we will use the size of the arry to determine if the user is a team leader
+    const [ledProjects, setLedProjects] = useState([]);
+
     const [employees, setEmployees] = useState([]);
-    const [tasks, setTasks] = useState([]);
+
+    const [ledTasks, setLedTasks] = useState([]);
+    const [personalTasks, setPersonalTasks] = useState([]);
+
 
     // Fetch all project-side data to be displayed
     const fetchData = async() => {
         try {
             const accessToken = localStorage.getItem('accessToken');
 
-            // Get all projects/ all led projects
+            // all prokects this user is on
             const responseProjects = await axios.get(`/api/analytics/projects/getProjects`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
             });
 
             if (responseProjects?.data?.projects.length > 0) {
                 setProjects(responseProjects.data.projects);
+            }
+
+            // projects led by this user
+            const responseLedProjects = await axios.get(`/api/analytics/projects/getProjectsByLeader`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+
+            if (responseLedProjects?.data?.projects.length > 0) {
+                setLedProjects(responseLedProjects.data.projects);
+                // if the user is a team leader, set the selected project to the first led project
+                console.log("Led projects:", responseLedProjects.data.projects);
             }
 
             // Get all employees/ all employees on led projects
@@ -42,14 +62,24 @@ function Analytics({ user }) {
                 setEmployees(responseEmployees.data.employees);
             }
 
-            // Get all tasks/ all tasks on led projects
+            // get all tasks all tasks on led projects
             const responseTasks = await axios.get(`/api/analytics/projects/getTasks`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
             });
 
             if (responseTasks?.data?.tasks) {
-                setTasks(responseTasks.data.tasks);
+                setLedTasks(responseTasks.data.tasks);
             }
+
+            // get personal tasks for the employee side
+            const responsePersonalTasks = await axios.get(`/api/analytics/employees/getUserTasks`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+
+            if (responsePersonalTasks?.data?.results) {
+                setPersonalTasks(responsePersonalTasks.data.results);
+            }
+
         }
         catch (error) {
             console.error("Error fetching data:", error);
@@ -89,30 +119,32 @@ function Analytics({ user }) {
                 <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
                     <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
                     <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>
-                    <div className="flex items-center mt-4">
-                    <div className="flex border-2 border-accentOrange rounded-full overflow-hidden">
-                        <button
-                        className={`px-4 py-2 transition-colors duration-200 ${
-                            userRole === "Employee" 
-                            ? 'bg-accentOrange text-white' 
-                            : 'bg-white text-gray-700 hover:bg-accentOrange/10'
-                        }`}
-                        onClick={() => setUserRole("Employee")}
-                        >
-                        Employee
-                        </button>
-                        <button
-                        className={`px-4 py-2 transition-colors duration-200 ${
-                            userRole === "Team Leader" 
-                            ? 'bg-accentOrange text-white' 
-                            : 'bg-white text-gray-700 hover:bg-accentOrange/10'
-                        }`}
-                        onClick={() => setUserRole("Team Leader")}
-                        >
-                        Team Leader
-                        </button>
-                    </div>
-                    </div>
+                    { userRole !== "Manager" && ( 
+                        <div className="flex items-center mt-4">
+                            <div className="flex border-2 border-accentOrange rounded-full overflow-hidden">
+                                <button
+                                className={`px-4 py-2 transition-colors duration-200 ${
+                                    userRole === "Employee" 
+                                    ? 'bg-accentOrange text-white' 
+                                    : 'bg-white text-gray-700 hover:bg-accentOrange/10'
+                                }`}
+                                onClick={() => setUserRole("Employee")}
+                                >
+                                Employee
+                                </button>
+                                <button
+                                className={`px-4 py-2 transition-colors duration-200 ${
+                                    userRole === "Team Leader" 
+                                    ? 'bg-accentOrange text-white' 
+                                    : 'bg-white text-gray-700 hover:bg-accentOrange/10'
+                                }`}
+                                onClick={() => setUserRole("Team Leader")}
+                                >
+                                Team Leader
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="lg:col-span-4 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-between">
@@ -127,24 +159,49 @@ function Analytics({ user }) {
                     )}
                 </div>
 
-                <QuickStatistics
-                    selectedProject={selectedProject}
-                    projects={projects}
-                    employees={employees}
-                    tasks={tasks}
-                />
+                {userRole === "Team Leader" ? (
+                    <>
+                        <QuickStatistics
+                            selectedProject={selectedProject}
+                            projects={ledProjects}
+                            employees={employees}
+                            tasks={ledTasks}
+                        />
 
-                <SearchBox
-                    projects={projects}
-                    onProjectSelect={setSelectedProject}
-                    selectedProject={selectedProject}
-                />
+                        <SearchBox
+                            projects={ledProjects}
+                            onProjectSelect={setSelectedProject}
+                            selectedProject={selectedProject}
+                        />
 
-                <StatisticsField
-                    selectedProject={selectedProject}
-                    tasks={tasks}
-                    employees={employees}
-                />
+                        <StatisticsField
+                            selectedProject={selectedProject}
+                            tasks={ledTasks}
+                            employees={employees}
+                        />
+                    </>
+                ) : (
+                    <>
+                        <QuickStatistics
+                            selectedProject={selectedProject}
+                            projects={projects}
+                            employees={employees}
+                            tasks={personalTasks}
+                        />
+
+                        <SearchBox
+                            projects={projects}
+                            onProjectSelect={setSelectedProject}
+                            selectedProject={selectedProject}
+                        />
+
+                        <StatisticsField
+                            selectedProject={selectedProject}
+                            tasks={personalTasks}
+                            employees={employees}
+                        />
+                    </>
+                )}
             </div>
         </div>
     )

@@ -13,11 +13,15 @@ router.get("/getProjects",authenticateToken,(req,res) => {
     let query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description', p.LeaderID as 'leader'
                  FROM projects as p`;
     let values = [];
-    // Filter only projects led by this user for team leaders
-    if (req.user.role !== "Manager") {
-        query += ` WHERE p.LeaderID = ?`;
+
+    // if they are an employee, get all projects they are on
+    if (req.user.role === "Employee") {
+        query += ` INNER JOIN project_users as pu ON pu.ProjectID = p.ProjectID
+                    WHERE pu.UserID = ?`;
         values = [req.user.userID];
     }
+
+    // no need for a filter for managers
 
     database.query(query, values, (err, projectResults) => {
         if (err) {
@@ -28,7 +32,26 @@ router.get("/getProjects",authenticateToken,(req,res) => {
     });
 });
 
+// this is different because this call is for led projects, which will allow us to distinguish between
+// employees and team leaders
+router.get("/getProjectsByLeader",authenticateToken,(req,res) => {
+    // where the leader is the user
+    const query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description', p.LeaderID as 'leader'
+                   FROM projects as p
+                   WHERE p.LeaderID = ?`;
+    const values = [req.user.userID];
+    database.query(query, values, (err, projectResults) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching projects"});
+        }
 
+        if (!projectResults || projectResults.length === 0) {
+            return res.send({projects: []});
+        }
+
+        res.send({projects: projectResults});
+    });
+});
 
 // Get the employees on all projects or all projects led by this user
 router.get("/getTeamMembers",authenticateToken,(req,res) => {
