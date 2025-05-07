@@ -89,11 +89,30 @@ function Analytics({ user }) {
                 <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
                     <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
                     <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>
-                    <h5 className='text-start text-text font-bold cursor-pointer mt-2 w-1/2'
+                    <div className="flex items-center mt-4">
+                    <div className="flex border-2 border-accentOrange rounded-full overflow-hidden">
+                        <button
+                        className={`px-4 py-2 transition-colors duration-200 ${
+                            userRole === "Employee" 
+                            ? 'bg-accentOrange text-white' 
+                            : 'bg-white text-gray-700 hover:bg-accentOrange/10'
+                        }`}
                         onClick={() => setUserRole("Employee")}
-                    >
-                        Go to your Employee dashboard
-                    </h5>
+                        >
+                        Employee
+                        </button>
+                        <button
+                        className={`px-4 py-2 transition-colors duration-200 ${
+                            userRole === "Team Leader" 
+                            ? 'bg-accentOrange text-white' 
+                            : 'bg-white text-gray-700 hover:bg-accentOrange/10'
+                        }`}
+                        onClick={() => setUserRole("Team Leader")}
+                        >
+                        Team Leader
+                        </button>
+                    </div>
+                    </div>
                 </div>
 
                 <div className="lg:col-span-4 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-between">
