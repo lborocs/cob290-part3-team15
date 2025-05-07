@@ -7,6 +7,7 @@ function MemberDropdown({onClose, refs, floatingStyles}) {
     const iconColours = ['bg-green-500', 'bg-blue-500', 'bg-red-500'];
 
     return (
+        <>
         <div
         className="w-auto absolute bg-backgroundOrange rounded-lg p-2 z-50 border border-accentOrange" {...(refs?.setFloating ? { ref: refs.setFloating } : {})} {...(floatingStyles ? { style: floatingStyles } : {})}>
             <div className="px-1 font-bold text-lg text-left">Members</div>
@@ -33,6 +34,9 @@ function MemberDropdown({onClose, refs, floatingStyles}) {
                 </button>
             </div>
         </div>
+
+        <div className="fixed inset-0 z-40 pointer-events-auto"></div>
+        </>
     );
 }
 
