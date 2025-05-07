@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import './App.css';
+import './axios.jsx'
 
 //Page imports
 const Landing = lazy(() => import('./pages/Landing'));
