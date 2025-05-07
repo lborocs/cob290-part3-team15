@@ -92,7 +92,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
                     className={`group flex bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 ${leader==item.id?"font-black":"font-bold"} ${mode=="group_messages"&&leader==userID?"cursor-pointer":""} hover:bg-orangeHover rounded-md text-gray-700 mb-1`}
                     key={index} // Add a unique key for each item
                     >
-                        {<div className={`flex items-center justify-center w-10 h-10 rounded-full mr-3 ${itemColor}`}><FaUser className="w-6 h-6 text-white" /></div>} {/* Check if icon exists before rendering */}
+                        {<div className={`flex items-center justify-center w-10 h-10 rounded-full mr-3 outline-1 outline-backgroundOrange shadow-md ${itemColor}`}><FaUser className="w-6 h-6 text-white" /></div>} {/* Check if icon exists before rendering */}
                         <span>
                             {item.name}
                         </span>
