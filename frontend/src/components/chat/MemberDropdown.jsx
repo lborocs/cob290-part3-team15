@@ -66,25 +66,27 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,name,user
         className="w-auto absolute bg-backgroundOrange rounded-lg p-2 z-30 border border-accentOrange" {...(refs?.setFloating ? { ref: refs.setFloating } : {})} {...(floatingStyles ? { style: floatingStyles } : {})}>
             <div className="px-1 font-bold text-lg text-left">Members</div>
             {/* Goes through each item in the list and maps items to a key value*/}
-            {items.map((item, index) => {
-                const colorIndex = item.id % colorKeys.length;
-                const itemColor = colors[colorKeys[colorIndex]];
-                return (
-                    <div
-                    className={`group flex bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 ${leader==item.id?"font-black":"font-bold"} ${mode=="group_messages"&&leader==userID?"cursor-pointer":""} hover:bg-orangeHover rounded-md text-gray-700 mb-1`}
-                    key={index} // Add a unique key for each item
-                    >
-                        {<div className={`flex items-center justify-center w-10 h-10 rounded-full mr-3 outline-1 outline-backgroundOrange shadow-md ${itemColor}`}><FaUser className="w-6 h-6 text-white" /></div>} {/* Check if icon exists before rendering */}
-                        <span className="flex-1 text-left">
-                            {item.name}
-                        </span>
-                        {mode=="group_messages"&&leader==userID?
-                        leader===item.id?
-                        <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (openLeaveModal(item))} />:
-                        <BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (openRemoveMemberModal(item))} />:<></>}
-                    </div>
-                )
-            })}
+            <div className=" w-full max-h-45 overflow-y-auto">
+                {items.map((item, index) => {
+                    const colorIndex = item.id % colorKeys.length;
+                    const itemColor = colors[colorKeys[colorIndex]];
+                    return (
+                        <div
+                        className={`group flex bg-accentOrange items-center w-auto whitespace-nowrap select-none text-lg p-2 px-2 ${leader==item.id?"font-black":"font-bold"} ${mode=="group_messages"&&leader==userID?"cursor-pointer":""} hover:bg-orangeHover rounded-md text-gray-700 mb-1`}
+                        key={index} // Add a unique key for each item
+                        >
+                            {<div className={`flex items-center justify-center w-10 h-10 rounded-full mr-3 outline-1 outline-backgroundOrange shadow-md ${itemColor}`}><FaUser className="w-6 h-6 text-white" /></div>} {/* Check if icon exists before rendering */}
+                            <span className="flex-1 text-left">
+                                {item.name}
+                            </span>
+                            {mode=="group_messages"&&leader==userID?
+                            leader===item.id?
+                            <MdDeleteForever className="invisible w-10 h-10 p-[6px] text-gray-500 ml-2 group-hover:visible" onClick={() => (openLeaveModal(item))} />:
+                            <BsX className="invisible w-10 h-10 text-gray-500 ml-2 group-hover:visible" onClick={() => (openRemoveMemberModal(item))} />:<></>}
+                        </div>
+                    )
+                })}
+            </div>
             {mode==="group_messages" && leader==userID &&
             <div className="flex justify-evenly mt-4">
                 <button
