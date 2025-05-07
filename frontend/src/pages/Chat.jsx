@@ -126,7 +126,7 @@ function Chat({ user }){
                     console.log(data.deletion)
                     console.log(data.deletion.target)
 
-                    if(data.deletion.target===userID && data.deletion.group===selectedID && mode==="group_messages"){
+                    if(data.deletion.target===userIDRef.current && data.deletion.group===selectedIDRef.current && modeRef.current==="group_messages"){
                         setSelectedID(-1)
                         setMode("direct_messages")
                     }
@@ -162,6 +162,7 @@ function Chat({ user }){
     //ITS STATIC... I HAVE TO USE REFERENCES.....
     const selectedIDRef = useRef();
     const modeRef = useRef();
+    const userIDRef = useRef();
 
     useEffect(() => {
         selectedIDRef.current = selectedID;
@@ -170,6 +171,10 @@ function Chat({ user }){
     useEffect(() => {
         modeRef.current = mode;
     }, [mode]);
+
+    useEffect(() => {
+        userIDRef.current = userID;
+    }, [userID]);
 
     const attemptToSetEditedValue = (data) => {
         if (data.targetID===selectedIDRef.current && data.targetID!==null && data.type===modeRef.current) { 
