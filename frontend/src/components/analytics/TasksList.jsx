@@ -77,7 +77,7 @@ function TasksList({ employees, tasks }) {
       {/* Filter Section */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center ml-2">
+          <div className="flex items-center ml-2 ml-[-8px] px-2" >
             <span>Due</span>
           </div>
 
