@@ -71,10 +71,10 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
   }
 
   return (
-    <div className="max-w-[max(1500px,100%)] w-[min(1500px,100%)] bg-[#f2ede5]/80 px-5 lg:border-r-1 lg:border-l-1 pb-2 border-blackFaded self-center flex flex-col items-center">
-    <form className="w-[min(1500px,100%)] self-center flex flex-col items-center border border-black rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition" onSubmit={onSubmit}>
+    <div className="max-w-[max(1550px,100%)] w-[min(1550px,100%)] bg-[#f2ede5]/80 px-5 lg:border-r-1 lg:border-l-1 pb-2 border-blackFaded self-center flex flex-col items-center">
+    <form className="w-[min(1550px,100%)] self-center flex flex-col items-center border border-black rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition" onSubmit={onSubmit}>
         {editing && (
-          <span className="flex justify-between items-center max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center p-1 rounded-t-lg bg-black/30 text-white">
+          <span className="flex justify-between items-center max-w-[max(1550px,100%)] w-[min(1550px,100%)] self-center p-1 rounded-t-lg bg-black/30 text-white">
             <div className="flex truncate">
               <p className="font-light px-2">Editing Message:</p>
               <p className="font-bold truncate max-w-full overflow-hidden text-ellipsis whitespace-nowrap pr-5">{editingMessage.content}</p>
@@ -90,7 +90,7 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
             </button>
           </span>
         )}
-        <div className="flex max-w-[max(1500px,100%)] w-[min(1500px,100%)] p-2">
+        <div className="flex max-w-[max(1550px,100%)] w-[min(1550px,100%)] p-2">
         <input type="text" className= "flex-1 p-2 bg-transparent text-white focus:outline-none max-w-[calc(100%-36px)]" 
         autoComplete="off" id="message_box" ref={ref} value={message} onChange={(e) => handleMessageChange(e.target.value)} placeholder="Enter message"
         onKeyDown={(e) => {if (e.key === 'Enter') {e.preventDefault();onSubmit(e)}}}/>

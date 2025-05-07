@@ -93,7 +93,7 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
   }, [messages])  
   
   return (
-    <div className="flex flex-col flex-1 max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center px-auto bg-[#f2ede5]/80 px-5 lg:border-r-1 lg:border-l-1 border-blackFaded justify-end" ref={boundaryRef}>
+    <div className="flex flex-col flex-1 max-w-[max(1550px,100%)] w-[min(1550px,100%)] self-center px-auto bg-[#f2ede5]/80 px-5 lg:border-r-1 lg:border-l-1 border-blackFaded justify-end" ref={boundaryRef}>
         {messages.map((message) => (
             <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef}/>
         ))}
