@@ -11,7 +11,7 @@ router.get("/getOverviewQuickStatistics",authenticateToken,(req,res) => {
     const query = `SELECT
                             (SELECT COUNT(ProjectID) FROM project_users WHERE UserID = ?) as 'projects',
                             (SELECT COUNT(TaskID) FROM tasks WHERE AssigneeID = ?) as 'tasks',
-                            (SELECT COUNT(TaskID) FROM tasks WHERE AssigneeID = ? AND DATEDIFF(CURDATE(), Deadline)>0) as 'overdue'`;
+                            (SELECT COUNT(TaskID) FROM tasks WHERE AssigneeID = ? AND Status != 'Completed' AND DATEDIFF(CURDATE(), Deadline)>0) as 'overdue'`;
 
     database.query(query, [req.user.userID, req.user.userID, req.user.userID], (err, results) => {
         if (err) {
