@@ -25,11 +25,17 @@ function StatisticsField({selectedProject, tasks, employees}) {
                     </div>
                     :
                     <StatisticsFieldCarousel
-                        project={ selectedProject }
+                        selectedProject={ selectedProject }
                     />
                 }
-                <TasksList tasks={ statsTasks }/>
-                <StatisticsFieldBottom employees={ statsEmployees }/>
+                <TasksList
+                    employees={ statsEmployees }
+                    tasks={ statsTasks }
+                />
+                <StatisticsFieldBottom
+                    employees={ statsEmployees }
+                    tasks={ statsTasks }
+                />
             </>
         </div>
     );

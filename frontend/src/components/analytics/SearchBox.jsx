@@ -13,6 +13,13 @@ function SearchBox({ projects, onProjectSelect, selectedProject }) {
 
   return (
     <div className="col-start-2 row-start-4 col-span-4 row-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
+    <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl font-semibold text-gray-800">Projects</h3>
+        <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">
+            {filteredProjects.length} projects
+        </span>
+    </div>
+
       <div className="relative mb-6">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <FiSearch className="text-gray-400" />
@@ -26,7 +33,7 @@ function SearchBox({ projects, onProjectSelect, selectedProject }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto p-1">
         {filteredProjects.length > 0 ? (
           filteredProjects.map(project => (
             <ProjectCard 

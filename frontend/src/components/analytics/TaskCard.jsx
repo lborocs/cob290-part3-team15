@@ -2,9 +2,9 @@ import React from 'react'
 
 function TaskCard( { task } ) {
     const priorityClasses = {
-        high: 'bg-red-100 text-red-800',
-        medium: 'bg-yellow-100 text-yellow-800',
-        low: 'bg-green-100 text-green-800'
+        High: 'text-red-800',
+        Medium: 'text-yellow-800',
+        Low: 'text-green-800'
     };
 
     let bgColour = 'bg-white';
@@ -23,7 +23,7 @@ function TaskCard( { task } ) {
             <div className="flex justify-between items-start">
                 <div>
                     <h4 className="text-start font-medium text-sm text-gray-900">{task.title}</h4>
-                    <p className="text-start text-xs text-gray-600">{task.project}</p>
+                    <p className="text-start text-xs line-clamp-1 text-gray-600">{task.assigneeName}</p>
                 </div>
 
                 <div className="flex flex-col items-end">

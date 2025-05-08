@@ -2,13 +2,20 @@ import React, { useState } from 'react';
 import TaskCard from './TaskCard';
 import { FiSearch, FiCalendar } from 'react-icons/fi';
 
-function TasksList({ tasks }) {
+function TasksList({ employees, tasks }) {
   const [statusFilter, setStatusFilter] = useState('all');
   const [dueDateFilter, setDueDateFilter] = useState('any');
   const [searchQuery, setSearchQuery] = useState('');
   const today = new Date();
 
-  const dueDateFilteredTasks = tasks.filter(task => {
+  const addedDetailsTasks = tasks.map(task => {
+    const assignee = employees.find(employee => employee.id === task.assignee);
+    let newTask = task;
+    newTask.assigneeName = `${assignee?.forename} ${assignee?.surname}`
+    return newTask;
+  });
+
+  const dueDateFilteredTasks = addedDetailsTasks.filter(task => {
     const dueDate = new Date(task.deadline);
     if (dueDateFilter === 'today') {
       return dueDate.toDateString() === today.toDateString();
@@ -69,9 +76,9 @@ function TasksList({ tasks }) {
 
       {/* Filter Section */}
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-3">
-          <div className="flex items-center text-sm text-gray-500">
-            <span>Filter tasks</span>
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center ml-2 ml-[-8px] px-2" >
+            <span>Due</span>
           </div>
 
           <div className="relative w-48">
@@ -85,8 +92,8 @@ function TasksList({ tasks }) {
             >
               <option value="any">Any Date</option>
               <option value="today">Today</option>
-              <option value="week">This week</option>
-              <option value="month">This month</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
             </select>
           </div>
         </div>

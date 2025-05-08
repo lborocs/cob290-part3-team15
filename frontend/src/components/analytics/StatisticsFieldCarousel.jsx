@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PieChart from './PieChart';
-import BarChart from './BarChart';
-import HorizontalBarChart from './HorizontalBarChart';
-import LineChart from './LineChart';
-import EmployeeHoursChart from './EmployeeHoursChart';
-import EmployeeProjectsChart from './EmployeeProjectsChart';
+import PieChart from './charts/PieChart.jsx';
+import BarChart from './charts/BarChart.jsx';
+import HorizontalBarChart from './charts/HorizontalBarChart.jsx';
+import LineChart from './charts/LineChart.jsx';
+import EmployeeHoursChart from './charts/EmployeeHoursChart.jsx';
+import EmployeeProjectsChart from './charts/EmployeeProjectsChart.jsx';
 
 // Dummy data for the charts
 const dummyData = {
@@ -19,10 +19,16 @@ const dummyData = {
     { project: 'Project Alpha', tasks: 12 },
     { project: 'Project Beta', tasks: 8 },
     { project: 'Project Gamma', tasks: 5 },
+  ],
+  'line': [ 
+    { employee: "Ryan Gosling", hours: 15 },
+    { employee: "Steve Roggers", hours: 42 },
+    { employee: "Toby Maguire", hours: 6 },
+    { employee: "Hugh Jackman", hours: 39 }
   ]
 };
 
-function StatisticsFieldCarousel({ project }) {
+function StatisticsFieldCarousel({ selectedProject }) {
 
   const chartConfig = [
     {
@@ -46,7 +52,7 @@ function StatisticsFieldCarousel({ project }) {
     },
     {
       type: 'line',
-      title: 'Hours Worked by User',
+      title: 'Hours Worked by Member',
       description: 'Total hours worked by each team member',
       endpoint: '/api/analytics/projects/getUserWeeklyHours',
       component: LineChart,
@@ -72,17 +78,17 @@ function StatisticsFieldCarousel({ project }) {
   const ChartComponent = currentChart.component;
 
   useEffect(() => {
-    console.log("Project ID:", project.id); // Debugging
+    console.log("Project ID:", selectedProject.id); // Debugging
     const fetchData = async () => {
       try {
         // dummy data for the new employee charts
-        if (currentChart.type === 'employee-hours' || currentChart.type === 'employee-projects') {
+        if (['employee-hours', 'employee-projects', 'line'].includes(currentChart.type)) {
           setChartData(dummyData[currentChart.type]);
           return;
         }
           const accessToken = localStorage.getItem('accessToken');
           const response = await axios.get(currentChart.endpoint, {
-              params: { projectId: project.id },
+              params: { projectId: selectedProject.id },
               headers: { Authorization: `Bearer ${accessToken}` },
           });
 
@@ -120,7 +126,7 @@ function StatisticsFieldCarousel({ project }) {
     };
 
     fetchData();
-  }, [currentIndex, project.id]);
+  }, [currentIndex, selectedProject.id]);
 
   const handleNavigation = (direction) => {
     setCurrentIndex((prev) =>

@@ -4,21 +4,30 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { FiSearch, FiUsers, FiX } from 'react-icons/fi';
 
-function StatisticsFieldBottom({ employees }) {
+function StatisticsFieldBottom({ employees, tasks }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalOpacity, setModalOpacity] = useState(0);
 
-  const dummyEmployees = employees.map((employee) => ({
-    id: employee.id,
-    name: `${employee.forename} ${employee.surname}`,
-    profilePicture: faker.image.avatar(),
-    tasksGiven: Math.floor(Math.random() * 100),
-    tasksDue: Math.floor(Math.random() * 100),
-    tasksCompleted: Math.floor(Math.random() * 100),
-  }));
+  const dummyEmployees = employees.map(employee => {
+
+    const employeeTasks = tasks.filter((task) => task.assignee === employee.id);
+
+    const tasksGiven = employeeTasks.length;
+    const tasksDue = employeeTasks.filter((task) => task.status !== "Completed").length;
+    const tasksCompleted = tasksGiven - tasksDue;
+
+    return {
+      id: employee.id,
+      name: `${employee.forename} ${employee.surname}`,
+      profilePicture: faker.image.avatar(),
+      tasksGiven: tasksGiven,
+      tasksDue: tasksDue,
+      tasksCompleted: tasksCompleted,
+    }
+  });
 
   const filteredEmployees = dummyEmployees.filter((employee) =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -89,9 +98,9 @@ function StatisticsFieldBottom({ employees }) {
                 alt={employee.name}
                 className="w-10 h-10 rounded-full mr-3 object-cover border border-gray-200"
               />
-              <div>
-                <p className="text-sm font-medium text-gray-800">{employee.name}</p>
-                <p className="text-xs text-gray-500">{employee.tasksCompleted} tasks completed</p>
+              <div className="flex flex-col">
+                <p className="text-sm font-medium text-gray-800 flex">{employee.name}</p>
+                <p className="text-xs text-gray-500 flex">{employee.tasksCompleted}/{employee.tasksGiven} tasks completed</p>
               </div>
             </div>
           ))
@@ -136,7 +145,7 @@ function StatisticsFieldBottom({ employees }) {
                 <img
                   src={selectedUser?.profilePicture}
                   alt={selectedUser?.name}
-                  className="w-24 h-24 rounded-full object-cover border-4 border-orange-100 shadow-sm"
+                  className="w-24 h-24 rounded-full object-cover border border-gray-200 shadow-sm"
                 />
                 <div className="text-center sm:text-left">
                   <h2 className="text-2xl px-8 items-center font-bold text-gray-800 mb-1">{selectedUser?.name}</h2>
