@@ -68,17 +68,6 @@ function Chat({ user }){
         localStorage.setItem('selectedID', selectedID);
     }, [selectedID]);
 
-    //Chat name (Saves)
-    const [chatName, setName] = useState(() => {
-        const saved = localStorage.getItem('chatName');
-        return saved ? saved : ''
-    });
-
-    //Chat name handler
-    useEffect(() => {
-        localStorage.setItem('chatName', chatName);
-    }, [chatName]);
-
     //Anti Right Click (Make a copy for the dropdown menu, this is general purpose)
     const HandleRightClick = (event) => {
         event.preventDefault();
@@ -122,6 +111,15 @@ function Chat({ user }){
     
             socket.on('newMessage', (data) => { //NOTE - This is suitable, a lot of data needs to be double checked here
                 setRefresh(previous => previous + 1);
+                if(data?.deletion){
+                    console.log(data.deletion)
+                    console.log(data.deletion.target)
+
+                    if(data.deletion.target===userIDRef.current && data.deletion.group===selectedIDRef.current && modeRef.current==="group_messages"){
+                        setSelectedID(-1)
+                        setMode("direct_messages")
+                    }
+                }
             });
 
             socket.on('editMessage', (data) => { //NOTE - If the active message list is the one being edited.. AND ONLY in this situation refresh. Include a timestamp to make it "unique" each time
@@ -153,6 +151,7 @@ function Chat({ user }){
     //ITS STATIC... I HAVE TO USE REFERENCES.....
     const selectedIDRef = useRef();
     const modeRef = useRef();
+    const userIDRef = useRef();
 
     useEffect(() => {
         selectedIDRef.current = selectedID;
@@ -161,6 +160,10 @@ function Chat({ user }){
     useEffect(() => {
         modeRef.current = mode;
     }, [mode]);
+
+    useEffect(() => {
+        userIDRef.current = userID;
+    }, [userID]);
 
     const attemptToSetEditedValue = (data) => {
         if (data.targetID===selectedIDRef.current && data.targetID!==null && data.type===modeRef.current) { 
@@ -184,17 +187,18 @@ function Chat({ user }){
             {/*Sidebar for unique tab interactions e.g. Users to direct message : Shrinks and then completely disappears below a threshold to be a on click*/}
             <div className="flex flex-1 max-w-[calc(100%-72px)] relative">
                 {sidebarVisible ? 
-                <div className={`flex flex-col h-full fixed lg:static bg-backgroundOrange sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`} onContextMenu={HandleRightClick} ref={containerRef}> 
+                <div className={`flex flex-col h-full fixed lg:static bg-backgroundOrange border-r-1 border-black/20 sm:flex:1 sm:w-[300px] w-[calc(100%-72px)] z-10`} onContextMenu={HandleRightClick} ref={containerRef}> 
                     {/*<button className="lg:hidden mt-2 mr-2 ml-auto p-0 border-2 border-white bg-transparent w-[60px] h-[60px] z-20" onClick={(e) => setSidebarVisible(false)}><BsArrowBarLeft className="w-[30px] h-[30px]"/></button>*/}
-                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} statusUpdate={otherStatus} containerRef={containerRef} setName={setName} setSidebarVisible={setSidebarVisibleSmallScreen}/>
+                    <Sidebar userID = {userID} mode={mode} setMode={setMode} selectedID={selectedID} setSelectedID={setSelectedID} refresh={refresh} statusUpdate={otherStatus} containerRef={containerRef} setSidebarVisible={setSidebarVisibleSmallScreen}/>
                 </div>
                 :<></>}
                 
                 {/*Main Chat Area*/}
+                {selectedID!==-1 ?
                 <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full bg-cover bg-center`} style={{ backgroundImage: `url(${chatBackground})` }} onContextMenu={HandleRightClick}>
                     {/* <div className="bg-accentWhite w-full h-[100px]">User:{name} Role:{role}</div> */}
-                    <Header name={chatName} mode={mode} selectedID={selectedID} />
-                    <div className="flex flex-col flex-1 h-[calc(100%-100px)] min-h-[calc(100%-100px)] max-h-[calc(100%-100px)] max-w-full">
+                    <Header mode={mode} selectedID={selectedID} userID={userID} refresh={refresh} setSelectedID={setSelectedID} setMode={setMode} />
+                    <div className="flex flex-col flex-1 h-[calc(100%-60px)] min-h-[calc(100%-60px)] max-h-[calc(100%-60px)] max-w-full">
                         <div className="flex flex-col flex-1 max-h-full w-full overflow-y-scroll" ref={messageContainerRef}>
                             <MessageList userID = {userID} selectedID={selectedID} mode={mode} refresh={refresh} setMessagesLoaded={setMessagesLoaded} messageContainerRef={messageContainerRef} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} editedValue={editedValue}/>
                         </div>
@@ -203,6 +207,11 @@ function Chat({ user }){
                         </div>
                     </div>
                 </div>
+                :
+                <div className={`${!sidebarVisible ? "block" : "hidden sm:block" } flex flex-col flex-1 h-auto relative max-w-full bg-cover bg-center`} style={{ backgroundImage: `url(${chatBackground})` }} onContextMenu={HandleRightClick}>
+                    <div className="bg-orangeFaded w-full h-[60px] flex justify-center items-center px-4 border-b-2 border-blackFaded"></div>
+                </div>
+                }
             </div>  
         </div>
     )

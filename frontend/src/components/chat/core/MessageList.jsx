@@ -16,7 +16,7 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
         setMessagesLoaded(Date.now());
         // Hide name if back-to-back messages are from the same user
         const messagesWithShowName = response.data.results.map((message, index, arr) => {
-          const showName = (index === 0 || (message.user !== arr[index - 1].user) || (new Date(message.timestamp) - new Date(arr[index - 1].timestamp)) > (20 * 60 * 1000));
+          const showName = (index === 0  || (message.user !== arr[index - 1].user) || arr[index - 1].isSystem || (new Date(message.timestamp) - new Date(arr[index - 1].timestamp)) > (20 * 60 * 1000));
           const isNewDay = (index === 0 || new Date(message.timestamp).toDateString() !== new Date(arr[index - 1].timestamp).toDateString());
           return {...message,showName:showName,isNewDay:isNewDay};
         });
@@ -44,7 +44,7 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
           const newMessages = response.data.results.map((message, index, arr) => {
             const showName = (index === 0 && message.user === lastMessageOwner) ? 
             ((new Date(message.timestamp) - new Date(lastMessageTimestamp)) > (20 * 60 * 1000)) : 
-            (index === 0 || (message.user !== arr[index - 1].user) || (new Date(message.timestamp) - new Date(arr[index - 1].timestamp)) > (20 * 60 * 1000))
+            (index === 0 || (message.user !== arr[index - 1].user) || arr[index - 1].isSystem || (new Date(message.timestamp) - new Date(arr[index - 1].timestamp)) > (20 * 60 * 1000))
             return {
               ...message,showName:showName,isNewDay:false};
           });
@@ -93,7 +93,7 @@ function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,mess
   }, [messages])  
   
   return (
-    <div className="flex flex-col flex-1 max-w-[max(1500px,100%)] w-[min(1500px,100%)] self-center px-auto bg-[#f2ede5] px-5 lg:border-r-1 lg:border-l-1 border-blackFaded justify-end" ref={boundaryRef}>
+    <div className="flex flex-col flex-1 max-w-[max(1550px,100%)] w-[min(1550px,100%)] self-center px-auto bg-[#f2ede5]/80 px-5 lg:border-r-1 lg:border-l-1 border-blackFaded justify-end pb-2" ref={boundaryRef}>
         {messages.map((message) => (
             <Message key={message.messageID} messageContent={message} userID={userID} mode={mode} setEditing={setEditing} setEditingMessage={setEditingMessage} editingMessage={editingMessage} boundaryRef={boundaryRef}/>
         ))}
