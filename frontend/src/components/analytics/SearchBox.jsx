@@ -4,7 +4,7 @@ import ProjectCard from './ProjectCard';
 import { FiSearch } from 'react-icons/fi';
 import axios from "axios";
 
-function SearchBox({ onProjectSelect }) {
+function SearchBox({ userRole, onProjectSelect }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [projects, setProjects] = useState([]);
@@ -14,9 +14,15 @@ function SearchBox({ onProjectSelect }) {
     try {
       const accessToken = localStorage.getItem('accessToken');
 
-      const responseLedProjects = await axios.get(`/api/analytics/projects/getProjectsByLeader`, {
+      // get assigned projects for employee view or led projects for leader/manager view
+      const endpoint = userRole === 'Employee' ? `/api/analytics/employees/getAssignedProjects`
+                                                      : `/api/analytics/projects/getProjectsByLeader`;
+
+      const responseLedProjects = await axios.get(endpoint, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+
+      console.log(responseLedProjects)
 
       if (responseLedProjects?.data?.projects.length > 0) {
         setProjects(responseLedProjects.data.projects);
@@ -29,7 +35,7 @@ function SearchBox({ onProjectSelect }) {
 
   useEffect(() => {
     getProjectList();
-  });
+  }, [userRole]);
 
   const onSelect = (id) => {
     setSelectedProjectId(id)

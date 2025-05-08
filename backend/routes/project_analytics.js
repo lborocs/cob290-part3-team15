@@ -75,7 +75,7 @@ router.get("/getProjects",authenticateToken,(req,res) => {
 // employees and team leaders
 router.get("/getProjectsByLeader",authenticateToken,(req,res) => {
     // where the leader is the user
-    let query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description', p.LeaderID as 'leader'
+    let query = `SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description'
                  FROM projects as p`;
     if (req.user.role === "Manager") {
         // No filter for managers, they get all projects

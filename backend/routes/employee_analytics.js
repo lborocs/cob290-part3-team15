@@ -22,6 +22,26 @@ router.get("/getOverviewQuickStatistics",authenticateToken,(req,res) => {
     });
 });
 
+// Get all projects assigned to a user
+router.get("/getAssignedProjects",authenticateToken,(req,res) => {
+    const query=`SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description'
+                        FROM projects as p INNER JOIN project_users as pu ON p.ProjectID = pu.ProjectID
+                        WHERE pu.UserID = ?`;
+
+    const values = [req.user.userID];
+    database.query(query, values, (err, projectResults) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching projects"});
+        }
+
+        if (!projectResults || projectResults.length === 0) {
+            return res.send({projects: []});
+        }
+
+        res.send({projects: projectResults});
+    });
+});
+
 // TODO unused
 // Get all tasks assigned to a user
 router.get("/getUserTasks",authenticateToken,(req,res) => {

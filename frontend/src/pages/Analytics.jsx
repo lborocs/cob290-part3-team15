@@ -151,8 +151,8 @@ function Analytics({ user }) {
                 </div>
 
                 <div className="lg:col-span-4 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-between">
-                    <span className={"py-1 pr-2"}>{selectedProject.title}</span>
-                    {selectedProject.title !== 'Overview' && (
+                    <span className={"py-1 pr-2"}>{selectedProject?.title || 'Overview'}</span>
+                    {selectedProject?.title !== 'Overview' && (
                         <button
                             onClick={() => setSelectedProject({ title: 'Overview' })}
                             className="px-2 py-1 bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
@@ -170,6 +170,7 @@ function Analytics({ user }) {
                         />
 
                         <SearchBox
+                            userRole={userRole}
                             onProjectSelect={setSelectedProjectId}
                         />
 
@@ -185,6 +186,7 @@ function Analytics({ user }) {
                         />
 
                         <SearchBox
+                            userRole={userRole}
                             onProjectSelect={setSelectedProject}
                         />
 
