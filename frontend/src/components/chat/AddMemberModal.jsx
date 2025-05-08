@@ -117,15 +117,15 @@ function AddMemberModal({ open, onClose, refs, floatingStyles,selectedID}) {
                 <h3 className="px-4 text-2xl font-bold text-text mb-3 text-left w-full select-none">Add Member</h3>
                 <div className="w-full px-4">
                     {/* Search Bar */}
-                    <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
+                    <div className="flex items-center bg-white rounded-lg p-2 mb-4 w-full">
                     <input
                         type="text"
                         value={searchInput}
                         onChange={handleSearchInput}
                         placeholder="Search"
-                        className="flex-grow bg-transparent outline-none text-gray-200 placeholder-gray-200"
+                        className="flex-grow bg-transparent outline-none text-text"
                     />
-                        <BsSearch className="text-gray-200" />
+                        <BsSearch className="text-text" />
                     </div>
                 </div>
 
