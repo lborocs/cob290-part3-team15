@@ -136,4 +136,65 @@ router.put("/updateMessage",authenticateToken,(req,res) => {
     });
 });
 
+router.put("/hideMessage",authenticateToken,(req,res) => {
+    const query="UPDATE direct_messages SET isDeleted=1 WHERE MessageID=? AND Sender=?";
+    const id = req.user.userID;
+    const messageID= req.body.id;
+
+    //Stop bad inputs
+    if (isNaN(id) || isNaN(messageID)) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
+
+    const values = [messageID,id];
+    database.query(query, values, err => {
+        if (err) {
+            return res.status(500).json({ error: "Failed to hide message" });
+        }
+        //Get Target user ID
+        const getTargetQuery = "SELECT Recipient FROM direct_messages WHERE MessageID=? AND Sender=?";
+        database.query(getTargetQuery, [messageID,id], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: "Failed to retrieve target user" });
+            }
+            const targetID = results[0].Recipient;
+            alertMessage(targetID,id,"Message deleted","direct_messages");
+            alertMessage(id,targetID,"Message deleted","direct_messages");
+            alertEdit(id,targetID,messageID,"direct_messages","Message deleted");
+            return res.status(200).json({ success: true, message: "Message hidden successfully" });
+        });
+    });
+});
+
+
+router.get("/getMembers",authenticateToken,(req,res) => {
+    const id = req.user.userID;
+    const name =req.user.name+" (You)";
+    const target = req.query.target;
+
+    const self = [{id:id,name:name}]
+  
+    //Stop bad ID's 
+    if (isNaN(id) || isNaN(target)) {
+      return res.status(400).json({ error: "Bad request" });
+    }
+  
+    //Verify group membership
+    const query=`SELECT CONCAT(users.Forename,' ',users.Surname) as name, users.UserID as id FROM users WHERE UserID=?`
+    const values=[target]
+  
+    database.query(query, values, (err, results) => {
+      if (!err){
+        if (results.length < 1) {
+          return res.status(404).json({ error: "User Does Not Exist" });
+        }
+        const final = self.concat(results)
+        return res.status(200).json({ results: final });
+      }
+      else{
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+  });
+
 module.exports = router;

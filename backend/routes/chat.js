@@ -145,8 +145,8 @@ router.get("/getChats",authenticateToken,(req,res) => {
                     JOIN group_users gu ON gu.GroupID = g.GroupID
                     LEFT JOIN group_messages gm 
                         ON gm.GroupID = g.GroupID
-                        AND gm.Timestamp = (
-                            SELECT MAX(Timestamp)
+                        AND gm.MessageID = (
+                            SELECT MAX(MessageID)
                             FROM group_messages
                             WHERE GroupID = g.GroupID AND group_messages.isDeleted=0
                         )
@@ -169,6 +169,7 @@ router.get("/getChats",authenticateToken,(req,res) => {
 router.delete("/removeChat",authenticateToken,(req,res) => {
     var query ="";
     const id = req.user.userID;
+    const user = req.user.name;
     const target = req.body.target;
     const type = req.body.type;
     //Stop bad ID's 
@@ -192,26 +193,52 @@ router.delete("/removeChat",authenticateToken,(req,res) => {
         }
         case "group_messages":{
             //Filler
-            const groupSizeQuery=`SELECT COUNT(*) as count FROM group_users WHERE GroupID=?`;
-            database.query(groupSizeQuery, [target], (err, results) => {
+            const groupOwnershipQuery=`SELECT 1 FROM groups WHERE Owner=? AND GroupID=?`;
+            database.query(groupOwnershipQuery, [id,target], (err, results) => {
                 if (err) {
                     return res.status(500).json({ error: "Error checking group size" });
                 }
-                const groupSize = results[0].count;
-                if (groupSize <= 2) {
-                    // If the group size is 2 or less, the result would be 1 or less, so delete the group
-                    query=`DELETE FROM group_users WHERE GroupID=?`;
+                const groupSize = results.length
+                if (groupSize > 0 ) {
+                    // If there is a result, you're the owner; the group must be deleted
+                    query=`DELETE FROM groups WHERE GroupID=?`;
                     values=[target]
                 }
                 else{
                     query=`DELETE FROM group_users WHERE UserID=? AND GroupID=?`;
                 }
-                database.query(query, values, (err, results) => {
-                    if (!err) {
-                        return res.status(200).json({ success: "Succesfully Left Group" });
-                    } else {
-                        return res.status(400).json({ error: "Error leaving group" });
-                    }
+
+                //Get all group members to ping them for updates
+                const groupUserQuery = "SELECT UserID FROM group_users WHERE GroupID=?"
+                const groupUserQueryValues=[target]
+                database.query(groupUserQuery, groupUserQueryValues, (err, memberResults) => {
+                    if (err){return res.status(500).json({ error: "Failed to get users" });}
+                    else if (memberResults.length===0){return res.status(404).json({ error: "Group not found or has no members" })}
+                    database.query(query, values, (err, results) => {
+                        var systemQuery = "SELECT 1 FROM users WHERE UserID=?";
+                        var systemValues= [id]
+                        if (err) {return res.status(400).json({ error: "Error leaving group" });}
+                        else if (groupSize<1) {
+                            systemQuery = "INSERT INTO group_messages (Sender,GroupID,Content,isSystem) VALUES (?,?,?,?)";
+                            systemValues= [id,target,`${user} left the group`,true]
+                        }
+                        //Insert a system message
+                        database.query(systemQuery, systemValues, (err, results) => {
+                            if(err){return res.status(500).json({ error: "Failed to send system message" });}
+                            else{
+                                for (let i=0;i<memberResults.length;i++){
+                                const userID = memberResults[i].UserID;
+                                if(groupSize<1){
+                                    alertMessage(userID,target,`User Removal`,'group_messages',true);
+                                }
+                                else{
+                                    alertMessage(userID,target,`User Removal`,'group_messages',true,{target:userID,group:target});
+                                }
+                                }
+                                return res.status(200).json({ success: true, message: "User Removed" });
+                            }
+                        });
+                    })
                 });
             });
             break;
@@ -266,10 +293,49 @@ router.get("/getPeople",authenticateToken,(req,res) => {
     });
 });
 
+router.get("/getPeopleOutsideGroup",authenticateToken,(req,res) => {
+    const id = req.user.userID;
+    const group = req.query.group;
+    const filter = req.query.filter;
+
+    const query = `SELECT UserID as id, CONCAT(Forename, ' ', Surname) as name
+                FROM users
+                WHERE UserID != ?
+                ${filter ? 'AND LOWER(CONCAT(Forename, " ", Surname)) LIKE LOWER(?)' : ''}
+                    AND UserID NOT IN (
+                SELECT UserID FROM group_users WHERE GroupID = ?)
+                LIMIT 30`;
+
+
+    //Stop bad ID's 
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
+    }
+
+    const values = filter?[id,`%${filter}%`,group] : [id,group] ;
+
+    //Verify group membership
+    const membershipQuery=`SELECT 1 FROM group_users WHERE UserID=? AND GroupID=?`
+    const membershipValues=[id,group]
+    database.query(membershipQuery, membershipValues, (err, results) => {
+        if (err) {return res.status(500).json({ error: "Error verifying membership" });}
+        else{
+            database.query(query, values, (err, results) => {
+                if (err) {return res.status(500).json({ error: "Error verifying membership" });}
+                else{
+                    return res.status(200).json({ results: results });
+                }
+            });
+        }
+    })
+});
+
 router.post("/createGroup",authenticateToken,(req,res) => {
     const createGroup = "INSERT INTO groups (Name,Owner) VALUES (?,?)";
     const addUser = "INSERT INTO group_users (GroupID,UserID) VALUES (?,?)";
+    const addSelf = "INSERT INTO group_users (GroupID,UserID,LastRead) VALUES (?,?,NOW())";
     const id = req.user.userID;
+    const user = req.user.name
     const targets = req.body.targets;
     const name = req.body.name;
 
@@ -283,21 +349,27 @@ router.post("/createGroup",authenticateToken,(req,res) => {
         if (!err) {
             const groupId = result.insertId;
             const usersToAdd = [id, ...targets];
-
-            for (let i=usersToAdd.length-1; i>=0; i--) {
-                const target = usersToAdd[i];
-                //Add user to group_users table
-                const addUserValues = [groupId, target];
-                database.query(addUser, addUserValues, (err) => {
-                    if (err) {
-                        return res.status(500).json({ error: "Error adding user to group" });
+            const systemQuery = "INSERT INTO group_messages (Sender,GroupID,Content,isSystem) VALUES (?,?,?,?)";
+            const systemValues= [id,groupId,`${user} created this group`,true]
+            database.query(systemQuery, systemValues, (err, result) => {
+                if (!err) {
+                    for (let i=usersToAdd.length-1; i>=0; i--) {
+                        const target = usersToAdd[i];
+                        //Add user to group_users table
+                        const addUserValues = [groupId, target];
+                        database.query(i==0?addSelf:addUser, addUserValues, (err) => {
+                            if (err) {
+                                return res.status(500).json({ error: "Error adding user to group" });
+                            }
+                            alertMessage(target,groupId,`You have been added to ${name}`,'group_messages',false);
+                            if (i === 0) {
+                                return res.status(200).json({ success: "Group created successfully",id:groupId});
+                            }
+                        });
                     }
-                    alertMessage(target,groupId,`You have been added to ${name}`,'group_messages',true);
-                    if (i === 0) {
-                        return res.status(200).json({ success: "Group created successfully",id:groupId});
-                    }
-                });
-            }
+                }
+                else return res.status(500).json({ error: "Server rejected message" });
+            })
         }
         else return res.status(500).json({ error: "Server rejected message" });
     });
@@ -357,6 +429,57 @@ router.get("/getNotifications",authenticateToken,(req,res) => {
         res.send({results: totalUnread});
     });
 })
+
+router.get("/getName",authenticateToken,(req,res) => {
+    const id = req.user.userID;
+    const user = req.user.name;
+    const target = req.query.target;
+    const type = req.query.type;
+    //Stop bad ID's 
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "Error with login instance, please log back in!" });
+    }
+
+    
+    switch (type) {
+        case "direct_messages":{
+            const query="SELECT CONCAT(users.Forename,' ',users.Surname) as name FROM users WHERE users.UserID=?"
+            const values = [target];
+            database.query(query, values, (err, results) => {
+                if (err) {return res.status(500).json({ error: "Error getting user" });}
+                else{
+                    return res.status(200).json({ results: results });
+                }
+            });
+            break;
+        }
+        case "group_messages":{
+            const query="SELECT Name as name FROM groups WHERE GroupID=?"
+            const values=[target];
+            //Group Membership / Refresh information
+            const groupUserQuery = "SELECT 1 FROM group_users WHERE GroupID=?"
+
+            //Check If the user is allowed to see members
+            database.query(groupUserQuery, values, (err, results) =>{
+                if(err){return res.status(500).json({ error: "Error verifying group membership" });}
+                else if (results.length===0){return res.status(403).json({ error: "User is not a member of the group" });}
+                else{
+                    database.query(query, values, (err, results) =>{
+                        if(err){return res.status(500).json({ error: "Error getting group name" });}
+                        else{
+                            return res.status(200).json({ results: results });
+                        }
+                    })
+                }
+            })
+            break;
+        }
+        default:{
+            return res.status(400).json({ error: "Invalid request type!" });
+        }
+    }
+})
+
 
 
 module.exports = router;
