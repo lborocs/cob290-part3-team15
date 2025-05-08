@@ -195,8 +195,8 @@ router.get("/getProjectCardInfo",authenticateToken,(req,res) => {
 
 // Get the tasks on a given project or all tasks for the overview
 router.get("/getTasks",authenticateToken,(req,res) => {
-    let query = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.ProjectID as 'project', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline'
-                        FROM tasks as t`;
+    let query = `SELECT t.TaskID as 'id', t.Title as 'title', u.Forename AS 'assigneeForename', u.Surname AS 'assigneeSurname', t.ProjectID as 'project', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
+                        FROM tasks as t INNER JOIN users AS u ON t.AssigneeID = u.UserID`;
     let values = [];
 
     // Filter only tasks on projects led by this user for team leaders
