@@ -25,10 +25,8 @@ function Analytics({ user }) {
     // this will be for all projects a user is a team member of
     // we will use the size of the arry to determine if the user is a team leader
     const [ledProjects, setLedProjects] = useState([]);
-
-    const [employees, setEmployees] = useState([]);
-
     const [ledTasks, setLedTasks] = useState([]);
+    const [employees, setEmployees] = useState([]);
     const [personalTasks, setPersonalTasks] = useState([]);
 
 
@@ -167,6 +165,7 @@ function Analytics({ user }) {
                 {userRole === "Team Leader" || userRole === "Manager"? (
                     <>
                         <QuickStatistics
+                            userRole={userRole}
                             selectedProjectId={selectedProjectId}
                         />
 
@@ -180,10 +179,9 @@ function Analytics({ user }) {
                     </>
                 ) : (
                     <>
-                         <EmployeeQuickStatistics
-                            selectedProject={selectedProject}
-                            projects={projects}
-                            tasks={personalTasks}
+                        <QuickStatistics
+                            userRole={userRole}
+                            selectedProjectId={selectedProjectId}
                         />
 
                         <SearchBox

@@ -1,6 +1,7 @@
 import React from 'react'
 import QuickStatisticItem from "./QuickStatisticItem.jsx";
 
+// !! this component is currently unused
 function QuickStatistics({ selectedProject, projects, tasks }) {
 
     // Build the quick statistics
@@ -11,7 +12,7 @@ function QuickStatistics({ selectedProject, projects, tasks }) {
         const projectCount = projects.length;
         const projectCountStat = {
             id: 'overview-projects',
-            title: 'Projects',
+            title: 'Assigned Projects',
             value: projectCount,
         };
         statsArr.push(projectCountStat); 
@@ -20,7 +21,7 @@ function QuickStatistics({ selectedProject, projects, tasks }) {
         const taskCount = tasks.length;
         const taskCountStat = {
             id: 'overview-tasks',
-            title: 'Personal Tasks',
+            title: 'Assigned Tasks',
             value: taskCount,
         };
         statsArr.push(taskCountStat);

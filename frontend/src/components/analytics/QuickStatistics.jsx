@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react'
 import QuickStatisticItem from "./QuickStatisticItem.jsx";
 import axios from "axios";
 
-function QuickStatistics({ selectedProjectId }) {
+function QuickStatistics({ userRole, selectedProjectId }) {
 
     const [stats, setStats] = useState([]);
 
     // Get stats for the overview
-    const fetchOverviewStats = async() => {
+    const fetchProjectOverviewStats = async() => {
         try {
             const accessToken = localStorage.getItem('accessToken');
 
@@ -41,7 +41,7 @@ function QuickStatistics({ selectedProjectId }) {
     }
 
     // Get stats for a selected project
-    const fetchStats = async() => {
+    const fetchProjectStats = async() => {
         const accessToken = localStorage.getItem('accessToken');
 
         const response = await axios.get(`/api/analytics/projects/getQuickStatistics?projectId=${selectedProjectId}`, {
@@ -69,8 +69,42 @@ function QuickStatistics({ selectedProjectId }) {
         );
     }
 
+    // Get stats for the employee view
+    const fetchEmployeeOverviewStats = async() => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const response = await axios.get(`/api/analytics/employees/getOverviewQuickStatistics`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        setStats(
+            [
+                {
+                    id: 'overview-projects',
+                    title: 'Assigned Projects',
+                    value: response.data.results[0].projects,
+                },
+                {
+                    id: 'overview-tasks',
+                    title: 'Assigned Tasks',
+                    value: response.data.results[0].tasks,
+                },
+                {
+                    id: 'overdue-tasks',
+                    title: 'Tasks Overdue',
+                    value: response.data.results[0].overdue,
+                }
+            ]
+        )
+    }
+
     useEffect(() => {
-        selectedProjectId ? fetchStats() : fetchOverviewStats();
+        if (userRole === 'Employee') {
+            fetchEmployeeOverviewStats();
+        }
+        else {
+            selectedProjectId ? fetchProjectStats() : fetchProjectOverviewStats();
+        }
     }, [selectedProjectId]);
 
     return (
