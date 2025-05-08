@@ -1,4 +1,6 @@
 import {BsSend, BsX} from 'react-icons/bs';
+import { LuSendHorizontal } from "react-icons/lu";
+import { TbMinusVertical } from "react-icons/tb";
 import { useState,useRef, useEffect } from 'react';
 import axios from "axios";
 
@@ -72,9 +74,9 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
 
   return (
     <div className="max-w-[max(1550px,100%)] w-[min(1550px,100%)] bg-[#f2ede5]/80 px-5 lg:border-r-1 lg:border-l-1 pb-2 border-blackFaded self-center flex flex-col items-center">
-    <form className="w-[min(1550px,100%)] self-center flex flex-col items-center border border-black rounded-lg shadow-md bg-gray-500 focus-within:border-gray-400 transition" onSubmit={onSubmit}>
+    <form className="w-[min(1550px,100%)] self-center flex flex-col items-center border border-black rounded-lg shadow-md bg-accentWhite focus-within:border-gray-400 transition" onSubmit={onSubmit}>
         {editing && (
-          <span className="flex justify-between items-center max-w-[max(1550px,100%)] w-[min(1550px,100%)] self-center p-1 rounded-t-lg bg-black/30 text-white">
+          <span className="flex justify-between items-center max-w-[max(1550px,100%)] w-[min(1550px,100%)] self-center p-1 rounded-t-lg bg-black/5 text-text">
             <div className="flex truncate">
               <p className="font-light px-2">Editing Message:</p>
               <p className="font-bold truncate max-w-full overflow-hidden text-ellipsis whitespace-nowrap pr-5">{editingMessage.content}</p>
@@ -91,10 +93,11 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
           </span>
         )}
         <div className="flex max-w-[max(1550px,100%)] w-[min(1550px,100%)] p-2">
-        <input type="text" className= "flex-1 p-2 bg-transparent text-white focus:outline-none max-w-[calc(100%-36px)]" 
+        <input type="text" className= "flex-1 p-2 bg-transparent text-text focus:outline-none max-w-[calc(100%-36px)]" 
         autoComplete="off" id="message_box" ref={ref} value={message} onChange={(e) => handleMessageChange(e.target.value)} placeholder="Enter message"
         onKeyDown={(e) => {if (e.key === 'Enter') {e.preventDefault();onSubmit(e)}}}/>
-        <button type="submit" className="p-2 text-white rounded-full flex items-center" id="submit_message_button" onClick={onSubmit}><BsSend className="w-5 h-5 text-gray-300 hover:text-gray-400 transition-all"/></button>
+        <span className="flex items-center ">|</span>
+        <button type="submit" className="p-2 rounded-full flex items-center" id="submit_message_button" onClick={onSubmit}><LuSendHorizontal className="w-5 h-5 text-gray-400 hover:text-gray-500 transition-all"/></button>
         </div>
     </form>
   </div>
