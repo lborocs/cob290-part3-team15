@@ -318,19 +318,26 @@ router.delete("/removeMember",authenticateToken,(req,res) => {
           database.query(systemQuery, systemValues, (err, results) => {
             if(err){return res.status(500).json({ error: "Failed to send system message" });}
             else{
-              //Get all group members to ping them for updates
-              const groupUserQuery = "SELECT UserID FROM group_users WHERE GroupID=?"
-              const groupUserQueryValues=[group]
-              database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+              const groupRefreshQuery = "UPDATE groups SET LastUpdate=Now() WHERE GroupID=?"
+              const groupRefreshValues = [group]
+              database.query(groupRefreshQuery, groupRefreshValues, (err, results) => {
                 if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
-                else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
-                const resultsAndTarget=[{UserID:target},... results]
-                for (let i=0;i<resultsAndTarget.length;i++){
-                  const userID = resultsAndTarget[i].UserID;
-                  alertMessage(userID,group,`User Removal`,'group_messages',true,{target:target,group:group});
+                else{
+                  //Get all group members to ping them for updates
+                  const groupUserQuery = "SELECT UserID FROM group_users WHERE GroupID=?"
+                  const groupUserQueryValues=[group]
+                  database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+                    if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
+                    else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
+                    const resultsAndTarget=[{UserID:target},... results]
+                    for (let i=0;i<resultsAndTarget.length;i++){
+                      const userID = resultsAndTarget[i].UserID;
+                      alertMessage(userID,group,`User Removal`,'group_messages',true,{target:target,group:group});
+                    }
+                    return res.status(200).json({ success: true, message: "User Removed" });
+                  });
                 }
-                return res.status(200).json({ success: true, message: "User Removed" });
-              });
+              })
             }
           })
         }
@@ -381,18 +388,25 @@ router.post("/addMember",authenticateToken,(req,res) => {
           database.query(systemQuery, systemValues, (err, results) => {
             if(err){return res.status(500).json({ error: "Failed to send system message" });}
             else{
-              //Get all group members to ping them for updates
-              const groupUserQuery = "SELECT UserID,GroupID FROM group_users WHERE GroupID=?"
-              const groupUserQueryValues=[group]
-              database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+              const groupRefreshQuery = "UPDATE groups SET LastUpdate=Now() WHERE GroupID=?"
+              const groupRefreshValues = [group]
+              database.query(groupRefreshQuery, groupRefreshValues, (err, results) => {
                 if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
-                else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
-                for (let i=0;i<results.length;i++){
-                  const userID = results[i].UserID;
-                  alertMessage(userID,group,`New user Added`,'group_messages',true);
+                else{
+                  //Get all group members to ping them for updates
+                  const groupUserQuery = "SELECT UserID,GroupID FROM group_users WHERE GroupID=?"
+                  const groupUserQueryValues=[group]
+                  database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+                    if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
+                    else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
+                    for (let i=0;i<results.length;i++){
+                      const userID = results[i].UserID;
+                      alertMessage(userID,group,`New user Added`,'group_messages',true);
+                    }
+                    return res.status(200).json({ success: true, message: "User Added" });
+                  });
                 }
-                return res.status(200).json({ success: true, message: "User Added" });
-              });
+              })
             }
           })
         }
@@ -433,18 +447,25 @@ router.post("/updateName",authenticateToken,(req,res) => {
       database.query(systemQuery, systemValues, (err, results) => {
         if(err){return res.status(500).json({ error: "Failed to send system message" });}
         else{
-          //Get all group members to ping them for updates
-          const groupUserQuery = "SELECT UserID,GroupID FROM group_users WHERE GroupID=?"
-          const groupUserQueryValues=[group]
-          database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+          const groupRefreshQuery = "UPDATE groups SET LastUpdate=Now() WHERE GroupID=?"
+          const groupRefreshValues = [group]
+          database.query(groupRefreshQuery, groupRefreshValues, (err, results) => {
             if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
-            else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
-            for (let i=0;i<results.length;i++){
-              const userID = results[i].UserID;
-              alertMessage(userID,group,`Group Rename`,'group_messages',true);
+            else{
+              //Get all group members to ping them for updates
+              const groupUserQuery = "SELECT UserID,GroupID FROM group_users WHERE GroupID=?"
+              const groupUserQueryValues=[group]
+              database.query(groupUserQuery, groupUserQueryValues, (err, results) => {
+                if (err){return res.status(500).json({ error: "Failed to refresh correctly" });}
+                else if (results.length===0){return res.status(403).json({ error: "Group not found or has no members" })}
+                for (let i=0;i<results.length;i++){
+                  const userID = results[i].UserID;
+                  alertMessage(userID,group,`Group Rename`,'group_messages',true);
+                }
+                return res.status(200).json({ success: true, message: "Rename successful" });
+              });
             }
-            return res.status(200).json({ success: true, message: "Rename successful" });
-          });
+          })
         }
       })
     }
