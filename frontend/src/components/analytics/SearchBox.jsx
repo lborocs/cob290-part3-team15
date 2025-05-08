@@ -36,11 +36,10 @@ function SearchBox({ projects, onProjectSelect, selectedProject }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto p-1">
         {filteredProjects.length > 0 ? (
           filteredProjects.map(project => (
-            <ProjectCard 
-              key={project.id}
-              title={project.title}
-              description={project.description}
-              onClick={(passedProject=project) => onProjectSelect(passedProject)} // Accept an argument so we can deselect the project by clicking again
+            <ProjectCard
+              key={`card-${project.id}`}
+              id={project.id}
+              onClick={(id) => id ? onProjectSelect(projects.find(project => project.id === id)) : onProjectSelect({ title: 'Overview' })} // Accept an argument so we can deselect the project by clicking again
               isSelected={selectedProject?.title === project.title}
             />
           ))

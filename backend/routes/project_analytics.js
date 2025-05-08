@@ -120,6 +120,22 @@ router.get("/getTeamMembers",authenticateToken,(req,res) => {
 });
 
 
+// Get info for a project card
+router.get("/getProjectCardInfo",authenticateToken,(req,res) => {
+    const query = `SELECT Title as 'title', Description as 'description' FROM projects WHERE ProjectID = ?`;
+    const id = req.query.id;
+    if (!id) {
+        return res.status(400).send({ error: "Project ID is required" });
+    }
+
+    database.query(query, [id], (err, results) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching project card data"});
+        }
+
+        res.send({results: results});
+    });
+});
 
 // Get the tasks on all projects or all projects led by this user
 router.get("/getTasks",authenticateToken,(req,res) => {
