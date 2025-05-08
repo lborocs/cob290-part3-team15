@@ -166,10 +166,7 @@ function Analytics({ user }) {
                 {userRole === "Team Leader" || userRole === "Manager"? (
                     <>
                         <QuickStatistics
-                            selectedProject={selectedProject}
-                            projects={ledProjects}
-                            employees={employees}
-                            tasks={ledTasks}
+                            projectId={selectedProject.id}
                         />
 
                         <SearchBox
