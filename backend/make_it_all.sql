@@ -47,10 +47,10 @@ CREATE TABLE `active_chats` (
 
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
-INSERT INTO `active_chats` VALUES (1,2,'2025-05-03 14:38:48','2025-05-01 07:51:20');
-INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28','2025-04-21 17:32:07');
-INSERT INTO `active_chats` VALUES (2,1,'2025-05-03 14:38:48','2025-04-21 17:55:07');
-INSERT INTO `active_chats` VALUES (2,3,'2025-04-20 07:07:03','2025-04-21 17:55:08');
+INSERT INTO `active_chats` VALUES (1,2,'2025-05-07 11:06:10','2025-05-08 00:30:32');
+INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28','2025-05-07 15:40:45');
+INSERT INTO `active_chats` VALUES (2,1,'2025-05-06 19:11:05','2025-05-07 12:38:15');
+INSERT INTO `active_chats` VALUES (2,3,'2025-04-20 07:07:03','2025-05-06 19:18:43');
 INSERT INTO `active_chats` VALUES (3,1,'2025-04-20 00:02:28','2025-04-20 07:27:10');
 INSERT INTO `active_chats` VALUES (3,2,'2025-04-20 07:07:03','2025-04-20 07:27:08');
 /*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
@@ -102,7 +102,7 @@ CREATE TABLE `direct_messages` (
   KEY `Recipient` (`Recipient`),
   CONSTRAINT `Recipient` FOREIGN KEY (`Recipient`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,6 +132,7 @@ INSERT INTO `direct_messages` VALUES (20,1,2,'What are we testing again','2025-0
 INSERT INTO `direct_messages` VALUES (21,1,2,'I\'ve reported you for fraud btw.','2025-04-12 18:54:01',0,0);
 INSERT INTO `direct_messages` VALUES (22,2,1,'oh okay nvm ;-;','2025-04-12 18:54:58',0,0);
 INSERT INTO `direct_messages` VALUES (23,2,1,'hi','2025-04-20 06:06:24',0,0);
+INSERT INTO `direct_messages` VALUES (24,2,1,'love you','2025-05-06 19:11:05',0,0);
 /*!40000 ALTER TABLE `direct_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,12 +151,13 @@ CREATE TABLE `group_messages` (
   `Timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
   `isEdited` tinyint(1) NOT NULL DEFAULT 0,
   `isDeleted` tinyint(1) NOT NULL DEFAULT 0,
+  `isSystem` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`MessageID`),
   KEY `User is Sender` (`Sender`),
   KEY `Group is Group` (`GroupID`),
   CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,27 +166,62 @@ CREATE TABLE `group_messages` (
 
 LOCK TABLES `group_messages` WRITE;
 /*!40000 ALTER TABLE `group_messages` DISABLE KEYS */;
-INSERT INTO `group_messages` VALUES (1,2,1,'Guys, It\'s official. I\'m a hater','2025-03-27 19:44:55',0,0);
-INSERT INTO `group_messages` VALUES (2,2,1,'Welcome back guys','2025-04-11 21:33:11',0,0);
-INSERT INTO `group_messages` VALUES (3,1,1,'huh','2025-04-12 12:03:10',0,0);
-INSERT INTO `group_messages` VALUES (4,2,1,'refresh','2025-04-12 14:56:46',0,0);
-INSERT INTO `group_messages` VALUES (5,2,1,'test','2025-04-12 14:56:53',0,0);
-INSERT INTO `group_messages` VALUES (6,1,1,'bug','2025-04-12 15:00:19',0,0);
-INSERT INTO `group_messages` VALUES (7,1,1,'test','2025-04-12 15:01:30',0,0);
-INSERT INTO `group_messages` VALUES (8,1,1,'fixed?','2025-04-12 15:04:57',0,0);
-INSERT INTO `group_messages` VALUES (9,1,1,'fixed','2025-04-12 15:05:07',0,0);
-INSERT INTO `group_messages` VALUES (10,1,1,'okay it\'s fixed now','2025-04-12 15:05:10',0,0);
-INSERT INTO `group_messages` VALUES (11,1,1,'test','2025-04-12 16:34:56',0,0);
-INSERT INTO `group_messages` VALUES (12,1,1,'testerrr','2025-04-12 18:12:36',0,0);
-INSERT INTO `group_messages` VALUES (13,2,1,'fixed huh?','2025-04-12 18:53:22',0,0);
-INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here','2025-04-13 09:40:43',0,0);
-INSERT INTO `group_messages` VALUES (15,1,2,'Love it here','2025-04-20 00:01:36',0,0);
-INSERT INTO `group_messages` VALUES (16,1,2,'It\'s just so','2025-04-20 00:02:16',0,0);
-INSERT INTO `group_messages` VALUES (17,1,2,'Like cool','2025-04-20 00:02:24',0,0);
-INSERT INTO `group_messages` VALUES (18,1,2,'Sorry for spam','2025-04-20 00:28:48',0,0);
-INSERT INTO `group_messages` VALUES (19,1,3,'Does this work lol','2025-04-20 01:17:21',0,0);
-INSERT INTO `group_messages` VALUES (20,1,1,'Changed my mind about here','2025-04-20 01:52:59',1,0);
-INSERT INTO `group_messages` VALUES (21,4,2,'I don\'t even know who i am','2025-04-20 04:55:21',0,0);
+INSERT INTO `group_messages` VALUES (1,2,1,'Guys, It\'s official. I\'m a hater','2025-03-27 19:44:55',0,0,0);
+INSERT INTO `group_messages` VALUES (2,2,1,'Welcome back guys','2025-04-11 21:33:11',0,0,0);
+INSERT INTO `group_messages` VALUES (3,1,1,'huh','2025-04-12 12:03:10',0,0,0);
+INSERT INTO `group_messages` VALUES (4,2,1,'refresh','2025-04-12 14:56:46',0,0,0);
+INSERT INTO `group_messages` VALUES (5,2,1,'test','2025-04-12 14:56:53',0,0,0);
+INSERT INTO `group_messages` VALUES (6,1,1,'bug','2025-04-12 15:00:19',0,0,0);
+INSERT INTO `group_messages` VALUES (7,1,1,'test','2025-04-12 15:01:30',0,0,0);
+INSERT INTO `group_messages` VALUES (8,1,1,'fixed?','2025-04-12 15:04:57',0,0,0);
+INSERT INTO `group_messages` VALUES (9,1,1,'fixed','2025-04-12 15:05:07',0,0,0);
+INSERT INTO `group_messages` VALUES (10,1,1,'okay it\'s fixed now','2025-04-12 15:05:10',0,0,0);
+INSERT INTO `group_messages` VALUES (11,1,1,'test','2025-04-12 16:34:56',0,0,0);
+INSERT INTO `group_messages` VALUES (12,1,1,'testerrr','2025-04-12 18:12:36',0,0,0);
+INSERT INTO `group_messages` VALUES (13,2,1,'fixed huh?','2025-04-12 18:53:22',0,0,0);
+INSERT INTO `group_messages` VALUES (14,1,1,'Hate it here','2025-04-13 09:40:43',0,0,0);
+INSERT INTO `group_messages` VALUES (15,1,2,'Love it here','2025-04-20 00:01:36',0,0,0);
+INSERT INTO `group_messages` VALUES (16,1,2,'It\'s just so','2025-04-20 00:02:16',0,0,1);
+INSERT INTO `group_messages` VALUES (17,1,2,'Like cool','2025-04-20 00:02:24',0,0,0);
+INSERT INTO `group_messages` VALUES (18,1,2,'Sorry for spam','2025-04-20 00:28:48',0,0,0);
+INSERT INTO `group_messages` VALUES (19,1,3,'Does this work lol','2025-04-20 01:17:21',0,0,0);
+INSERT INTO `group_messages` VALUES (20,1,1,'Changed my mind about here','2025-04-20 01:52:59',1,0,0);
+INSERT INTO `group_messages` VALUES (21,4,2,'I don\'t even know who i am','2025-04-20 04:55:21',0,0,0);
+INSERT INTO `group_messages` VALUES (22,1,4,'FUCK ALL OF YOU','2025-05-06 19:18:43',0,0,0);
+INSERT INTO `group_messages` VALUES (23,1,5,'Test','2025-05-06 21:30:34',0,1,0);
+INSERT INTO `group_messages` VALUES (24,1,2,'Like if i send a message here','2025-05-07 11:13:39',0,0,0);
+INSERT INTO `group_messages` VALUES (25,1,5,'This is a system message','2025-05-07 11:57:36',0,0,1);
+INSERT INTO `group_messages` VALUES (26,1,13,'Mr Mime has created this group','2025-05-07 12:45:21',0,0,1);
+INSERT INTO `group_messages` VALUES (27,1,13,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 13:32:15',0,0,1);
+INSERT INTO `group_messages` VALUES (28,1,4,'Mr Mime removed John Smith from the group','2025-05-07 13:34:50',0,0,1);
+INSERT INTO `group_messages` VALUES (29,1,4,'Mr Mime removed Faker Realman from the group','2025-05-07 13:34:55',0,0,1);
+INSERT INTO `group_messages` VALUES (30,1,4,'Mr Mime removed Rokuro Thiri from the group','2025-05-07 13:34:58',0,0,1);
+INSERT INTO `group_messages` VALUES (31,1,4,'Mr Mime removed Ige Kapil from the group','2025-05-07 13:35:00',0,0,1);
+INSERT INTO `group_messages` VALUES (32,1,4,'Mr Mime removed Leutbert Custodio from the group','2025-05-07 13:35:01',0,0,1);
+INSERT INTO `group_messages` VALUES (33,1,4,'Mr Mime removed Gerhard Shukra from the group','2025-05-07 13:35:02',0,0,1);
+INSERT INTO `group_messages` VALUES (34,1,4,'Mr Mime removed Aylin Stacie from the group','2025-05-07 13:35:02',0,0,1);
+INSERT INTO `group_messages` VALUES (35,1,4,'Mr Mime removed Laurencia Kaya from the group','2025-05-07 13:35:23',0,0,1);
+INSERT INTO `group_messages` VALUES (36,1,4,'Mr Mime removed Alhassan Fareeha from the group','2025-05-07 13:35:26',0,0,1);
+INSERT INTO `group_messages` VALUES (37,1,4,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 13:35:28',0,0,1);
+INSERT INTO `group_messages` VALUES (38,1,5,'Mr Mime removed Faker Realman from the group','2025-05-07 15:08:53',0,0,1);
+INSERT INTO `group_messages` VALUES (39,1,5,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 15:08:54',0,0,1);
+INSERT INTO `group_messages` VALUES (40,1,7,'Mr Mime created this group','2025-05-07 16:00:48',0,0,1);
+INSERT INTO `group_messages` VALUES (41,1,7,'Mr Mime removed John Smith from the group','2025-05-07 16:00:51',0,0,1);
+INSERT INTO `group_messages` VALUES (42,1,7,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 16:00:52',0,0,1);
+INSERT INTO `group_messages` VALUES (43,1,7,'Mr Mime removed Faker Realman from the group','2025-05-07 16:00:52',0,0,1);
+INSERT INTO `group_messages` VALUES (44,1,7,'Mr Mime removed Rokuro Thiri from the group','2025-05-07 16:00:52',0,0,1);
+INSERT INTO `group_messages` VALUES (45,1,8,'Mr Mime created this group','2025-05-07 16:04:19',0,0,1);
+INSERT INTO `group_messages` VALUES (46,1,8,'Mr Mime removed Faker Realman from the group','2025-05-07 16:04:26',0,0,1);
+INSERT INTO `group_messages` VALUES (47,1,8,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 16:04:28',0,0,1);
+INSERT INTO `group_messages` VALUES (48,1,9,'Mr Mime created this group','2025-05-07 16:04:39',0,0,1);
+INSERT INTO `group_messages` VALUES (49,1,9,'Mr Mime removed Faker Realman from the group','2025-05-07 16:04:42',0,0,1);
+INSERT INTO `group_messages` VALUES (50,1,9,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 16:04:42',0,0,1);
+INSERT INTO `group_messages` VALUES (51,1,10,'Mr Mime created this group','2025-05-07 16:09:47',0,0,1);
+INSERT INTO `group_messages` VALUES (52,1,10,'Mr Mime removed John Smith from the group','2025-05-07 16:09:59',0,0,1);
+INSERT INTO `group_messages` VALUES (53,1,10,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 17:37:46',0,0,1);
+INSERT INTO `group_messages` VALUES (54,1,10,'Mr Mime removed Faker Realman from the group','2025-05-07 17:39:54',0,0,1);
+INSERT INTO `group_messages` VALUES (55,1,10,'Mr Mime renamed the group to New Group','2025-05-08 00:12:51',0,0,1);
+INSERT INTO `group_messages` VALUES (56,1,10,'asdsad','2025-05-08 00:13:13',0,0,0);
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -213,15 +250,26 @@ CREATE TABLE `group_users` (
 
 LOCK TABLES `group_users` WRITE;
 /*!40000 ALTER TABLE `group_users` DISABLE KEYS */;
-INSERT INTO `group_users` VALUES (1,1,'2025-05-01 07:51:23');
-INSERT INTO `group_users` VALUES (1,2,'2025-05-01 07:31:47');
-INSERT INTO `group_users` VALUES (1,3,'2025-05-01 07:51:19');
-INSERT INTO `group_users` VALUES (2,1,'2025-04-21 17:55:06');
-INSERT INTO `group_users` VALUES (2,2,'2025-04-21 17:55:04');
+INSERT INTO `group_users` VALUES (1,1,'2025-05-08 00:19:36');
+INSERT INTO `group_users` VALUES (1,2,'2025-05-08 00:19:34');
+INSERT INTO `group_users` VALUES (1,3,'2025-05-07 15:40:42');
+INSERT INTO `group_users` VALUES (1,4,'2025-05-08 00:19:36');
+INSERT INTO `group_users` VALUES (1,5,'2025-05-08 00:19:34');
+INSERT INTO `group_users` VALUES (1,10,'2025-05-08 00:19:35');
+INSERT INTO `group_users` VALUES (2,1,'2025-05-07 11:57:07');
+INSERT INTO `group_users` VALUES (2,2,'2025-05-07 18:09:30');
 INSERT INTO `group_users` VALUES (2,3,'2025-04-21 17:55:05');
+INSERT INTO `group_users` VALUES (2,5,'2025-05-07 18:09:31');
 INSERT INTO `group_users` VALUES (3,1,'2025-04-20 07:27:11');
-INSERT INTO `group_users` VALUES (4,2,NULL);
-INSERT INTO `group_users` VALUES (4,3,NULL);
+INSERT INTO `group_users` VALUES (4,2,'2025-05-06 21:09:49');
+INSERT INTO `group_users` VALUES (4,3,'2025-05-06 21:09:50');
+INSERT INTO `group_users` VALUES (5,10,NULL);
+INSERT INTO `group_users` VALUES (6,10,NULL);
+INSERT INTO `group_users` VALUES (7,10,NULL);
+INSERT INTO `group_users` VALUES (8,10,NULL);
+INSERT INTO `group_users` VALUES (9,10,NULL);
+INSERT INTO `group_users` VALUES (10,10,NULL);
+INSERT INTO `group_users` VALUES (11,10,NULL);
 /*!40000 ALTER TABLE `group_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,7 +288,7 @@ CREATE TABLE `groups` (
   PRIMARY KEY (`GroupID`),
   KEY `Group Owner` (`Owner`),
   CONSTRAINT `Group Owner` FOREIGN KEY (`Owner`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,8 +298,15 @@ CREATE TABLE `groups` (
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
 INSERT INTO `groups` VALUES (1,'The Haters',2,'2025-05-03 15:01:06');
-INSERT INTO `groups` VALUES (2,'The Lovers',3,'2025-04-20 04:55:21');
+INSERT INTO `groups` VALUES (2,'The Lovers',4,'2025-05-07 11:13:39');
 INSERT INTO `groups` VALUES (3,'New Group!',1,'2025-04-20 06:44:03');
+INSERT INTO `groups` VALUES (4,'New Group!',1,'2025-05-06 19:18:43');
+INSERT INTO `groups` VALUES (5,'Test',1,'2025-05-07 11:57:36');
+INSERT INTO `groups` VALUES (6,'New Group',1,'2025-05-07 12:45:21');
+INSERT INTO `groups` VALUES (7,'New Group',1,'2025-05-07 16:00:48');
+INSERT INTO `groups` VALUES (8,'New Group',1,'2025-05-07 16:04:19');
+INSERT INTO `groups` VALUES (9,'New Group',1,'2025-05-07 16:04:39');
+INSERT INTO `groups` VALUES (10,'New Group',1,'2025-05-08 00:13:13');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -404,7 +459,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee',NULL,'ABC123BCA!!!','Online','Online');
 INSERT INTO `users` VALUES (2,'John','Smith','Manager',NULL,'ABC123BCA!!!','Offline','Online');
 INSERT INTO `users` VALUES (3,'Bill','Bloomstick','Employee',NULL,'ABC123BCA!!!','Offline','Online');
 INSERT INTO `users` VALUES (4,'Faker','Realman','Employee',NULL,'12A','Offline','Online');
@@ -427,4 +482,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-06 18:37:13
+-- Dump completed on 2025-05-08  1:33:46
