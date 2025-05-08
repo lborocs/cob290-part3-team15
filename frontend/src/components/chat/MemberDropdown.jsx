@@ -63,7 +63,7 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,userID,re
         <>
         <div
         className="w-auto absolute bg-backgroundOrange rounded-lg p-2 z-30 border border-accentOrange" {...(refs?.setFloating ? { ref: refs.setFloating } : {})} {...(floatingStyles ? { style: floatingStyles } : {})}>
-            <div className="px-1 font-bold text-lg text-left">Members</div>
+            <div className="px-1 font-bold text-lg text-left select-none">Members</div>
             {/* Goes through each item in the list and maps items to a key value*/}
             <div className=" w-full max-h-45 overflow-y-auto">
                 {items.map((item, index) => {

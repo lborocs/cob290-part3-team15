@@ -26,8 +26,8 @@ function RenameModal({ open, chatID, onClose, refs, floatingStyles, chatName,sel
                 <h3 className="px-2 text-2xl font-bold text-text mb-3 text-left w-full select-none">Rename this chat</h3>
                 <input className="w-full px-4 py-2 mb-2 border bg-white border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={newChatName} placeholder="Enter chat name" type="text" onChange={(e) => setNewChatName(e.target.value)}></input>
                 <div className="flex justify-end space-x-4">
-                    <button className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full" onClick={onClose}>Cancel</button>
-                    <button className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full" onClick={handleRename}>Confirm</button>
+                    <button className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full select-none" onClick={onClose}>Cancel</button>
+                    <button className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full select-none" onClick={handleRename}>Confirm</button>
                 </div>
             </div>
         </Modal>

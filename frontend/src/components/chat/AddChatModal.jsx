@@ -220,7 +220,7 @@ function AddChatModal({ open, onClose, setSelectedID,setMode }) {
                 </div>
             </div>
             <div className="flex items-center justify-center w-full">  
-                <button onClick={() => setIsGroupMode(true)} className=" w-[40%] mt-4 px-2 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg">
+                <button onClick={() => setIsGroupMode(true)} className=" w-[40%] mt-4 px-2 py-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg select-none">
                     Create group
                 </button>
             </div>
@@ -303,13 +303,13 @@ function AddChatModal({ open, onClose, setSelectedID,setMode }) {
                 <div className="flex justify-start w-[40%]">
                     <button
                         onClick={() => setIsGroupMode(false)} // Switch back to DM layer
-                        className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full"
+                        className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full select-none"
                     >
                         Back
                     </button>
                 </div>
                 <div className="flex justify-end w-[40%]">  
-                    <button onClick={handleSubmit} className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full">
+                    <button onClick={handleSubmit} className="mt-4 py-2 px-2 bg-orangeHover shadow-sm text-black font-bold rounded-lg w-full select-none">
                         {selectedPeople.filter(p => p.isSelected).length > 1 ? "Create Group" : "Start Chat"}
                     </button>
                 </div>

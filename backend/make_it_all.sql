@@ -157,7 +157,7 @@ CREATE TABLE `group_messages` (
   KEY `Group is Group` (`GroupID`),
   CONSTRAINT `Group is Group` FOREIGN KEY (`GroupID`) REFERENCES `groups` (`GroupID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `User is Sender` FOREIGN KEY (`Sender`) REFERENCES `users` (`UserID`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,6 +220,8 @@ INSERT INTO `group_messages` VALUES (51,1,10,'Mr Mime created this group','2025-
 INSERT INTO `group_messages` VALUES (52,1,10,'Mr Mime removed John Smith from the group','2025-05-07 16:09:59',0,0,1);
 INSERT INTO `group_messages` VALUES (53,1,10,'Mr Mime removed Bill Bloomstick from the group','2025-05-07 17:37:46',0,0,1);
 INSERT INTO `group_messages` VALUES (54,1,10,'Mr Mime removed Faker Realman from the group','2025-05-07 17:39:54',0,0,1);
+INSERT INTO `group_messages` VALUES (55,1,10,'Mr Mime renamed the group to New Group','2025-05-08 00:12:51',0,0,1);
+INSERT INTO `group_messages` VALUES (56,1,10,'asdsad','2025-05-08 00:13:13',0,0,0);
 /*!40000 ALTER TABLE `group_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -249,11 +251,11 @@ CREATE TABLE `group_users` (
 LOCK TABLES `group_users` WRITE;
 /*!40000 ALTER TABLE `group_users` DISABLE KEYS */;
 INSERT INTO `group_users` VALUES (1,1,'2025-05-07 18:57:20');
-INSERT INTO `group_users` VALUES (1,2,'2025-05-07 16:10:34');
+INSERT INTO `group_users` VALUES (1,2,'2025-05-08 00:07:59');
 INSERT INTO `group_users` VALUES (1,3,'2025-05-07 15:40:42');
 INSERT INTO `group_users` VALUES (1,4,'2025-05-07 15:53:31');
-INSERT INTO `group_users` VALUES (1,5,'2025-05-07 18:57:23');
-INSERT INTO `group_users` VALUES (1,10,'2025-05-07 20:00:52');
+INSERT INTO `group_users` VALUES (1,5,'2025-05-08 00:07:58');
+INSERT INTO `group_users` VALUES (1,10,'2025-05-08 00:14:53');
 INSERT INTO `group_users` VALUES (2,1,'2025-05-07 11:57:07');
 INSERT INTO `group_users` VALUES (2,2,'2025-05-07 18:09:30');
 INSERT INTO `group_users` VALUES (2,3,'2025-04-21 17:55:05');
@@ -304,7 +306,7 @@ INSERT INTO `groups` VALUES (6,'New Group',1,'2025-05-07 12:45:21');
 INSERT INTO `groups` VALUES (7,'New Group',1,'2025-05-07 16:00:48');
 INSERT INTO `groups` VALUES (8,'New Group',1,'2025-05-07 16:04:19');
 INSERT INTO `groups` VALUES (9,'New Group',1,'2025-05-07 16:04:39');
-INSERT INTO `groups` VALUES (10,'New Group',1,'2025-05-07 16:09:47');
+INSERT INTO `groups` VALUES (10,'New Group',1,'2025-05-08 00:13:13');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,4 +482,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-07 21:02:07
+-- Dump completed on 2025-05-08  1:17:05
