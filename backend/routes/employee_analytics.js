@@ -6,6 +6,21 @@ const {authenticateToken} = require("../exports/authenticate");
 router.use(express.json()) // for parsing 'application/json'
 
 
+// Get overview quick stats
+router.get("/getOverviewQuickStatistics",authenticateToken,(req,res) => {
+    const query = `SELECT
+                            (SELECT COUNT(ProjectID) FROM project_users WHERE UserID = ?) as 'projects',
+                            (SELECT COUNT(TaskID) FROM tasks WHERE AssigneeID = ?) as 'tasks',
+                            (SELECT COUNT(TaskID) FROM tasks WHERE AssigneeID = ? AND DATEDIFF(CURDATE(), Deadline)>0) as 'overdue'`;
+
+    database.query(query, [req.user.userID, req.user.userID, req.user.userID], (err, results) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching overview quick statistics"});
+        }
+
+        res.send({results: results});
+    });
+});
 
 // TODO unused
 // Get all tasks assigned to a user
