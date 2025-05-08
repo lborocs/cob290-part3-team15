@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PieChart from './charts/PieChart.jsx';
-import BarChart from './charts/BarChart.jsx';
+import TaskAllocationBarChart from './charts/TaskAllocationBarChart.jsx';
 import HorizontalBarChart from './charts/HorizontalBarChart.jsx';
 import LineChart from './charts/LineChart.jsx';
 import EmployeeHoursChart from './charts/EmployeeHoursChart.jsx';

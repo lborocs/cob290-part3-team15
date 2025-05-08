@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PieChart from './charts/PieChart.jsx';
-import BarChart from './charts/BarChart.jsx';
+import TaskAllocationBarChart from './charts/TaskAllocationBarChart.jsx';
 import HorizontalBarChart from './charts/HorizontalBarChart.jsx';
 import LineChart from './charts/LineChart.jsx';
 import EmployeeHoursChart from './charts/EmployeeHoursChart.jsx';
 import EmployeeProjectsChart from './charts/EmployeeProjectsChart.jsx';
+import TopContributorsBarChart from "./charts/TopContributorsBarChart.jsx";
 
 // Dummy data for the charts
 const dummyData = {
@@ -38,7 +39,7 @@ function StatisticsFieldCarousel({ selectedProject }) {
       endpoint: '/api/analytics/projects/getTaskCompletionStatus',
       component: PieChart,
     },
-    {
+    /* {
       type: 'employee-hours',
       title: 'My Weekly Hours',
       description: 'My hours worked in the past 4 weeks',
@@ -49,27 +50,27 @@ function StatisticsFieldCarousel({ selectedProject }) {
       title: 'My Project Contributions',
       description: 'Tasks I contributed to by project',
       component: EmployeeProjectsChart,
-    },
+    }, */
     {
-      type: 'line',
-      title: 'Hours Worked by Member',
+      type: 'project-contributors',
+      title: 'Top Contributors',
       description: 'Total hours worked by each team member',
-      endpoint: '/api/analytics/projects/getUserWeeklyHours',
-      component: LineChart,
+      endpoint: '/api/analytics/projects/getTopContributors',
+      component: TopContributorsBarChart,
     },
     {
       type: 'bar',
       title: 'Task Allocation by User',
       description: 'Number of tasks assigned to each team member',
       endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
-      component: BarChart,
+      component: TaskAllocationBarChart,
     },
-    {
+    /* {
       type: 'horizontal-bar',
       title: 'Task Completion Efficiency',
       description: 'Tasks completed vs assigned by user',
       component: HorizontalBarChart,
-    }
+    } */
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -102,10 +103,10 @@ function StatisticsFieldCarousel({ selectedProject }) {
               tasksCompleted: item.tasksCompleted,
             }));
             setChartData(formattedData);
-          } else if (currentChart.type === 'line') {
-            // Format data for the line chart
+          } else if (currentChart.type === 'project-contributors') {
+            // Format data for the contributors chart
             const formattedData = response.data.map((item) => ({
-              employee: item.employee,
+              name: `${item.forename} ${item.surname}`,
               hours: item.hours,
             }));
             setChartData(formattedData);

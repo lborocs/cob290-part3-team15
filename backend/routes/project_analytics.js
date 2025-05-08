@@ -129,6 +129,27 @@ router.get("/getUserWeeklyHours",authenticateToken,(req,res) => {
 
 
 
+// Get the top 5 employees who have contributed the most hours on this project
+router.get("/getTopContributors",authenticateToken,(req,res) => {
+    const query=`SELECT
+                        u.Forename as 'forename', u.Surname as 'surname',
+                        SUM(CASE WHEN t.Status = 'Completed' THEN t.HoursRequired ELSE 0 END) AS hours
+                    FROM users as u INNER JOIN tasks as t on u.UserID = t.AssigneeID
+                    WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID = u.UserID and pu.ProjectID = ?)
+                    GROUP BY u.UserID
+                    ORDER BY hours DESC`;
+    const projectId = req.query.projectId;
+
+    database.query(query, [projectId], (err, results) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching top contributors" });
+        }
+        res.send(results);
+    });
+});
+
+
+
 // TODO unused - for timeline graph
 // Get the hours of work completed on a project x weeks ago
 router.get("/getProjectWeeklyHours",authenticateToken,(req,res) => {
