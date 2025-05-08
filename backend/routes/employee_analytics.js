@@ -6,6 +6,21 @@ const {authenticateToken} = require("../exports/authenticate");
 router.use(express.json()) // for parsing 'application/json'
 
 
+// Check if an employee leads any projects
+router.get("/getIsLeader",authenticateToken,(req,res) => {
+    const query = `SELECT
+                            EXISTS (SELECT ProjectID FROM projects WHERE LeaderID = ?) AS 'isLeader'`;
+
+    database.query(query, [req.user.userID], (err, results) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching leader status"});
+        }
+
+        res.send({result: results[0]});
+    });
+});
+
+
 // Get overview quick stats
 router.get("/getOverviewQuickStatistics",authenticateToken,(req,res) => {
     const query = `SELECT

@@ -1,4 +1,4 @@
-import React, {use, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import Auth from "../components/login/Auth.jsx";
 import Navbar from '../components/navigation/Navbar.jsx';
@@ -14,86 +14,35 @@ import StatisticsField from "../components/analytics/StatisticsField.jsx";
 function Analytics({ user }) {
     const navigate = useNavigate();
     const selectable = false;
-    const [userRole, setUserRole] = useState(user.role);
     const activeTab = "Analytics";
+    const [isLeader, setIsLeader] = useState(false);
+    const [userRole, setUserRole] = useState(user.role);
     const [personalStatus, setPersonalStatus] = useState("Offline");
-    const [selectedProject, setSelectedProject] = useState({ title: 'Overview' });
     const [selectedProjectId, setSelectedProjectId] = useState(null);
-
-    // this will be for all projects a user is on
-    const [projects, setProjects] = useState([]);
-    // this will be for all projects a user is a team member of
-    // we will use the size of the arry to determine if the user is a team leader
-    const [ledProjects, setLedProjects] = useState([]);
-    const [ledTasks, setLedTasks] = useState([]);
-    const [employees, setEmployees] = useState([]);
-    const [personalTasks, setPersonalTasks] = useState([]);
+    const [selectedProjectTitle, setSelectedProjectTitle] = useState("Overview");
 
 
-    // Fetch all project-side data to be displayed
-    const fetchData = async() => {
+    // Check if the user leads any projects
+    const isUserLeader = async() => {
         try {
             const accessToken = localStorage.getItem('accessToken');
 
-            // all projects this user is on
-            const responseProjects = await axios.get(`/api/analytics/projects/getProjects`, {
-                headers: { Authorization: `Bearer ${accessToken}` },
-            });
-
-            if (responseProjects?.data?.projects.length > 0) {
-                setProjects(responseProjects.data.projects);
-            }
-
             // projects led by this user
-            const responseLedProjects = await axios.get(`/api/analytics/projects/getProjectsByLeader`, {
+            const response = await axios.get(`/api/analytics/employees/getIsLeader`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
             });
 
-            if (responseLedProjects?.data?.projects.length > 0) {
-                setLedProjects(responseLedProjects.data.projects);
-                // if the user is a team leader, set the selected project to the first led project
-                console.log("Led projects:", responseLedProjects.data.projects);
-            }
-
-            // Get all employees/ all employees on led projects
-            const responseEmployees = await axios.get(`/api/analytics/projects/getTeamMembers`, {
-                headers: { Authorization: `Bearer ${accessToken}` },
-            });
-
-            if (responseEmployees?.data?.employees) {
-                setEmployees(responseEmployees.data.employees);
-                console.log("Employees:", responseEmployees.data.employees);    
-            }
-
-            // get all tasks all tasks on led projects if manager all projects
-            const responseTasks = await axios.get(`/api/analytics/projects/getTasks`, {
-                headers: { Authorization: `Bearer ${accessToken}` },        
-            });
-
-            if (responseTasks?.data?.tasks) {
-                setLedTasks(responseTasks.data.tasks);
-            }
-
-            // get personal tasks for the employee side
-            const responsePersonalTasks = await axios.get(`/api/analytics/employees/getUserTasks`, {
-                headers: { Authorization: `Bearer ${accessToken}` },
-            });
-
-            if (responsePersonalTasks?.data?.results) {
-                setPersonalTasks(responsePersonalTasks.data.results);
-            }
-
+            setIsLeader(response?.data?.result.isLeader);
         }
         catch (error) {
-            console.error("Error fetching data:", error);
+            console.error("Error fetching leadership status:", error);
         }
     }
 
     useEffect(() => {
-        fetchData();
-    }, [selectedProject, user]);
+        // Check if the user is a team leader on load
+        isUserLeader();
 
-    useEffect(() => {
         connectSocket();
         const socket = getSocket();
         if (socket) {
@@ -107,6 +56,11 @@ function Analytics({ user }) {
             disconnectSocket();
         };
     }, [user.userID]);
+
+    const updateSelectedProject = (id, title) => {
+        setSelectedProjectId(id);
+        setSelectedProjectTitle(title);
+    }
 
     return (
         <div className="flex h-screen w-screen">
@@ -122,7 +76,7 @@ function Analytics({ user }) {
                 <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
                     <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
                     <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>
-                    { userRole !== "Manager" && ledProjects.length > 0 && (
+                    { isLeader ? (
                         <div className="flex items-center mt-4">
                             <div className="flex border-2 border-accentOrange rounded-full overflow-hidden">
                                 <button
@@ -147,14 +101,14 @@ function Analytics({ user }) {
                                 </button>
                             </div>
                         </div>
-                    )}
+                    ) : null}
                 </div>
 
                 <div className="lg:col-span-4 lg:row-start-1 lg:col-start-6 w-full self-end text-start text-2xl font-bold test-text flex items-center justify-between">
-                    <span className={"py-1 pr-2"}>{selectedProject?.title || 'Overview'}</span>
-                    {selectedProject?.title !== 'Overview' && (
+                    <span className={"py-1 pr-2"}>{selectedProjectTitle}</span>
+                    {selectedProjectTitle !== 'Overview' && (
                         <button
-                            onClick={() => setSelectedProject({ title: 'Overview' })}
+                            onClick={() => updateSelectedProject(null, "Overview")}
                             className="px-2 py-1 bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
                         >
                             Back to Overview
@@ -162,41 +116,21 @@ function Analytics({ user }) {
                     )}
                 </div>
 
-                {userRole === "Team Leader" || userRole === "Manager"? (
-                    <>
-                        <QuickStatistics
-                            userRole={userRole}
-                            selectedProjectId={selectedProjectId}
-                        />
+                <QuickStatistics
+                    userRole={userRole}
+                    selectedProjectId={selectedProjectId}
+                />
 
-                        <SearchBox
-                            userRole={userRole}
-                            onProjectSelect={setSelectedProjectId}
-                        />
+                <SearchBox
+                    userRole={userRole}
+                    onProjectSelect={(id, title) => updateSelectedProject(id, title)}
+                    selectedProjectId={selectedProjectId}
+                />
 
-                        <StatisticsField
-                            selectedProjectId={selectedProjectId}
-                        />
-                    </>
-                ) : (
-                    <>
-                        <QuickStatistics
-                            userRole={userRole}
-                            selectedProjectId={selectedProjectId}
-                        />
-
-                        <SearchBox
-                            userRole={userRole}
-                            onProjectSelect={setSelectedProject}
-                        />
-
-                        <EmployeeStatisticsField
-                            selectedProject={selectedProject}
-                            tasks={personalTasks}
-                            employees={employees}
-                        />
-                    </>
-                )}
+                <StatisticsField
+                    userRole={userRole}
+                    selectedProjectId={selectedProjectId}
+                />
             </div>
         </div>
     )

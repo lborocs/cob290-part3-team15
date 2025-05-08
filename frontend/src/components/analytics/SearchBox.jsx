@@ -4,9 +4,8 @@ import ProjectCard from './ProjectCard';
 import { FiSearch } from 'react-icons/fi';
 import axios from "axios";
 
-function SearchBox({ userRole, onProjectSelect }) {
+function SearchBox({ userRole, onProjectSelect, selectedProjectId }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [projects, setProjects] = useState([]);
 
   // get projects led by this user
@@ -37,10 +36,9 @@ function SearchBox({ userRole, onProjectSelect }) {
     getProjectList();
   }, [userRole]);
 
-  const onSelect = (id) => {
-    setSelectedProjectId(id)
+  const onSelect = (id, title) => {
     // Set the selected project on the parent component using callback
-    id ? onProjectSelect(id) : onProjectSelect(null);
+    id === selectedProjectId ? onProjectSelect(null, "Overview") : onProjectSelect(id, title);
   }
 
   const filteredProjects = projects.filter(project =>
@@ -76,7 +74,7 @@ function SearchBox({ userRole, onProjectSelect }) {
             <ProjectCard
               key={`card-${project.id}`}
               id={project.id}
-              onClick={onSelect} // Accept an argument so we can deselect the project by clicking again
+              onClick={() => onSelect(project.id, project.title)}
               isSelected={selectedProjectId === project.id}
             />
           ))

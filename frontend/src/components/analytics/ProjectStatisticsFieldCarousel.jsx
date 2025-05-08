@@ -29,7 +29,7 @@ const dummyData = {
   ]
 };
 
-function StatisticsFieldCarousel({ selectedProjectId }) {
+function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
 
   const chartConfig = [
     {
@@ -172,4 +172,4 @@ function StatisticsFieldCarousel({ selectedProjectId }) {
   );
 }
 
-export default StatisticsFieldCarousel;
+export default ProjectStatisticsFieldCarousel;
