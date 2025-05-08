@@ -74,15 +74,15 @@ function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMe
 
   return (
     <div className="max-w-[max(1550px,100%)] w-[min(1550px,100%)] bg-[#f2ede5]/80 px-5 lg:border-r-1 lg:border-l-1 pb-2 border-blackFaded self-center flex flex-col items-center">
-    <form className="w-[min(1550px,100%)] self-center flex flex-col items-center border border-black rounded-lg shadow-md bg-accentWhite focus-within:border-gray-400 transition" onSubmit={onSubmit}>
+    <form className="w-[min(1550px,100%)] self-center flex flex-col items-center border border-gray-400 rounded-lg shadow-md bg-accentWhite focus-within:border-gray-400 transition" onSubmit={onSubmit}>
         {editing && (
-          <span className="flex justify-between items-center max-w-[max(1550px,100%)] w-[min(1550px,100%)] self-center p-1 rounded-t-lg bg-black/5 text-text">
+          <span className="flex justify-between items-center max-w-[max(1550px,100%)] w-[min(1550px,100%)] self-center p-1 rounded-t-lg bg-black/5">
             <div className="flex truncate">
-              <p className="font-light px-2">Editing Message:</p>
-              <p className="font-bold truncate max-w-full overflow-hidden text-ellipsis whitespace-nowrap pr-5">{editingMessage.content}</p>
+              <p className="font-light px-2 text-text">Editing Message:</p>
+              <p className="font-bold truncate max-w-full overflow-hidden text-ellipsis whitespace-nowrap pr-5 text-text">{editingMessage.content}</p>
             </div>
             <button
-                className="mr-2 text-white hover:text-red-700"
+                className="mr-2 text-text hover:text-red-700"
                 onClick={() => {
                     setEditing(false);
                     setEditingMessage(null);
