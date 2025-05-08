@@ -69,11 +69,10 @@ function EmployeeStatisticsFieldCarousel({ selectedProject }) {
           return;
         }
           const accessToken = localStorage.getItem('accessToken');
-          const response = await axios.get(currentChart.endpoint, {
-              params: { projectId: selectedProject.id },
-              headers: { Authorization: `Bearer ${accessToken}` },
+          const url = `${currentChart.endpoint}?projectId=${encodeURIComponent(selectedProject.id)}`;
+          const response = await axios.get(url, {
+            headers: { Authorization: `Bearer ${accessToken}` },
           });
-
           console.log(`Response for ${currentChart.title}:`, response.data);
 
           // Format data for the bar chart
