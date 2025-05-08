@@ -170,9 +170,7 @@ function Analytics({ user }) {
                         />
 
                         <SearchBox
-                            projects={ledProjects}
                             onProjectSelect={setSelectedProject}
-                            selectedProject={selectedProject}
                         />
 
                         <StatisticsField
@@ -190,9 +188,7 @@ function Analytics({ user }) {
                         />
 
                         <SearchBox
-                            projects={projects}
                             onProjectSelect={setSelectedProject}
-                            selectedProject={selectedProject}
                         />
 
                         <EmployeeStatisticsField

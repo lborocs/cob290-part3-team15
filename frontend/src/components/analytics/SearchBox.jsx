@@ -1,14 +1,45 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useState } from 'react';
 import ProjectCard from './ProjectCard';
 import { FiSearch } from 'react-icons/fi';
+import axios from "axios";
 
-function SearchBox({ projects, onProjectSelect, selectedProject }) {
+function SearchBox({ onProjectSelect }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [projects, setProjects] = useState([]);
+
+  // get projects led by this user
+  const getProjectList = async() => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+
+      const responseLedProjects = await axios.get(`/api/analytics/projects/getProjectsByLeader`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (responseLedProjects?.data?.projects.length > 0) {
+        setProjects(responseLedProjects.data.projects);
+      }
+    }
+    catch (error) {
+      console.error("Error fetching search box data:", error);
+    }
+  }
+
+  useEffect(() => {
+    getProjectList();
+  });
+
+  const onSelect = (id) => {
+    setSelectedProjectId(id)
+    // Set the selected project on the parent component using callback
+    id ? onProjectSelect(projects.find(project => project.id === id)) : onProjectSelect({ title: 'Overview' });
+  }
 
   const filteredProjects = projects.filter(project =>
-    project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project.description.toLowerCase().includes(searchTerm.toLowerCase())
+      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -39,8 +70,8 @@ function SearchBox({ projects, onProjectSelect, selectedProject }) {
             <ProjectCard
               key={`card-${project.id}`}
               id={project.id}
-              onClick={(id) => id ? onProjectSelect(projects.find(project => project.id === id)) : onProjectSelect({ title: 'Overview' })} // Accept an argument so we can deselect the project by clicking again
-              isSelected={selectedProject?.title === project.title}
+              onClick={onSelect} // Accept an argument so we can deselect the project by clicking again
+              isSelected={selectedProjectId === project.id}
             />
           ))
         ) : (
