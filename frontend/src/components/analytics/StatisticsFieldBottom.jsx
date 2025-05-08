@@ -3,29 +3,48 @@ import { faker } from '@faker-js/faker';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { FiSearch, FiUsers, FiX } from 'react-icons/fi';
+import axios from "axios";
 
-function StatisticsFieldBottom({ employees, tasks }) {
+function StatisticsFieldBottom({ selectedProjectId }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalOpacity, setModalOpacity] = useState(0);
+  const [employees, setEmployees] = useState([]);
+
+  const fetchMemberList = async() => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+
+      const endpoint = selectedProjectId ? `/api/analytics/projects/getProjectTeamMembers?id=${selectedProjectId}`
+                                                : `/api/analytics/projects/getOverviewTeamMembers`;
+
+      const responseMembers = await axios.get(endpoint, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      console.log(responseMembers)
+      setEmployees(responseMembers.data.employees);
+    }
+    catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchMemberList();
+  }, [selectedProjectId]);
 
   const dummyEmployees = employees.map(employee => {
-
-    const employeeTasks = tasks.filter((task) => task.assignee === employee.id);
-
-    const tasksGiven = employeeTasks.length;
-    const tasksDue = employeeTasks.filter((task) => task.status !== "Completed").length;
-    const tasksCompleted = tasksGiven - tasksDue;
 
     return {
       id: employee.id,
       name: `${employee.forename} ${employee.surname}`,
       profilePicture: faker.image.avatar(),
-      tasksGiven: tasksGiven,
-      tasksDue: tasksDue,
-      tasksCompleted: tasksCompleted,
+      tasksGiven: employee.tasksGiven,
+      tasksDue: employee.tasksDue,
+      tasksCompleted: employee.tasksCompleted,
     }
   });
 

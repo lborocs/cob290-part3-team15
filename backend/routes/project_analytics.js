@@ -96,6 +96,62 @@ router.get("/getProjectsByLeader",authenticateToken,(req,res) => {
     });
 });
 
+
+// Get tasks for each member on the project list, filtered by project if selected
+router.get("/getOverviewTeamMembers",authenticateToken,(req,res) => {
+
+    let values = [];
+    let filterByLeaderText = 'WHERE'
+    let filterAppendText = '';
+    if (req.user.role !== 'Manager') {
+        filterByLeaderText = 'INNER JOIN projects AS p ON tasks.ProjectID = p.ProjectID WHERE p.LeaderID = ? AND';
+        filterAppendText = 'WHERE EXISTS (SELECT pu.UserID, pu.ProjectID FROM project_users AS pu INNER JOIN projects AS p on pu.ProjectID = p.ProjectID WHERE p.LeaderID = ? AND u.UserID = pu.UserID)';
+        values = [req.user.userID, req.user.userID, req.user.userID, req.user.userID];
+    }
+
+    const query = `SELECT
+                         u.UserID AS 'id', u.Forename as 'forename', u.Surname as 'surname',
+                         (SELECT COUNT(TaskID) FROM tasks ${filterByLeaderText} AssigneeID = u.UserID) AS 'tasksGiven',
+                         (SELECT COUNT(TaskID) FROM tasks ${filterByLeaderText} AssigneeID = u.UserID AND Status != 'Completed') AS 'tasksDue',
+                         (SELECT COUNT(TaskID) FROM tasks ${filterByLeaderText} AssigneeID = u.UserID AND Status = 'Completed') AS 'tasksCompleted'
+                     FROM users AS u ${filterAppendText}`;
+
+    database.query(query, values, (err, employeeResults) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching employees"});
+        }
+
+        res.send({employees: employeeResults});
+    });
+});
+
+
+// Get member list info for a specific project
+router.get("/getProjectTeamMembers",authenticateToken,(req,res) => {
+    const query = `SELECT
+                             u.UserID AS 'id', u.Forename as 'forename', u.Surname as 'surname',
+                             (SELECT COUNT(TaskID) FROM tasks WHERE AssigneeID = u.UserID AND ProjectID = ?) AS 'tasksGiven',
+                             (SELECT COUNT(TaskID) FROM tasks WHERE AssigneeID = u.UserID AND ProjectID = ? AND Status != 'Completed') AS 'tasksDue',
+                             (SELECT COUNT(TaskID) FROM tasks WHERE AssigneeID = u.UserID AND ProjectID = ? AND Status = 'Completed') AS 'tasksCompleted'
+                         FROM users AS u
+                         WHERE EXISTS (SELECT UserID, ProjectID FROM project_users WHERE ProjectID = ? AND u.UserID = UserID)`;
+    const id = req.query.id;
+    if (!id) {
+        return res.status(400).send({ error: "Project ID is required" });
+    }
+
+    database.query(query, [id, id, id, id], (err, employeeResults) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching project team members"});
+        }
+
+        res.send({employees: employeeResults});
+    });
+});
+
+
+
+// TODO remove
 // Get the employees on all projects or all projects led by this user
 router.get("/getTeamMembers",authenticateToken,(req,res) => {
     let query = `SELECT u.UserID as 'id', u.Forename as 'forename', u.Surname as 'surname'
@@ -137,15 +193,27 @@ router.get("/getProjectCardInfo",authenticateToken,(req,res) => {
     });
 });
 
-// Get the tasks on all projects or all projects led by this user
+// Get the tasks on a given project or all tasks for the overview
 router.get("/getTasks",authenticateToken,(req,res) => {
     let query = `SELECT t.TaskID as 'id', t.Title as 'title', t.AssigneeID as 'assignee', t.ProjectID as 'project', t.Status as 'status', t.Priority as 'priority', t.HoursRequired as 'hoursRequired', t.Deadline as 'deadline'
                         FROM tasks as t`;
     let values = [];
+
     // Filter only tasks on projects led by this user for team leaders
-    if (req.user.role !== "Manager") {
-        query += ` WHERE EXISTS (SELECT p.ProjectID FROM projects AS p WHERE p.LeaderID = ? AND p.ProjectID = t.ProjectID)`;
-        values = [req.user.userID];
+    if (req.user.role !== 'Manager') {
+        query += ` INNER JOIN projects as p ON p.ProjectID = t.ProjectID WHERE p.LeaderID=?`;
+        values.push(req.user.userID);
+    }
+
+    // Filter by project if a project is selected (yes I'm comparing a string that says null)
+    if (req.query.id !== 'null') {
+        if (req.user.role === 'Manager') {
+            query += ` INNER JOIN projects as p ON p.ProjectID = t.ProjectID WHERE p.ProjectID=?`
+        }
+        else {
+            query += ` AND p.ProjectID = ?`
+        }
+        values.push(req.query.id);
     }
 
     database.query(query, values, (err, taskResults) => {

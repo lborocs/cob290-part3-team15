@@ -34,7 +34,7 @@ function SearchBox({ onProjectSelect }) {
   const onSelect = (id) => {
     setSelectedProjectId(id)
     // Set the selected project on the parent component using callback
-    id ? onProjectSelect(projects.find(project => project.id === id)) : onProjectSelect({ title: 'Overview' });
+    id ? onProjectSelect(id) : onProjectSelect(null);
   }
 
   const filteredProjects = projects.filter(project =>

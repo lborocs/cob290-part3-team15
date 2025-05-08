@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import QuickStatisticItem from "./QuickStatisticItem.jsx";
 import axios from "axios";
 
-function QuickStatistics({ projectId }) {
+function QuickStatistics({ selectedProjectId }) {
 
     const [stats, setStats] = useState([]);
 
@@ -44,7 +44,7 @@ function QuickStatistics({ projectId }) {
     const fetchStats = async() => {
         const accessToken = localStorage.getItem('accessToken');
 
-        const response = await axios.get(`/api/analytics/projects/getQuickStatistics?projectId=${projectId}`, {
+        const response = await axios.get(`/api/analytics/projects/getQuickStatistics?projectId=${selectedProjectId}`, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
 
@@ -57,7 +57,7 @@ function QuickStatistics({ projectId }) {
                 },
                 {
                     id: 'project-task-completion',
-                    title: 'Task Completion',
+                    title: 'Tasks Completed',
                     value: response.data.results[0].completed,
                 },
                 {
@@ -70,8 +70,8 @@ function QuickStatistics({ projectId }) {
     }
 
     useEffect(() => {
-        projectId ? fetchStats() : fetchOverviewStats();
-    }, [projectId]);
+        selectedProjectId ? fetchStats() : fetchOverviewStats();
+    }, [selectedProjectId]);
 
     return (
         <div className="col-start-2 row-start-3 col-span-4 w-full">

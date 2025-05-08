@@ -219,7 +219,7 @@ INSERT INTO `group_users` VALUES (1,3,'2025-05-06 22:57:01');
 INSERT INTO `group_users` VALUES (2,1,'2025-04-21 17:55:06');
 INSERT INTO `group_users` VALUES (2,2,'2025-04-21 17:55:04');
 INSERT INTO `group_users` VALUES (2,3,'2025-04-21 17:55:05');
-INSERT INTO `group_users` VALUES (3,1,'2025-04-20 07:27:11');
+INSERT INTO `group_users` VALUES (3,1,'2025-05-08 05:58:25');
 INSERT INTO `group_users` VALUES (4,2,NULL);
 INSERT INTO `group_users` VALUES (4,3,NULL);
 /*!40000 ALTER TABLE `group_users` ENABLE KEYS */;
@@ -285,7 +285,7 @@ INSERT INTO `project_users` VALUES (2,9);
 INSERT INTO `project_users` VALUES (2,10);
 INSERT INTO `project_users` VALUES (3,1);
 INSERT INTO `project_users` VALUES (3,3);
-INSERT INTO `project_users` VALUES (3,12);
+INSERT INTO `project_users` VALUES (3,11);
 INSERT INTO `project_users` VALUES (4,3);
 INSERT INTO `project_users` VALUES (4,7);
 INSERT INTO `project_users` VALUES (4,8);
@@ -322,7 +322,7 @@ LOCK TABLES `projects` WRITE;
 /*!40000 ALTER TABLE `projects` DISABLE KEYS */;
 INSERT INTO `projects` VALUES (1,3,'Project Alpha','High','2025-04-12','2025-08-18','A project focused on alpha testing new features.');
 INSERT INTO `projects` VALUES (2,10,'Project Beta','Medium','2025-02-08','2025-12-11','A beta version of our upcoming product release.');
-INSERT INTO `projects` VALUES (3,12,'Project Gamma','Low','2025-04-21','2025-05-07','An initiative to explore gamma ray applications.');
+INSERT INTO `projects` VALUES (3,11,'Project Gamma','Low','2025-04-21','2025-05-07','An initiative to explore gamma ray applications.');
 INSERT INTO `projects` VALUES (4,7,'Project Delta','Medium','2025-06-12','2025-09-18','A task force dedicated to delta process improvements.');
 /*!40000 ALTER TABLE `projects` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -405,8 +405,8 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES (1,'Mr','Mime','Employee',NULL,'ABC123BCA!!!','Offline','Online');
-INSERT INTO `users` VALUES (2,'John','Smith','Manager',NULL,'ABC123BCA!!!','Online','Online');
-INSERT INTO `users` VALUES (3,'Bill','Bloomstick','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (2,'John','Smith','Manager',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (3,'Bill','Bloomstick','Employee',NULL,'ABC123BCA!!!','Online','Online');
 INSERT INTO `users` VALUES (4,'Faker','Realman','Employee',NULL,'12A','Offline','Online');
 INSERT INTO `users` VALUES (5,'Rokuro','Thiri','Manager',NULL,'ABC123BCA!!!','Offline','Online');
 INSERT INTO `users` VALUES (6,'Ige','Kapil','Employee',NULL,'ABC123BCA!!!','Offline','Online');
@@ -427,4 +427,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-08  6:09:30
+-- Dump completed on 2025-05-08  8:57:52

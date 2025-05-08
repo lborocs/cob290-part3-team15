@@ -18,6 +18,7 @@ function Analytics({ user }) {
     const activeTab = "Analytics";
     const [personalStatus, setPersonalStatus] = useState("Offline");
     const [selectedProject, setSelectedProject] = useState({ title: 'Overview' });
+    const [selectedProjectId, setSelectedProjectId] = useState(null);
 
     // this will be for all projects a user is on
     const [projects, setProjects] = useState([]);
@@ -166,22 +167,20 @@ function Analytics({ user }) {
                 {userRole === "Team Leader" || userRole === "Manager"? (
                     <>
                         <QuickStatistics
-                            projectId={selectedProject.id}
+                            selectedProjectId={selectedProjectId}
                         />
 
                         <SearchBox
-                            onProjectSelect={setSelectedProject}
+                            onProjectSelect={setSelectedProjectId}
                         />
 
                         <StatisticsField
-                            selectedProject={selectedProject}
-                            tasks={ledTasks}
-                            employees={employees}
+                            selectedProjectId={selectedProjectId}
                         />
                     </>
                 ) : (
                     <>
-                        <EmployeeQuickStatistics
+                         <EmployeeQuickStatistics
                             selectedProject={selectedProject}
                             projects={projects}
                             tasks={personalTasks}
