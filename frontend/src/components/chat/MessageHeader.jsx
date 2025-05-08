@@ -7,6 +7,8 @@ import RemoveMemberModal from "../chat/RemoveMemberModal";
 import RenameModal from "../chat/RenameModal";
 import LeaveModal from "../chat/LeaveModal";
 import axios from "axios";
+import { ChevronDown } from "lucide-react"
+
 // components/chat/core/Header.jsx
 export default function Header({ selectedID, mode, userID, refresh,setSelectedID,setMode }) {
     // You can customize this logic however you want
@@ -142,16 +144,22 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
 
     return (
         <>
-            <div className="bg-orangeFaded w-full h-[60px] flex justify-center items-center px-4 border-b-2 border-blackFaded">
+            <div className="sticky top-0 z-10 bg-orangeFaded w-full h-[60px] flex items-center justify-center px-4 border-b border-yellow-700">
                 <div className="flex flex-col text-lg font-semibold">
                     {/*<div>User: {name}</div>*/}
                     <div className="flex items-center self-center gap-2">
                             <button
-                                className={`bg-accentOrange hover:bg-orangeHover text-text font-bold px-4 rounded border-blackFaded border-1 ${dropdownVisible?"z-30":""}`}
+                                className={`relative flex items-center space-x-2 bg-orangeFaded hover:bg-orangeHover focus:outline-none text-text font-bold px-4 rounded border-blackFaded border-1 ${dropdownVisible?"z-30":""}`}
                                 onClick={() => setDropdownVisible(!dropdownVisible)}
                                 ref={refs.setReference}
                             >
+                                <span className="sr-only">Toggle members list</span>
                                 <ProfileCard displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={""} id={selectedID} status={"offline"}/>
+                                <ChevronDown
+                                    className={`h-5 w-5 text-gray-800 transform transition-transform duration-200 ${
+                                        dropdownVisible ? 'rotate-180' : 'rotate-0'
+                                    }`}
+                                />
                             </button>
                     </div>
                 </div>
