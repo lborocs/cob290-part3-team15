@@ -201,6 +201,7 @@ router.get("/getTasks",authenticateToken,(req,res) => {
 
     // Filter only tasks on projects led by this user for team leaders
     if (req.user.role !== 'Manager') {
+        // this is ONLY for team leaders, what about employees?
         query += ` INNER JOIN projects as p ON p.ProjectID = t.ProjectID WHERE p.LeaderID=?`;
         values.push(req.user.userID);
     }

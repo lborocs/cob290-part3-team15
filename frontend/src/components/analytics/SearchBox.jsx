@@ -21,8 +21,6 @@ function SearchBox({ userRole, onProjectSelect, selectedProjectId }) {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      console.log(responseLedProjects)
-
       if (responseLedProjects?.data?.projects.length > 0) {
         setProjects(responseLedProjects.data.projects);
       }

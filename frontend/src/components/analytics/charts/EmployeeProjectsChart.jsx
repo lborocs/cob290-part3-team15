@@ -5,8 +5,13 @@ const EmployeeProjectsChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
-    // Sort by task count descending
-    const sortedData = [...data].sort((a, b) => b.tasks - a.tasks);
+    // Ensure completed, overdue, and due are integers
+    const sortedData = [...data].map(d => ({
+      ...d,
+      completed: parseInt(d.completed, 10),
+      overdue: parseInt(d.overdue, 10),
+      due: parseInt(d.due, 10),
+    }));
 
     const width = ref.current.parentElement.offsetWidth;
     const height = 220;
@@ -22,22 +27,21 @@ const EmployeeProjectsChart = ({ data }) => {
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Y-axis (projects)
+    // (projects)
     const y = d3.scaleBand()
-      .domain(sortedData.map(d => d.project))
+      .domain(sortedData.map((d, i) => d.title || `Project ${i + 1}`))
       .range([0, innerHeight])
       .padding(0.2);
 
-    // X-axis (task count)
+    //(total task count)
     const x = d3.scaleLinear()
-      .domain([0, d3.max(sortedData, d => d.tasks)])
+      .domain([0, d3.max(sortedData, d => d.completed + d.overdue + d.due)])
       .range([0, innerWidth]);
 
     // Add Y-axis
     g.append('g')
       .call(d3.axisLeft(y));
 
-    // Add X-axis
     g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
       .call(d3.axisBottom(x))
@@ -45,37 +49,58 @@ const EmployeeProjectsChart = ({ data }) => {
       .attr('x', innerWidth / 2)
       .attr('y', 30)
       .attr('text-anchor', 'middle')
-      .text('Tasks Contributed');
+      .text('Tasks');
 
-    // Add bars
-    g.selectAll('.bar')
+    // stacked bars
+    g.selectAll('.bar-group')
       .data(sortedData)
       .enter()
+      .append('g')
+      .attr('class', 'bar-group')
+      .attr('transform', d => `translate(0,${y(d.title)})`)
+      .selectAll('rect')
+      .data(d => [
+        { type: 'Completed', value: d.completed, color: '#4CAF50' },
+        { type: 'Overdue', value: d.overdue, color: '#F44336' },
+        { type: 'Due', value: d.due, color: '#FFC107' }
+      ])
+      .enter()
       .append('rect')
-      .attr('class', 'bar')
-      .attr('y', d => y(d.project))
+      .attr('x', (d, i, nodes) => {
+        const prevValues = Array.from(nodes).slice(0, i).map(node => d3.select(node).datum().value);
+        return x(prevValues.reduce((sum, val) => sum + val, 0));
+      })
+      .attr('y', 0)
       .attr('height', y.bandwidth())
-      .attr('x', 0)
-      .attr('width', 0)
-      .attr('fill', '#FF9F40')
-      .on('mouseenter', function(_, d) {
-        d3.select(this).attr('fill', '#E67E22');
-        g.append('text')
-          .attr('class', 'bar-tooltip')
-          .attr('x', x(d.tasks) + 10)
-          .attr('y', y(d.project) + y.bandwidth() / 2)
-          .attr('dy', '0.35em')
-          .text(`${d.tasks} tasks`)
-          .style('font-weight', 'bold')
-          .style('font-size', '12px');
-      })
-      .on('mouseleave', function() {
-        d3.select(this).attr('fill', '#FF9F40');
-        g.selectAll('.bar-tooltip').remove();
-      })
-      .transition()
-      .duration(800)
-      .attr('width', d => x(d.tasks));
+      .attr('width', d => x(d.value))
+      .attr('fill', d => d.color);
+
+    // Add legend above the chart showing the colors and what they mean
+    const legend = g.append('g')
+      .attr('transform', `translate(0, -${margin.top})`);
+    const legendData = [
+      { type: 'Completed', color: '#4CAF50' },
+      { type: 'Overdue', color: '#F44336' },
+      { type: 'Due', color: '#FFC107' }
+    ];
+    const legendGroup = legend.selectAll('.legend-item')
+      .data(legendData)
+      .enter()
+      .append('g')
+      .attr('class', 'legend-item')
+      .attr('transform', (d, i) => `translate(${i * 100}, 0)`);
+
+    legendGroup.append('rect')
+      .attr('width', 15)
+      .attr('height', 15)
+      .attr('fill', d => d.color);
+
+    legendGroup.append('text')
+      .attr('x', 20)
+      .attr('y', 12)
+      .text(d => d.type)
+      .style('font-size', '12px')
+      .style('font-weight', 'bold');
 
   }, [data]);
 

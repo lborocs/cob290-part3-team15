@@ -24,7 +24,7 @@ function StatisticsFieldBottom({ selectedProjectId }) {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      console.log(responseMembers)
+
       setEmployees(responseMembers.data.employees);
     }
     catch (error) {

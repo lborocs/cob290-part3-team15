@@ -75,7 +75,13 @@ function Analytics({ user }) {
             <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
                 <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
                     <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
-                    <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>
+                    { userRole === 'Manager' && (
+                        <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>  
+                    )} 
+                    { userRole === 'Employee' && !isLeader &&(
+                        <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>  
+                    )} 
+        
                     { isLeader ? (
                         <div className="flex items-center mt-4">
                             <div className="flex border-2 border-accentOrange rounded-full overflow-hidden">
@@ -95,7 +101,7 @@ function Analytics({ user }) {
                                     ? 'bg-accentOrange text-white' 
                                     : 'bg-white text-gray-700 hover:bg-accentOrange/10'
                                 }`}
-                                onClick={() => setUserRole("Team Leader")}
+                                onClick={() => { setUserRole("Team Leader"); updateSelectedProject(null, "Overview"); }}
                                 >
                                 Team Leader
                                 </button>

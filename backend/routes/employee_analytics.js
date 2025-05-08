@@ -57,24 +57,99 @@ router.get("/getAssignedProjects",authenticateToken,(req,res) => {
     });
 });
 
-// TODO unused
-// Get all tasks assigned to a user
-router.get("/getUserTasks",authenticateToken,(req,res) => {
-    print("getUserTasks called");
-    const query=`SELECT ProjectID, AssigneeID, Title, Status, Priority, HoursRequired, Deadline, CompletionDate FROM tasks WHERE tasks.AssigneeID=?`;
-    const id = req.query.target;
+/* ADDED FUNCTIONS FOR THE EMPLOYEE OVERVIEW */
+// get the employee hours 
+router.get("/getAllEmployeeHours",authenticateToken,(req,res) => {
+    const query = `SELECT
+                            SUM(HoursWorked) as 'hours',
+                            DATE_FORMAT(WeekStart, '%Y-%m-%d') as 'weekStart'
+                        FROM employee_hours
+                        WHERE UserID = ?
+                        GROUP BY WeekStart
+                        ORDER BY WeekStart DESC
+                        LIMIT 4`;
 
-    print("getUserTasks called with id: ", id);
+    database.query(query, [req.user.userID], (err, results) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching employee hours"});
+        }
 
-    if (isNaN(id)) {
-        return res.status(400).json({ error: "Invalid ID" });
-    }
-
-    const values = [id];
-    database.query(query, values, (err, results) => {
         res.send({results: results});
     });
 });
+
+//getting all projects the employee contributed to, and returning for each proct the number of tasks completed due and overdue
+router.get("/getAllEmployeeProjects",authenticateToken,(req,res) => {
+    const query = `SELECT
+                            p.ProjectID as 'id',
+                            p.Title as 'title',
+                            COUNT(t1.TaskID) as 'completed',
+                            COUNT(t2.TaskID) as 'overdue',
+                            COUNT(t3.TaskID) as 'due'
+                        FROM projects as p
+                        INNER JOIN project_users as pu ON p.ProjectID = pu.ProjectID
+                        LEFT JOIN tasks as t1 ON p.ProjectID = t1.ProjectID AND t1.Status = 'Completed' AND t1.AssigneeID = ?
+                        LEFT JOIN tasks as t2 ON p.ProjectID = t2.ProjectID AND t2.Status != 'Completed' AND DATEDIFF(CURDATE(), t2.Deadline) > 0 AND t2.AssigneeID = ?
+                        LEFT JOIN tasks as t3 ON p.ProjectID = t3.ProjectID AND t3.Status != 'Completed' AND DATEDIFF(CURDATE(), t3.Deadline) <= 0 AND t3.AssigneeID = ?
+                        WHERE pu.UserID = ?
+                        GROUP BY p.ProjectID`;
+
+    const values = [req.user.userID, req.user.userID, req.user.userID, req.user.userID];
+
+    database.query(query, values, (err, results) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching employee projects"});
+        }
+
+        res.send({results: results});
+    });
+});
+
+router.get("/getTasks",authenticateToken,(req,res) => {
+    let query = `SELECT t.TaskID as 'id', t.Title as 'title', t.ProjectID as 'project', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
+                        FROM tasks as t WHERE t.AssigneeID = ?`;
+    let values = [req.user.userID];
+
+    database.query(query, values, (err, taskResults) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching tasks" });
+        }
+
+        res.send({tasks: taskResults});
+    });
+});
+
+
+// TODO unused
+// Get all tasks assigned to a user
+router.get("/getUserTasks", authenticateToken, (req, res) => {
+    const selectedProjectId = req.query.id;
+
+    let query;
+    let values;
+
+    if (selectedProjectId == 'null') {
+        // If no projectId is provided, fetch all tasks assigned to the user
+        query = `SELECT t.TaskID as 'id', t.Title as 'title', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
+                 FROM tasks as t
+                 WHERE t.AssigneeID = ?`;
+        values = [req.user.userID];
+    } else {
+        // If projectId is provided, fetch tasks for the specific project
+        query = `SELECT t.TaskID as 'id', t.Title as 'title', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
+                 FROM tasks as t
+                 WHERE t.AssigneeID = ? AND t.ProjectID = ?`;
+        values = [req.user.userID, selectedProjectId];
+    }
+
+    database.query(query, values, (err, taskResults) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching tasks" });
+        }
+
+        res.send({tasks: taskResults});
+    });
+ });
 
 
 

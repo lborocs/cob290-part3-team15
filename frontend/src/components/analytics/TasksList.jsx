@@ -3,7 +3,8 @@ import TaskCard from './TaskCard';
 import { FiSearch, FiCalendar } from 'react-icons/fi';
 import axios from "axios";
 
-function TasksList({ selectedProjectId }) {
+function TasksList({ selectedProjectId, role }) {
+
   const [taskList, setTaskList] = useState([]);
   const [statusFilter, setStatusFilter] = useState('all');
   const [dueDateFilter, setDueDateFilter] = useState('any');
@@ -13,12 +14,20 @@ function TasksList({ selectedProjectId }) {
   const getTaskList = async() => {
     try {
       const accessToken = localStorage.getItem('accessToken');
+      let responseTasks;
 
-      const responseTasks = await axios.get(`/api/analytics/projects/getTasks?id=${selectedProjectId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      if (role == 'Employee') {
+        responseTasks = await axios.get(`/api/analytics/employees/getUserTasks?id=${selectedProjectId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        console.log(responseTasks.data.tasks)
+      } else if (role == 'Team Leader') {
+        responseTasks = await axios.get(`/api/analytics/projects/getTasks?id=${selectedProjectId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      }
 
-      setTaskList(responseTasks.data.tasks)
+      setTaskList(responseTasks.data.tasks);
     }
     catch (error) {
       console.error("Error fetching data:", error);
@@ -27,7 +36,7 @@ function TasksList({ selectedProjectId }) {
 
   useEffect(() => {
     getTaskList();
-  }, [selectedProjectId]);
+  }, [selectedProjectId, role]);
 
   const dueDateFilteredTasks = taskList.filter(task => {
     const dueDate = new Date(task.deadline);
