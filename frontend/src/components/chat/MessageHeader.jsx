@@ -7,7 +7,7 @@ import RemoveMemberModal from "../chat/RemoveMemberModal";
 import RenameModal from "../chat/RenameModal";
 import LeaveModal from "../chat/LeaveModal";
 import axios from "axios";
-import { ChevronDown } from "lucide-react"
+import { FaChevronDown } from "react-icons/fa";
 
 // components/chat/core/Header.jsx
 export default function Header({ selectedID, mode, userID, refresh,setSelectedID,setMode }) {
@@ -155,7 +155,7 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
                             >
                                 <span className="sr-only">Toggle members list</span>
                                 <ProfileCard displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={""} id={selectedID} status={"offline"}/>
-                                <ChevronDown
+                                <FaChevronDown
                                     className={`h-5 w-5 text-gray-800 transform transition-transform duration-200 ${
                                         dropdownVisible ? 'rotate-180' : 'rotate-0'
                                     }`}
