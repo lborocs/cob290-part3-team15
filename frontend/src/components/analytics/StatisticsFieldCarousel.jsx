@@ -117,7 +117,7 @@ function StatisticsFieldCarousel({ selectedProject }) {
               ? response.data
               : [
                   { label: 'Completed', value: response.data.completed || 0 },
-                  { label: 'Pending', value: response.data.pending || 0 },
+                  { label: 'Not Completed', value: response.data.pending || 0 },
                 ];
             setChartData(formattedData);
           }

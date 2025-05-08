@@ -256,13 +256,7 @@ router.get("/getTaskCompletionStatus", authenticateToken, (req, res) => {
 
         console.log("Task Completion Status Results:", results); // Debugging
 
-        // Format the response for the pie chart
-        const formattedResults = [
-            { label: "Completed", value: results[0].completed || 0 },
-            { label: "Pending", value: results[0].pending || 0 },
-        ];
-
-        res.send(formattedResults);
+        res.send({completed: results[0].completed, pending: results[0].pending});
     });
 });
 

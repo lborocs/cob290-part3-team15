@@ -26,7 +26,7 @@ const PieChart = ({ data }) => {
         return t => `translate(${width / 2}, ${height / 2}) rotate(${rotateInterpolate(t)})`;
       });
 
-    const color = d3.scaleOrdinal(['#FF6384', '#36A2EB']);
+    const color = d3.scaleOrdinal(['#4CAF50', '#FF6384']);
     const pie = d3.pie().value(d => d.value);
     const arc = d3.arc().innerRadius(radius * 0.5).outerRadius(radius);
 
