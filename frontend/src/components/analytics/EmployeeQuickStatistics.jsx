@@ -1,7 +1,7 @@
 import React from 'react'
 import QuickStatisticItem from "./QuickStatisticItem.jsx";
 
-// !! this component is currently unused
+// TODO unused - remove
 function QuickStatistics({ selectedProject, projects, tasks }) {
 
     // Build the quick statistics

@@ -1,8 +1,9 @@
 import TasksList from "./TasksList.jsx";
 import React from "react";
-import  EmployeeStatisticsFieldCarousel from "./EmployeeStatisticFieldCarousel.jsx";
+import EmployeeStatisticsFieldCarousel from "./EmployeeStatisticsFieldCarousel.jsx";
 import StatisticsFieldBottom from "./StatisticsFieldBottom.jsx";
 
+// TODO unused - remove
 function EmployeeStatisticsField({selectedProject, personalTasks, employees}) {
 
     const isOverview = selectedProject.title === "Overview";
