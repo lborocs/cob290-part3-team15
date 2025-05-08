@@ -148,7 +148,7 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
       </div>
 
       {/*Chat List*/}
-      <div className="flex flex-col h-full px-2 space-y-2 overflow-y-auto pb-5 pt-1 mt-3" >
+      <div className="flex flex-col h-full px-2 space-y-2 overflow-y-auto pb-5 pt-1 mt-3 select-none" >
         {filteredChats.map((chat) => (
           <div key={`${chat.target}-${chat.type}`} className={`flex justify-center items-center ${selectedID===chat.target && mode===chat.type ? "bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"} rounded-xl h-20 min-h-20 max-h-20 gap-2 group`} onContextMenu={(e) => HandleRightClick(e,chat)}>
             <button className="flex w-full h-full pt-1 pl-2 pr-1 text-text rounded"

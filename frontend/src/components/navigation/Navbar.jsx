@@ -24,7 +24,7 @@ const Tab = (props) => {
     }
 
     return (
-        <button className={`w-14 h-14 justify-center items-center text-center text-[10px] rounded-lg relative
+        <button className={`w-14 h-14 justify-center items-center text-center text-[10px] rounded-lg relative select-none
             ${!props.isActive ? "bg-white/10 hover:bg-white/75" : !props.selectable ? "bg-white" : !props.isSelected ? "bg-white/75" : "bg-white"}`}
         onClick={(e) => handleNavigate(props.label)}>
             {props.icon}
