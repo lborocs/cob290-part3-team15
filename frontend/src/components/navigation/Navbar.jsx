@@ -24,7 +24,7 @@ const Tab = (props) => {
     }
 
     return (
-        <button className={`w-14 h-14 justify-center items-center text-center text-[10px] rounded-lg relative
+        <button className={`w-14 h-14 justify-center items-center text-center text-[10px] rounded-lg relative select-none
             ${!props.isActive ? "bg-white/10 hover:bg-white/75" : !props.selectable ? "bg-white" : !props.isSelected ? "bg-white/75" : "bg-white"}`}
         onClick={(e) => handleNavigate(props.label)}>
             {props.icon}
@@ -109,7 +109,7 @@ const Navbar = (props) => {
 
     return (
         <>
-        <div className="flex relative flex-col h-full items-center bg-accentOrange w-[72px] min-w-[72px] z-10 border-r-1 border-blackFaded overflow-hidden justify-between" onContextMenu={HandleRightClick}>
+        <div className="flex relative flex-col h-full items-center bg-accentOrange w-[72px] min-w-[72px] z-10 border-r-1 border-black/20 overflow-hidden justify-between" onContextMenu={HandleRightClick}>
             <div className="flex flex-col w-full h-full min-h-80 relative items-center">
                 <button className="flex w-15 h-15 mt-2 rounded-lg bg-[#D3D3D3] items-center justify-center shadow-[1px_2px_5px_rgba(0,0,0,0.3)]"
                 onClick={(e) => navigate("/login/")}>

@@ -1,7 +1,7 @@
 function DropdownItem({item, onClick, icon}) {
     return (
         <div
-        className="flex justify-between items-center w-auto whitespace-nowrap text-sm p-2 px-2 hover:bg-gray-100 cursor-pointer rounded-md text-gray-700"
+        className="flex justify-between items-center w-auto whitespace-nowrap text-sm p-2 px-2 hover:bg-gray-100 cursor-pointer rounded-md text-gray-700 select-none"
         onClick={onClick}
         >
         <span>
