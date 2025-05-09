@@ -45,7 +45,7 @@ const PieChart = ({ data }) => {
       .attr('stroke', 'white')
       .style('stroke-width', '2px')
       .each(function(d) { this._current = d; })
-      .on('mouseenter', function (_, d) {
+     /* .on('mouseenter', function (_, d) {
         d3.select(this.parentNode).select('text.percentage')
           .transition()
           .duration(200)
@@ -65,6 +65,7 @@ const PieChart = ({ data }) => {
           .duration(200)
           .style('opacity', 0);
       })
+    */
       .transition()
       .duration(1000)
       .attrTween('d', function(d) {
