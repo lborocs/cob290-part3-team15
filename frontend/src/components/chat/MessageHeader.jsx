@@ -144,12 +144,12 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
 
     return (
         <>
-            <div className="sticky top-0 z-10 bg-orangeFaded w-full h-[60px] flex items-center justify-center px-4 border-b border-yellow-700">
+            <div className="sticky top-0 z-10 bg-accentOrange w-full h-[60px] flex items-center justify-center px-4 border-b border-yellow-700">
                 <div className="flex flex-col text-lg font-semibold">
                     {/*<div>User: {name}</div>*/}
                     <div className="flex items-center self-center gap-2">
                             <button
-                                className={`relative flex items-center space-x-2 bg-orangeFaded hover:bg-orangeHover focus:outline-none text-text font-bold px-4 rounded border-blackFaded border-1 ${dropdownVisible?"z-30":""}`}
+                                className={`relative flex items-center space-x-2 bg-accentOrange hover:bg-orangeHover focus:outline-none text-text font-bold px-4 rounded border-blackFaded border-1 ${dropdownVisible?"z-30":""}`}
                                 onClick={() => setDropdownVisible(!dropdownVisible)}
                                 ref={refs.setReference}
                             >
