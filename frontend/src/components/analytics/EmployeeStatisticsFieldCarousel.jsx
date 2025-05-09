@@ -103,13 +103,13 @@ function EmployeeStatisticsCarousel() {
         <div className="flex gap-2">
           <button
             onClick={() => setTimePeriod('week')}
-            className={`px-3 py-1 text-blue-600 rounded-full text-sm font-medium ${timePeriod === 'week' ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-100'}`}
+            className={`px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium ${timePeriod === 'week' ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:bg-gray-100'}`}
           >
             Week
           </button>
           <button
             onClick={() => setTimePeriod('month')}
-            className={`px-3 py-1 text-blue-600 rounded-full text-sm font-medium ${timePeriod === 'month' ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-100'}`}
+            className={`px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium ${timePeriod === 'month' ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:bg-gray-100'}`}
           >
             Month
           </button>
@@ -127,7 +127,7 @@ function EmployeeStatisticsCarousel() {
             >
               <FiChevronLeft />
             </button>
-            <span className="text-xs text-gray-600">
+            <span className="text-medium text-gray-600">
               Week {weekIndex + 1}
             </span>
             <button
