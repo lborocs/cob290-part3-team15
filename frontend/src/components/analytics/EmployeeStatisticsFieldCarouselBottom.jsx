@@ -32,7 +32,7 @@ function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
   const ChartComponent = currentChart.component;
 
  // fetch data for the current chart
-  const fetchChartData = async () => {
+ const fetchChartData = async () => {
     try {
       const accessToken = localStorage.getItem('accessToken');
       const response = await axios.get(currentChart.endpoint, {
@@ -45,11 +45,10 @@ function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
       setChartData([]);
     }
   };
+
   useEffect(() => {
     if (currentChart.endpoint) {
       fetchChartData();
-      // log the chart data for debugging
-      console.log('Chart data:', chartData);
     }
   }, [currentChart.endpoint, selectedProjectId]);
 
@@ -70,55 +69,60 @@ function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
-      <div className="flex items-center w-full">
+    <div className="relative flex flex-col p-4 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
+      {/* Header - properly centered */}
+      <div className="w-full text-center mb-2">
+        <h3 className="text-lg font-semibold text-gray-800">{currentChart.title}</h3>
+        <p className="text-sm text-gray-500">{currentChart.description}</p>
+      </div>
+
+      {/* Chart Container with navigation arrows */}
+      <div className="w-full h-[65%] flex items-center justify-between mb-2">
+        {/* Left arrow */}
         <button
-          className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
           onClick={() => handleNavigation('left')}
+          className="p-2 text-gray-500 hover:text-accentOrange transition-colors"
+          aria-label="Previous chart"
         >
-          ←
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
         </button>
 
-        <div className="flex flex-col items-center justify-center text-center mx-6 flex-grow h-full">
-          <h2 className="text-xl font-semibold text-text mb-2">Overview</h2>
-          <div className="w-full max-w-md max-h-[63%] h-full mb-6">
-            <ChartComponent data={chartData} />
-          </div>
-          <p className="text-gray-600 px-2">{currentChart.description}</p>
+        {/* Chart area */}
+        <div className="w-full h-full max-w-[85%] flex items-center justify-center">
+          <ChartComponent data={chartData} />
         </div>
 
+        {/* Right arrow */}
         <button
-          className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
           onClick={() => handleNavigation('right')}
+          className="p-2 text-gray-500 hover:text-accentOrange transition-colors"
+          aria-label="Next chart"
         >
-          →
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         </button>
       </div>
 
-      <div className="flex space-x-2 pb-4">
-        {chartConfig.map((chart, index) => (
+
+      {/* Navigation Dots - properly centered at bottom */}
+      <div className="flex justify-center space-x-2 mt-auto mb-2">
+        {chartConfig.map((_, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full ${
-              index === currentIndex ? 'bg-accentOrange' : 'bg-gray-300'
+            className={`w-2.5 h-2.5 rounded-full transition-all ${
+              index === currentIndex 
+                ? 'bg-accentOrange scale-125' 
+                : 'bg-gray-300 hover:bg-gray-400'
             }`}
             onClick={() => setCurrentIndex(index)}
-          >
-            <span
-              className="absolute text-xs bg-black text-white px-2 py-1 rounded opacity-0 transition-opacity duration-300 pointer-events-none"
-              style={{ transform: 'translateY(20%)' }}
-            >
-              {chart.title}
-            </span>
-          </button>
+            aria-label={`View ${chartConfig[index].title}`}
+          />
         ))}
       </div>
 
-      <style jsx>{`
-        button:hover span {
-          opacity: 1;
-        }
-      `}</style>
     </div>
   );
 }
