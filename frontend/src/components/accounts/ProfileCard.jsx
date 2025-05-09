@@ -37,7 +37,7 @@ const ProfileCard = ({ displayBG,type,id,status}) => {
 
       
       {/* Status Indicator (Bottom-right) */}
-      {type === "Group" ? <></> :
+      {type === "Group" || status === "" ? <></> :
         <div className={`absolute flex justify-center items-center bottom-0 right-0 w-6 h-6 rounded-full ${displayBG}`}>
           <div className={`absolute w-4 h-4 rounded-full border-2 border-blackFaded ${statusColors[status] || statusColors["Offline"]}`}></div>
         </div>
