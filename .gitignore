@@ -27,4 +27,3 @@ dist-ssr
 backend/.env
 backend/make_it_all.sql
 terminals_start_unix.sh
-README.zip
