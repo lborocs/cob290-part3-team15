@@ -171,7 +171,7 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
                     {/*<div>User: {name}</div>*/}
                     <div className="flex items-center self-center gap-2">
                             <div
-                                className={`relative flex items-center space-x-2 h-[50px] max-w-[250px] sm:max-w-[600px] hover:outline-none rounded-[100px] text-text font-bold px-4 border-blackFaded bg-accentOrange hover:bg-orangeHover border-2 ${dropdownVisible?"z-30":""}`}
+                                className={`relative flex items-center space-x-2 h-[50px] max-w-[250px] sm:max-w-[600px] hover:outline-none rounded-[20px] text-text font-bold px-4 border-blackFaded border-2 ${dropdownVisible?"bg-orangeHover":"bg-accentOrange hover:bg-orangeHover"}`}
                                 onClick={() => setDropdownVisible(!dropdownVisible)}
                                 ref={refs.setReference}
                             >
@@ -184,7 +184,7 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex-1 truncate">{name}</div>
+                                <div class="flex-1 truncate select-none">{name}</div>
                                 <FaChevronDown
                                     className={`h-5 w-5 text-gray-800 transform transition-transform duration-200 ${
                                         dropdownVisible ? 'rotate-180' : 'rotate-0'
