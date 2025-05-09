@@ -154,7 +154,10 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
                                 ref={refs.setReference}
                             >
                                 <span className="sr-only">Toggle members list</span>
-                                <ProfileCard displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={""} id={selectedID} status={"offline"}/>
+                                <div className="h-8 w-8 rounded-full overflow-hidden">
+                                     <ProfileCard className="h-8 w-8 rounded-full overflow-hidden" displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={mode === "group_messages"? "Group" : ""} id={selectedID} status={""}/>
+                                </div>
+                                <div>{name}</div>
                                 <FaChevronDown
                                     className={`h-5 w-5 text-gray-800 transform transition-transform duration-200 ${
                                         dropdownVisible ? 'rotate-180' : 'rotate-0'
