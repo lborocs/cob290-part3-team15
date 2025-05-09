@@ -6,7 +6,7 @@ const PieChart = ({ data }) => {
 
   useEffect(() => {
     const width = ref.current.parentElement.offsetWidth;
-    const height = 180;
+    const height = 170;
     const radius = Math.min(width, height) / 2;
 
     const svg = d3.select(ref.current)

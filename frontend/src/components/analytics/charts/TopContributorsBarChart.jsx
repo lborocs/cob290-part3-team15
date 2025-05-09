@@ -6,7 +6,7 @@ const TopContributorsBarChart = ({ data }) => {
 
   useEffect(() => {
     const width = ref.current.parentElement.offsetWidth;
-    const height = 230; // Increased height to accommodate the legend
+    const height = 220; // Increased height to accommodate the legend
     const margin = { top: 20, right: 20, bottom: 60, left: 60 }; // Adjusted bottom margin
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
