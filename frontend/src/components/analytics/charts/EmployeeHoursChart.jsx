@@ -4,9 +4,9 @@ import * as d3 from 'd3';
 const EmployeeHoursChart = ({ data }) => {
   const ref = useRef();
 
-  console.log('Chart data:', data);
-
   useEffect(() => {
+    if (!data || data.length === 0) return;
+
     const width = ref.current.parentElement.offsetWidth;
     const height = 220;
     const margin = { top: 20, right: 20, bottom: 40, left: 50 };
@@ -17,65 +17,89 @@ const EmployeeHoursChart = ({ data }) => {
       .attr('width', width)
       .attr('height', height);
 
-    // Transform data: use weekStart and set hours to 0 if null
-    data = data.map(d => ({
+    svg.selectAll('*').remove();
+
+    // Transform data
+    const processedData = data.map(d => ({
       ...d,
       week: d.weekStart,
       hours: Number(d.hours) || 0,
     }));
 
-    svg.selectAll('*').remove();
+    // Calculate cumulative hours (reversed for proper accumulation)
+    const cumulativeData = processedData.toReversed().map((d, i) => ({
+      ...d,
+      cumulativeHours: processedData.toReversed().slice(0, i + 1).reduce((sum, item) => sum + item.hours, 0),
+    }));
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Calculate cumulative hours for the line graph
-    const cumulativeData = data.toReversed().map((d, i) => ({
-      ...d,
-      cumulativeHours: data.toReversed().slice(0, i + 1).reduce((sum, item) => sum + item.hours, 0),
-    }));
-
     // X-axis (weeks)
     const x = d3.scalePoint()
-      .domain(data.map(d => d.week))
+      .domain(processedData.map(d => d.week))
       .range([0, innerWidth])
       .padding(0.5);
 
     // Y-axis (hours)
     const y = d3.scaleLinear()
       .domain([0, d3.max(cumulativeData, d => d.cumulativeHours) * 1.1])
-      .range([innerHeight, 0]);
+      .range([innerHeight, 0])
+      .nice();
 
-    // Add X-axis
-    g.append('g')
+    // Add X-axis with animation
+    const xAxis = g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
-      .call(d3.axisBottom(x))
-      .append('text')
-      .attr('x', innerWidth / 2)
-      .attr('y', 30)
-      .attr('text-anchor', 'middle')
-      .text('Week Start');
+      .attr('opacity', 0)
+      .call(d3.axisBottom(x));
+    
+    xAxis.transition()
+      .duration(800)
+      .attr('opacity', 1);
 
-    // Add Y-axis
-    g.append('g')
-      .call(d3.axisLeft(y))
-      .append('text')
+    // Add Y-axis with animation
+    const yAxis = g.append('g')
+      .attr('opacity', 0)
+      .call(d3.axisLeft(y));
+    
+    yAxis.transition()
+      .duration(800)
+      .attr('opacity', 1);
+
+    // Add axis labels
+    g.append('text')
+      .attr('x', innerWidth / 2)
+      .attr('y', innerHeight + 40)
+      .attr('text-anchor', 'middle')
+      .text('Week Start')
+      .style('opacity', 0)
+      .transition()
+      .delay(800)
+      .style('opacity', 1);
+
+    g.append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', -40)
       .attr('x', -innerHeight / 2)
       .attr('text-anchor', 'middle')
-      .text('Hours Worked');
+      .text('Hours Worked')
+      .style('opacity', 0)
+      .transition()
+      .delay(800)
+      .style('opacity', 1);
 
-    // Add bars (weekly hours)
-    const barWidth = innerWidth / data.length * 0.6; // Adjust bar width as needed
+    // Bar width calculation
+    const barWidth = innerWidth / processedData.length * 0.6;
+
+    // Add bars with animation
     g.selectAll('.bar')
-      .data(data)
+      .data(processedData)
       .enter()
       .append('rect')
       .attr('class', 'bar')
       .attr('x', d => x(d.week) - barWidth / 2)
-      .attr('y', d => y(d.hours))
+      .attr('y', innerHeight) // Start from bottom
       .attr('width', barWidth)
-      .attr('height', d => innerHeight - y(d.hours))
+      .attr('height', 0) // Start with 0 height
       .attr('fill', '#74C476')
       .on('mouseenter', function (_, d) {
         d3.select(this).attr('fill', '#4CAF50');
@@ -91,31 +115,43 @@ const EmployeeHoursChart = ({ data }) => {
       .on('mouseleave', function () {
         d3.select(this).attr('fill', '#74C476');
         g.selectAll('.bar-tooltip').remove();
-      });
+      })
+      .transition()
+      .delay((_, i) => i * 100) // Staggered delay
+      .duration(500)
+      .attr('y', d => y(d.hours))
+      .attr('height', d => innerHeight - y(d.hours));
 
-    // Line generator (cumulative hours)
+    // Line generator for cumulative hours
     const line = d3.line()
       .x(d => x(d.week))
       .y(d => y(d.cumulativeHours))
       .curve(d3.curveMonotoneX);
 
-    // Add line path
-    g.append('path')
+    // Add line path with animation
+    const path = g.append('path')
       .datum(cumulativeData)
       .attr('fill', 'none')
       .attr('stroke', '#36A2EB')
       .attr('stroke-width', 2)
+      .attr('stroke-dasharray', function() { return this.getTotalLength() })
+      .attr('stroke-dashoffset', function() { return this.getTotalLength() })
       .attr('d', line);
 
-    // Add circles for data points (cumulative hours)
-    g.selectAll('.dot')
+    path.transition()
+      .delay(processedData.length * 100 + 200) // Start after bars
+      .duration(1000)
+      .attr('stroke-dashoffset', 0);
+
+    // Add circles for data points with animation
+    const dots = g.selectAll('.dot')
       .data(cumulativeData)
       .enter()
       .append('circle')
       .attr('class', 'dot')
       .attr('cx', d => x(d.week))
-      .attr('cy', d => y(d.cumulativeHours))
-      .attr('r', 4)
+      .attr('cy', innerHeight) // Start from bottom
+      .attr('r', 0) // Start with radius 0
       .attr('fill', '#36A2EB')
       .on('mouseenter', function (_, d) {
         d3.select(this).attr('fill', '#2980B9');
@@ -132,6 +168,12 @@ const EmployeeHoursChart = ({ data }) => {
         d3.select(this).attr('fill', '#36A2EB');
         g.selectAll('.dot-tooltip').remove();
       });
+
+    dots.transition()
+      .delay((_, i) => processedData.length * 100 + 200 + i * 100) // Stagger after line
+      .duration(500)
+      .attr('cy', d => y(d.cumulativeHours))
+      .attr('r', 4);
 
   }, [data]);
 
