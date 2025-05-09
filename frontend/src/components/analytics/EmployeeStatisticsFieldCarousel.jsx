@@ -58,7 +58,7 @@ function EmployeeStatisticsCarousel() {
   const currentStats = dummyData[weekIndex]?.[timePeriod] || {};
 
   return (
-    <div className="relative flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-lg border border-gray-200 col-span-4 row-span-2 h-full">
+    <div className="relative flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
       <div className="flex flex-row items-center justify-center w-full mt-8">
         <select
           className="px-4 py-2 rounded border border-gray-300 mr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
