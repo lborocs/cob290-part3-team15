@@ -71,8 +71,7 @@ function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
 
   return (
     <div className="relative flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
-      <h2 className="absolute top-4 left-4 text-2xl font-semibold">Overview</h2>
-      <div className="flex items-center w-full mt-8">
+      <div className="flex items-center w-full">
         <button
           className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
           onClick={() => handleNavigation('left')}
@@ -81,7 +80,8 @@ function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
         </button>
 
         <div className="flex flex-col items-center justify-center text-center mx-6 flex-grow h-full">
-          <div className="w-full max-w-md max-h-[220px] h-full mb-4">
+          <h2 className="text-xl font-semibold text-text mb-2">Overview</h2>
+          <div className="w-full max-w-md max-h-[63%] h-full mb-6">
             <ChartComponent data={chartData} />
           </div>
           <p className="text-gray-600 px-2">{currentChart.description}</p>
@@ -95,7 +95,7 @@ function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
         </button>
       </div>
 
-      <div className="absolute bottom-4 flex space-x-2">
+      <div className="flex space-x-2 pb-4">
         {chartConfig.map((chart, index) => (
           <button
             key={index}
