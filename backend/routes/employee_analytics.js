@@ -59,22 +59,33 @@ router.get("/getAssignedProjects",authenticateToken,(req,res) => {
 
 /* ADDED FUNCTIONS FOR THE EMPLOYEE OVERVIEW */
 // get the employee hours 
-router.get("/getAllEmployeeHours",authenticateToken,(req,res) => {
-    const query = `SELECT
-                            SUM(HoursWorked) as 'hours',
-                            DATE_FORMAT(WeekStart, '%Y-%m-%d') as 'weekStart'
-                        FROM employee_hours
-                        WHERE UserID = ?
-                        GROUP BY WeekStart
-                        ORDER BY WeekStart DESC
-                        LIMIT 4`;
+router.get("/getAllEmployeeHours", authenticateToken, (req, res) => {
+    const query = `
+        WITH last_4_weeks AS (
+            SELECT 
+                DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL (WEEKDAY(CURDATE())) DAY) - INTERVAL (7 * (n - 1)) DAY, '%Y-%m-%d') AS weekStart,
+                DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL (WEEKDAY(CURDATE()) - 6) DAY) - INTERVAL (7 * (n - 1)) DAY, '%Y-%m-%d') AS weekEnd
+            FROM (SELECT 1 AS n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4) AS weeks
+        )
+        SELECT 
+            SUM(t.HoursRequired) AS 'hours',
+            lw.weekStart,
+            lw.weekEnd
+        FROM last_4_weeks lw
+        LEFT JOIN tasks t 
+            ON t.CompletionDate BETWEEN lw.weekStart AND lw.weekEnd
+            AND t.AssigneeID = ? 
+            AND t.Status = 'Completed'
+        GROUP BY lw.weekStart, lw.weekEnd
+        ORDER BY lw.weekStart DESC;
+    `;
 
     database.query(query, [req.user.userID], (err, results) => {
         if (err) {
-            return res.status(500).send({error: "Error fetching employee hours"});
+            return res.status(500).send({ error: "Error fetching employee hours" });
         }
 
-        res.send({results: results});
+        res.send({ results: results });
     });
 });
 
@@ -130,14 +141,14 @@ router.get("/getUserTasks", authenticateToken, (req, res) => {
 
     if (selectedProjectId == 'null') {
         // If no projectId is provided, fetch all tasks assigned to the user
-        query = `SELECT t.TaskID as 'id', t.Title as 'title', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
-                 FROM tasks as t
+        query = `SELECT t.TaskID as 'id', t.Title as 'title', u.Forename AS 'assigneeForename', u.Surname AS 'assigneeSurname', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
+                 FROM tasks as t INNER JOIN users as u ON t.AssigneeID = u.UserID
                  WHERE t.AssigneeID = ?`;
         values = [req.user.userID];
     } else {
         // If projectId is provided, fetch tasks for the specific project
-        query = `SELECT t.TaskID as 'id', t.Title as 'title', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
-                 FROM tasks as t
+        query = `SELECT t.TaskID as 'id', t.Title as 'title', u.Forename AS 'assigneeForename', u.Surname AS 'assigneeSurname', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
+                 FROM tasks as t INNER JOIN users as u ON t.AssigneeID = u.UserID
                  WHERE t.AssigneeID = ? AND t.ProjectID = ?`;
         values = [req.user.userID, selectedProjectId];
     }

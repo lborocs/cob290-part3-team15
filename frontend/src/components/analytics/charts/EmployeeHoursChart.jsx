@@ -4,6 +4,8 @@ import * as d3 from 'd3';
 const EmployeeHoursChart = ({ data }) => {
   const ref = useRef();
 
+  console.log('Chart data:', data);
+
   useEffect(() => {
     const width = ref.current.parentElement.offsetWidth;
     const height = 220;
@@ -15,19 +17,32 @@ const EmployeeHoursChart = ({ data }) => {
       .attr('width', width)
       .attr('height', height);
 
+    // Transform data: use weekStart and set hours to 0 if null
+    data = data.map(d => ({
+      ...d,
+      week: d.weekStart,
+      hours: Number(d.hours) || 0,
+    }));
+
     svg.selectAll('*').remove();
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
+    // Calculate cumulative hours for the line graph
+    const cumulativeData = data.map((d, i) => ({
+      ...d,
+      cumulativeHours: data.slice(0, i + 1).reduce((sum, item) => sum + item.hours, 0),
+    }));
+
     // X-axis (weeks)
-    const x = d3.scaleBand()
+    const x = d3.scalePoint()
       .domain(data.map(d => d.week))
       .range([0, innerWidth])
-      .padding(0.2);
+      .padding(0.5);
 
     // Y-axis (hours)
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.hours) * 1.1])
+      .domain([0, d3.max(cumulativeData, d => d.cumulativeHours) * 1.1])
       .range([innerHeight, 0]);
 
     // Add X-axis
@@ -38,7 +53,7 @@ const EmployeeHoursChart = ({ data }) => {
       .attr('x', innerWidth / 2)
       .attr('y', 30)
       .attr('text-anchor', 'middle')
-      .text('Week');
+      .text('Week Start');
 
     // Add Y-axis
     g.append('g')
@@ -50,36 +65,73 @@ const EmployeeHoursChart = ({ data }) => {
       .attr('text-anchor', 'middle')
       .text('Hours Worked');
 
-    // Add bars
+    // Add bars (weekly hours)
+    const barWidth = innerWidth / data.length * 0.6; // Adjust bar width as needed
     g.selectAll('.bar')
       .data(data)
       .enter()
       .append('rect')
       .attr('class', 'bar')
-      .attr('x', d => x(d.week))
-      .attr('width', x.bandwidth())
-      .attr('y', innerHeight)
-      .attr('height', 0)
-      .attr('fill', '#36A2EB')
-      .on('mouseenter', function(_, d) {
-        d3.select(this).attr('fill', '#2980B9');
+      .attr('x', d => x(d.week) - barWidth / 2)
+      .attr('y', d => y(d.hours))
+      .attr('width', barWidth)
+      .attr('height', d => innerHeight - y(d.hours))
+      .attr('fill', '#74C476')
+      .on('mouseenter', function (_, d) {
+        d3.select(this).attr('fill', '#4CAF50');
         g.append('text')
           .attr('class', 'bar-tooltip')
-          .attr('x', x(d.week) + x.bandwidth() / 2)
-          .attr('y', y(d.hours) - 5)
+          .attr('x', x(d.week))
+          .attr('y', y(d.hours) - 10)
           .attr('text-anchor', 'middle')
           .text(`${d.hours} hrs`)
           .style('font-weight', 'bold')
           .style('font-size', '12px');
       })
-      .on('mouseleave', function() {
-        d3.select(this).attr('fill', '#36A2EB');
+      .on('mouseleave', function () {
+        d3.select(this).attr('fill', '#74C476');
         g.selectAll('.bar-tooltip').remove();
+      });
+
+    // Line generator (cumulative hours)
+    const line = d3.line()
+      .x(d => x(d.week))
+      .y(d => y(d.cumulativeHours))
+      .curve(d3.curveMonotoneX);
+
+    // Add line path
+    g.append('path')
+      .datum(cumulativeData)
+      .attr('fill', 'none')
+      .attr('stroke', '#36A2EB')
+      .attr('stroke-width', 2)
+      .attr('d', line);
+
+    // Add circles for data points (cumulative hours)
+    g.selectAll('.dot')
+      .data(cumulativeData)
+      .enter()
+      .append('circle')
+      .attr('class', 'dot')
+      .attr('cx', d => x(d.week))
+      .attr('cy', d => y(d.cumulativeHours))
+      .attr('r', 4)
+      .attr('fill', '#36A2EB')
+      .on('mouseenter', function (_, d) {
+        d3.select(this).attr('fill', '#2980B9');
+        g.append('text')
+          .attr('class', 'dot-tooltip')
+          .attr('x', x(d.week))
+          .attr('y', y(d.cumulativeHours) - 10)
+          .attr('text-anchor', 'middle')
+          .text(`${d.cumulativeHours} hrs`)
+          .style('font-weight', 'bold')
+          .style('font-size', '12px');
       })
-      .transition()
-      .duration(800)
-      .attr('y', d => y(d.hours))
-      .attr('height', d => innerHeight - y(d.hours));
+      .on('mouseleave', function () {
+        d3.select(this).attr('fill', '#36A2EB');
+        g.selectAll('.dot-tooltip').remove();
+      });
 
   }, [data]);
 
