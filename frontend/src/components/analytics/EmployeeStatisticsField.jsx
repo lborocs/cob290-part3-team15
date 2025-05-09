@@ -1,7 +1,7 @@
 import TasksList from "./TasksList.jsx";
 import React from "react";
 import EmployeeStatisticsFieldCarousel from "./EmployeeStatisticsFieldCarousel.jsx";
-import StatisticsFieldBottom from "./StatisticsFieldBottom.jsx";
+import EmployeeStatisticsFieldCarouselBottom from "./EmployeeStatisticsFieldCarouselBottom.jsx";
 
 // TODO unused - remove
 function EmployeeStatisticsField({selectedProject, personalTasks, employees}) {
@@ -36,9 +36,8 @@ function EmployeeStatisticsField({selectedProject, personalTasks, employees}) {
                 />
 
                 {/* need to think of something to add to this bottom section for now just a placeholder */}
-                <StatisticsFieldBottom
-                    employees={ [] }
-                    tasks={ [] }
+                <EmployeeStatisticsFieldCarouselBottom
+                    selectedProject={ "Overview" }
                 />
                 
             </>
