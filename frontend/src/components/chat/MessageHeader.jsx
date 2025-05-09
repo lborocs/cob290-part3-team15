@@ -144,18 +144,18 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
 
     return (
         <>
-            <div className="sticky top-0 z-10 bg-accentOrange w-full h-[60px] flex items-center justify-center px-4 border-b border-yellow-700">
+            <div className="bg-orangeFaded w-full h-[60px] flex justify-center items-center px-4 border-b-2 border-blackFaded focus:outline-none">
                 <div className="flex flex-col text-lg font-semibold">
                     {/*<div>User: {name}</div>*/}
                     <div className="flex items-center self-center gap-2">
-                            <button
-                                className={`relative flex items-center space-x-2 bg-accentOrange hover:bg-orangeHover focus:outline-none text-text font-bold px-4 rounded border-blackFaded border-1 ${dropdownVisible?"z-30":""}`}
+                            <div
+                                className={`relative flex items-center space-x-2 h-[50px] hover:outline-none rounded-[100px] text-text font-bold px-4 border-blackFaded bg-accentOrange hover:bg-orangeHover border-2 ${dropdownVisible?"z-30":""}`}
                                 onClick={() => setDropdownVisible(!dropdownVisible)}
                                 ref={refs.setReference}
                             >
                                 <span className="sr-only">Toggle members list</span>
-                                <div className="h-8 w-8 rounded-full overflow-hidden">
-                                     <ProfileCard className="h-8 w-8 rounded-full overflow-hidden" displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={mode === "group_messages"? "Group" : ""} id={selectedID} status={""}/>
+                                <div className="h-10 w-10 rounded-full overflow-hidden">
+                                     <ProfileCard displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={mode === "group_messages"? "Group" : ""} id={selectedID} status={""}/>
                                 </div>
                                 <div>{name}</div>
                                 <FaChevronDown
@@ -163,7 +163,7 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
                                         dropdownVisible ? 'rotate-180' : 'rotate-0'
                                     }`}
                                 />
-                            </button>
+                            </div>
                     </div>
                 </div>
             </div>
