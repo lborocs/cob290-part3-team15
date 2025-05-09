@@ -29,9 +29,9 @@ const EmployeeHoursChart = ({ data }) => {
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
     // Calculate cumulative hours for the line graph
-    const cumulativeData = data.map((d, i) => ({
+    const cumulativeData = data.toReversed().map((d, i) => ({
       ...d,
-      cumulativeHours: data.slice(0, i + 1).reduce((sum, item) => sum + item.hours, 0),
+      cumulativeHours: data.toReversed().slice(0, i + 1).reduce((sum, item) => sum + item.hours, 0),
     }));
 
     // X-axis (weeks)
