@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { faker } from '@faker-js/faker';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { FiSearch, FiUsers, FiX } from 'react-icons/fi';
@@ -16,39 +15,46 @@ function StatisticsFieldBottom({ selectedProjectId }) {
   const fetchMemberList = async() => {
     try {
       const accessToken = localStorage.getItem('accessToken');
+      const endpoint = selectedProjectId 
+        ? `/api/analytics/projects/getProjectTeamMembers?id=${selectedProjectId}`
+        : `/api/analytics/projects/getOverviewTeamMembers`;
 
-      const endpoint = selectedProjectId ? `/api/analytics/projects/getProjectTeamMembers?id=${selectedProjectId}`
-                                                : `/api/analytics/projects/getOverviewTeamMembers`;
-
-      const responseMembers = await axios.get(endpoint, {
+      const response = await axios.get(endpoint, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-
-
-      setEmployees(responseMembers.data.employees);
-    }
-    catch (error) {
+      setEmployees(response.data.employees);
+    } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchMemberList();
   }, [selectedProjectId]);
 
-  const dummyEmployees = employees.map(employee => {
+  const getInitials = (name) => 
+    name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
+  const colors = [
+    'bg-blue-500', 'bg-green-500', 'bg-purple-500', 
+    'bg-red-500', 'bg-yellow-500', 'bg-pink-500',
+    'bg-indigo-500', 'bg-teal-500', 'bg-orange-500'
+  ];
+
+  const getColor = (name) => 
+    colors[name.length % colors.length];
+
+  const processedEmployees = employees.map(employee => {
+    const fullName = `${employee.forename} ${employee.surname}`;
     return {
-      id: employee.id,
-      name: `${employee.forename} ${employee.surname}`,
-      profilePicture: faker.image.avatar(),
-      tasksGiven: employee.tasksGiven,
-      tasksDue: employee.tasksDue,
-      tasksCompleted: employee.tasksCompleted,
-    }
+      ...employee,
+      name: fullName,
+      initials: getInitials(fullName),
+      colorClass: getColor(fullName),
+    };
   });
 
-  const filteredEmployees = dummyEmployees.filter((employee) =>
+  const filteredEmployees = processedEmployees.filter(employee =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -109,17 +115,15 @@ function StatisticsFieldBottom({ selectedProjectId }) {
           filteredEmployees.map((employee) => (
             <div
               key={employee.id}
-              className="flex items-center p-3 bg-white rounded-xl border border-gray-100 shadow-xs hover:shadow-md hover:border-orange-200 transition-all duration-200 cursor-pointer"
+              className="flex items-center p-3 bg-white rounded-xl border border-gray-100 shadow-xs hover:shadow-md hover:border-accentOrange transition-all duration-200 cursor-pointer"
               onClick={() => handleSelectUser(employee)}
             >
-              <img
-                src={employee.profilePicture}
-                alt={employee.name}
-                className="w-10 h-10 rounded-full mr-3 object-cover border border-gray-200"
-              />
+              <div className={`w-10 h-10 rounded-full mr-3 flex items-center justify-center text-white ${employee.colorClass} border-2 border-accentOrange shadow-sm`}>
+                {employee.initials}
+              </div>
               <div className="flex flex-col">
-                <p className="text-sm font-medium text-gray-800 flex">{employee.name}</p>
-                <p className="text-xs text-gray-500 flex">{employee.tasksCompleted}/{employee.tasksGiven} tasks completed</p>
+                <p className="text-sm font-medium text-gray-800">{employee.name}</p>
+                <p className="text-xs text-gray-500">{employee.tasksCompleted}/{employee.tasksGiven} tasks completed</p>
               </div>
             </div>
           ))
@@ -161,14 +165,11 @@ function StatisticsFieldBottom({ selectedProjectId }) {
 
             <div className="p-6">
               <div className="flex flex-col sm:flex-row justify-center items-center sm:items-start gap-6 mb-8">
-                <img
-                  src={selectedUser?.profilePicture}
-                  alt={selectedUser?.name}
-                  className="w-24 h-24 rounded-full object-cover border border-gray-200 shadow-sm"
-                />
+                <div className={`w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl ${selectedUser?.colorClass} border-3 border-accentOrange shadow-md`}>
+                  {selectedUser?.initials}
+                </div>
                 <div className="text-center sm:text-left">
                   <h2 className="text-2xl px-8 items-center font-bold text-gray-800 mb-1">{selectedUser?.name}</h2>
-                  
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                     <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm">
                       {selectedUser?.tasksGiven} Given
