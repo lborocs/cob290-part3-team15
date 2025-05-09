@@ -88,29 +88,35 @@ const PieChart = ({ data }) => {
 
     // Add legend
     const legend = svg.append('g')
-      .attr('transform', `translate(10, ${height + 10})`);
+      .attr('transform', `translate(110, ${height + 20})`);
 
-    legend.selectAll('.legend-item')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('class', 'legend-item')
-      .attr('transform', (_, i) => `translate(0, ${i * 20})`)
-      .each(function(d) {
-        const legendItem = d3.select(this);
+    legend.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', 15)
+      .attr('height', 15)
+      .attr('fill', '#4CAF50');
 
-        legendItem.append('rect')
-          .attr('width', 12)
-          .attr('height', 12)
-          .attr('fill', color(d.label));
+    legend.append('text')
+      .attr('x', 20)
+      .attr('y', 12)
+      .text('Completed')
+      .style('font-size', '12px')
+      .style('fill', '#333');
 
-        legendItem.append('text')
-          .attr('x', 18)
-          .attr('y', 10)
-          .text(d.label)
-          .style('font-size', '12px')
-          .style('fill', '#333');
-      });
+    legend.append('rect')
+      .attr('x', 100)
+      .attr('y', 0)
+      .attr('width', 15)
+      .attr('height', 15)
+      .attr('fill', '#FF6384');
+
+    legend.append('text')
+      .attr('x', 120)
+      .attr('y', 12)
+      .text('Not Completed')
+      .style('font-size', '12px')
+      .style('fill', '#333');
 
   }, [data]);
 

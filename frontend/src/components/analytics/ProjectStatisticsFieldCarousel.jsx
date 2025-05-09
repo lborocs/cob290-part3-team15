@@ -8,27 +8,6 @@ import EmployeeHoursChart from './charts/EmployeeHoursChart.jsx';
 import EmployeeProjectsChart from './charts/EmployeeProjectsChart.jsx';
 import TopContributorsBarChart from "./charts/TopContributorsBarChart.jsx";
 
-// Dummy data for the charts
-const dummyData = {
-  'employee-hours': [
-    { week: 'Week 1', hours: 32 },
-    { week: 'Week 2', hours: 38 },
-    { week: 'Week 3', hours: 40 },
-    { week: 'Week 4', hours: 35 }
-  ],
-  'employee-projects': [
-    { project: 'Project Alpha', tasks: 12 },
-    { project: 'Project Beta', tasks: 8 },
-    { project: 'Project Gamma', tasks: 5 },
-  ],
-  'line': [ 
-    { employee: "Ryan Gosling", hours: 15 },
-    { employee: "Steve Roggers", hours: 42 },
-    { employee: "Toby Maguire", hours: 6 },
-    { employee: "Hugh Jackman", hours: 39 }
-  ]
-};
-
 function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
 
   const chartConfig = [
@@ -82,11 +61,6 @@ function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
     console.log("Project ID:", selectedProjectId); // Debugging
     const fetchData = async () => {
       try {
-        // dummy data for the new employee charts
-        if (['employee-hours', 'employee-projects', 'line'].includes(currentChart.type)) {
-          setChartData(dummyData[currentChart.type]);
-          return;
-        }
           const accessToken = localStorage.getItem('accessToken');
           const response = await axios.get(currentChart.endpoint, {
               params: { projectId: selectedProjectId },
@@ -146,7 +120,7 @@ function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
+    <div className="relative flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2">
       <div className="flex items-center w-full">
         <button
           className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
@@ -156,8 +130,8 @@ function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
         </button>
 
         <div className="flex flex-col items-center justify-center text-center mx-6 flex-grow h-full">
-          <h2 className="text-xl font-semibold text-text mb-4">{currentChart.title}</h2>
-          <div className="w-full max-w-md max-h-[220px] h-full mb-4">
+          <h2 className="text-xl font-semibold text-text mb-2">{currentChart.title}</h2>
+          <div className="w-full max-w-md max-h-[63%] h-full mb-6">
             <ChartComponent data={chartData} />
           </div>
           <p className="text-gray-600 px-2">{currentChart.description}</p>
@@ -171,7 +145,7 @@ function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
         </button>
       </div>
 
-      <div className="absolute bottom-4 flex space-x-2">
+      <div className="flex space-x-2 pb-4">
         {chartConfig.map((chart, index) => (
           <button
             key={index}

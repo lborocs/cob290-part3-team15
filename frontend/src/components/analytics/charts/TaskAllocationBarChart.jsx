@@ -6,7 +6,7 @@ const TaskAllocationBarChart = ({ data }) => {
 
   useEffect(() => {
     const width = ref.current.parentElement.offsetWidth;
-    const height = 260; // Increased height to accommodate the legend
+    const height = 230; // Increased height to accommodate the legend
     const margin = { top: 20, right: 20, bottom: 60, left: 60 }; // Adjusted bottom margin
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -82,7 +82,7 @@ const TaskAllocationBarChart = ({ data }) => {
 
     // Add legend below the chart
     const legend = svg.append('g')
-      .attr('transform', `translate(${margin.left}, ${height - 40})`); // Positioned below the chart
+      .attr('transform', `translate(110, ${height - 30})`); // Positioned below the chart
 
     legend.append('rect')
       .attr('x', 0)
