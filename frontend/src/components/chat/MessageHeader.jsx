@@ -7,6 +7,9 @@ import RemoveMemberModal from "../chat/RemoveMemberModal";
 import RenameModal from "../chat/RenameModal";
 import LeaveModal from "../chat/LeaveModal";
 import axios from "axios";
+import { FaChevronDown,FaUser } from "react-icons/fa";
+import { HiUserGroup } from "react-icons/hi";
+
 // components/chat/core/Header.jsx
 export default function Header({ selectedID, mode, userID, refresh,setSelectedID,setMode }) {
     // You can customize this logic however you want
@@ -140,19 +143,54 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
         setSelectedMember(null);
     }
 
+    const colors = {
+        blue:   "bg-[#4d74b6]", //rgb(0, 57, 150) @ 70%
+        green:  "bg-[#64d68e]", // #22c55e @ 70%
+        red:    "bg-[#f47c7c]", // #ef4444 @ 70%
+        blue2:  "bg-[#74ccfb]", // rgb(0, 170, 255)
+        pink:   "bg-[#f27fb8]", // #ec4899 @ 70%
+        purple: "bg-[#ae8df9]", // #8b5cf6 @ 70%
+        blue3:  "bg-[#6d8cf5]", // rgb(51, 102, 255)
+        color3:  "bg-[#ef6f92]", // rgb(255, 0, 76)
+        gray:   "bg-[#979ca6]", // #6b7280 @ 70%
+        green2: "bg-[#59b64d]", //rgb(111, 224, 101) @ 70%
+        indigo: "bg-[#9294f5]", // #6366f1 @ 70%
+        teal:   "bg-[#5bcdc1]", // #14b8a6 @ 70%
+        pink2: "bg-[#e880aa]", // rgb(255, 162, 199)
+        pink3: "bg-[#dc5e91]", // rgb(221, 34, 119)
+    }
+    
+    const colorKeys = Object.keys(colors);
+    const colorBasedOnId = selectedID % colorKeys.length;
+    const color = colors[colorKeys[colorBasedOnId]];
+
     return (
         <>
-            <div className="bg-orangeFaded w-full h-[60px] flex justify-center items-center px-4 border-b-2 border-blackFaded">
+            <div className="bg-orangeFaded w-full h-[60px]  flex justify-center items-center px-4 border-b-2 border-blackFaded focus:outline-none">
                 <div className="flex flex-col text-lg font-semibold">
                     {/*<div>User: {name}</div>*/}
                     <div className="flex items-center self-center gap-2">
-                            <button
-                                className={`bg-accentOrange hover:bg-orangeHover text-text font-bold px-4 rounded border-blackFaded border-1 ${dropdownVisible?"z-30":""}`}
+                            <div
+                                className={`relative flex items-center space-x-2 h-[50px] max-w-[250px] sm:max-w-[600px] hover:outline-none rounded-[100px] text-text font-bold px-4 border-blackFaded bg-accentOrange hover:bg-orangeHover border-2 ${dropdownVisible?"z-30":""}`}
                                 onClick={() => setDropdownVisible(!dropdownVisible)}
                                 ref={refs.setReference}
                             >
-                                <ProfileCard displayBG={"bg-accentOrange group-hover:bg-orangeHover"} type={""} id={selectedID} status={"offline"}/>
-                            </button>
+                                <span className="sr-only">Toggle members list</span>
+                                <div className="h-10 w-10 rounded-full overflow-hidden">
+                                    <div className="flex relative w-full h-full group">
+                                        {/* Profile Picture */}
+                                        <div className={`flex flex-col items-center justify-center w-full h-full rounded-full mx-auto border-4 border-transparent ${color}`}>
+                                            {mode === "group_messages" ? <HiUserGroup className="w-6 h-6 mb-[1px] text-white" /> : <FaUser className="w-6 h-6 text-white" />}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-1 truncate">{name}</div>
+                                <FaChevronDown
+                                    className={`h-5 w-5 text-gray-800 transform transition-transform duration-200 ${
+                                        dropdownVisible ? 'rotate-180' : 'rotate-0'
+                                    }`}
+                                />
+                            </div>
                     </div>
                 </div>
             </div>
