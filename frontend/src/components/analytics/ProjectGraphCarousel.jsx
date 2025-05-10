@@ -4,6 +4,7 @@ import ProjectTaskCompletionPieChart from './charts/ProjectTaskCompletionPieChar
 import ProjectTaskAllocationBarChart from './charts/ProjectTaskAllocationBarChart.jsx';
 import ProjectTopContributorsBarChart from "./charts/ProjectTopContributorsBarChart.jsx";
 
+// TODO - copy structure from employee carousel to make design consistent
 function ProjectGraphCarousel({ selectedProjectId }) {
 
   const chartConfig = [

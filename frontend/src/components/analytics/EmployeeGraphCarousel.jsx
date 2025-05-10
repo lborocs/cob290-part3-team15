@@ -112,13 +112,12 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
         {chartConfig.map((_, index) => (
           <button
             key={index}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${
+            className={`w-3 h-3 rounded-full transition-all ${
               index === currentIndex 
                 ? 'bg-accentOrange scale-125' 
                 : 'bg-gray-300 hover:bg-gray-400'
             }`}
             onClick={() => setCurrentIndex(index)}
-            aria-label={`View ${chartConfig[index].title}`}
           />
         ))}
       </div>
