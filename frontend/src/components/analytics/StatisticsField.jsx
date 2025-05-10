@@ -2,7 +2,7 @@ import ProjectGraphCarousel from "./ProjectGraphCarousel.jsx";
 import TasksList from "./TasksList.jsx";
 import ProjectMemberList from "./ProjectMemberList.jsx";
 import React from "react";
-import EmployeeStatisticsFieldCarousel from "./EmployeeStatisticsCarousel.jsx";
+import EmployeeStatisticsFieldCarousel from "./EmployeeWorkStatistics.jsx";
 import EmployeeGraphCarousel from "./EmployeeGraphCarousel.jsx";
 
 function StatisticsField({ userRole, selectedProjectId }) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
-function EmployeeStatisticsCarousel() {
+function EmployeeWorkStatistics() {
     // no charts just statistical data so no need for a carousel
   // stats should include:
   const [timePeriod, setTimePeriod] = React.useState('week');
@@ -160,4 +160,4 @@ function EmployeeStatisticsCarousel() {
   );
 }
 
-export default EmployeeStatisticsCarousel;
+export default EmployeeWorkStatistics;
