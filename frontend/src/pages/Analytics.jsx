@@ -18,6 +18,7 @@ function Analytics({ user }) {
     const [projects, setProjects] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [tasks, setTasks] = useState([]);
+    const [newNotification,setNewNotification] = useState(0);
 
     // Fetch all project-side data to be displayed
     const fetchData = async() => {
@@ -67,6 +68,9 @@ function Analytics({ user }) {
             socket.on('selfStatus', (data) => {
                 setPersonalStatus(data?.status);
             });
+            socket.on('notification', (data) => { 
+                setNewNotification(previous => previous+1);
+            }); 
             socket.emit('requestStatus', user.userID);
         }
         return () => {
@@ -84,6 +88,7 @@ function Analytics({ user }) {
                 setIsSelected={null}
                 activeTab={activeTab}
                 status={personalStatus}
+                newNotification={newNotification}
             />
             <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
                 <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
