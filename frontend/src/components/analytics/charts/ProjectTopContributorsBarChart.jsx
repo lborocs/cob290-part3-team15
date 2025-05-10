@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as d3 from 'd3';
 
-const TopContributorsBarChart = ({ data }) => {
+const ProjectTopContributorsBarChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
@@ -75,4 +75,4 @@ const TopContributorsBarChart = ({ data }) => {
   return <svg ref={ref} className="w-full" />;
 };
 
-export default TopContributorsBarChart;
+export default ProjectTopContributorsBarChart;

@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as d3 from 'd3';
 
-const PieChart = ({ data }) => {
+const ProjectTaskCompletionPieChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
@@ -123,4 +123,4 @@ const PieChart = ({ data }) => {
   return <svg ref={ref} className="w-full" />;
 };
 
-export default PieChart;
+export default ProjectTaskCompletionPieChart;

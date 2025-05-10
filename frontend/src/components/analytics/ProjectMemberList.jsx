@@ -4,7 +4,7 @@ import 'chart.js/auto';
 import { FiSearch, FiUsers, FiX } from 'react-icons/fi';
 import axios from "axios";
 
-function StatisticsFieldBottom({ selectedProjectId }) {
+function ProjectMemberList({ selectedProjectId }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -247,4 +247,4 @@ function StatisticsFieldBottom({ selectedProjectId }) {
   );
 }
 
-export default StatisticsFieldBottom;
+export default ProjectMemberList;

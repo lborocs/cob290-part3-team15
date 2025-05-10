@@ -4,10 +4,8 @@ import Auth from "../components/login/Auth.jsx";
 import Navbar from '../components/navigation/Navbar.jsx';
 import {connectSocket, disconnectSocket, getSocket} from '../socket';
 import axios from "axios";
-import EmployeeQuickStatistics from "../components/analytics/EmployeeQuickStatistics.jsx";
 import QuickStatistics from "../components/analytics/QuickStatistics.jsx";
 import SearchBox from "../components/analytics/SearchBox.jsx";
-import EmployeeStatisticsField from "../components/analytics/EmployeeStatisticsField.jsx";
 import StatisticsField from "../components/analytics/StatisticsField.jsx";
 
 

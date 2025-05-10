@@ -1,9 +1,9 @@
-import ProjectStatisticsFieldCarousel from "./ProjectStatisticsFieldCarousel.jsx";
+import ProjectGraphCarousel from "./ProjectGraphCarousel.jsx";
 import TasksList from "./TasksList.jsx";
-import StatisticsFieldBottom from "./StatisticsFieldBottom.jsx";
+import ProjectMemberList from "./ProjectMemberList.jsx";
 import React from "react";
-import EmployeeStatisticsFieldCarousel from "./EmployeeStatisticsFieldCarousel.jsx";
-import EmployeeStatisticsFieldCarouselBottom from "./EmployeeStatisticsFieldCarouselBottom.jsx";
+import EmployeeStatisticsFieldCarousel from "./EmployeeStatisticsCarousel.jsx";
+import EmployeeGraphCarousel from "./EmployeeGraphCarousel.jsx";
 
 function StatisticsField({ userRole, selectedProjectId }) {
 
@@ -14,13 +14,13 @@ function StatisticsField({ userRole, selectedProjectId }) {
             {userRole === "Employee" ? (
                 selectedProjectId ? (
                     <>  
-                    <EmployeeStatisticsFieldCarouselBottom selectedProjectId={ null } />
+                    <EmployeeGraphCarousel selectedProjectId={ null } />
                     <TasksList selectedProjectId={selectedProjectId} role={userRole} />
                     <EmployeeStatisticsFieldCarousel selectedProjectId={selectedProjectId} />
                     </>
                 ) : (
                     <>
-                    <EmployeeStatisticsFieldCarouselBottom selectedProjectId={ null } />
+                    <EmployeeGraphCarousel selectedProjectId={ null } />
                     <TasksList selectedProjectId={selectedProjectId} role={userRole} />
                     <div className="flex items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 w-full">
                         <p className="text-3xl text-center">Select a project to view details</p>
@@ -30,9 +30,9 @@ function StatisticsField({ userRole, selectedProjectId }) {
             ) : userRole === "Manager" ? (
                 selectedProjectId ? (
                     <>
-                        <ProjectStatisticsFieldCarousel selectedProjectId={selectedProjectId} />
+                        <ProjectGraphCarousel selectedProjectId={selectedProjectId} />
                         <TasksList selectedProjectId={selectedProjectId} role={userRole} />
-                        <StatisticsFieldBottom selectedProjectId={selectedProjectId} />
+                        <ProjectMemberList selectedProjectId={selectedProjectId} />
                     </>
                 ) : (
                     <>
@@ -40,16 +40,16 @@ function StatisticsField({ userRole, selectedProjectId }) {
                         <p className="text-3xl text-center">Select a project to view details</p>
                     </div>
                     <TasksList selectedProjectId={selectedProjectId} role={userRole} />
-                    <StatisticsFieldBottom selectedProjectId={selectedProjectId} />
+                    <ProjectMemberList selectedProjectId={selectedProjectId} />
                     </>
                     
                 )
             ) : userRole === "Team Leader" ? (
                 selectedProjectId ? (
                     <>
-                        <ProjectStatisticsFieldCarousel selectedProjectId={selectedProjectId} />
+                        <ProjectGraphCarousel selectedProjectId={selectedProjectId} />
                         <TasksList selectedProjectId={selectedProjectId} role={userRole} />
-                        <StatisticsFieldBottom selectedProjectId={selectedProjectId} />
+                        <ProjectMemberList selectedProjectId={selectedProjectId} />
                     </>
                 ) : (
                     <>
@@ -58,7 +58,7 @@ function StatisticsField({ userRole, selectedProjectId }) {
                     </div>
                     
                     <TasksList selectedProjectId={selectedProjectId} role={userRole} />
-                    <StatisticsFieldBottom selectedProjectId={selectedProjectId} />
+                    <ProjectMemberList selectedProjectId={selectedProjectId} />
                     </>
 
                 )

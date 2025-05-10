@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import EmployeeHoursChart from './charts/EmployeeHoursChart.jsx';
-import EmployeeProjectsChart from './charts/EmployeeProjectsChart.jsx';
+import EmployeeWeeklyHoursChart from './charts/EmployeeWeeklyHoursChart.jsx';
+import EmployeeContributionsByProjectChart from './charts/EmployeeContributionsByProjectChart.jsx';
 
-function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
+function EmployeeGraphCarousel({ selectedProjectId }) {
   const chartConfig = [];
 
   // null is the 'id' for the overview
@@ -14,14 +14,14 @@ function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
         title: 'My Project Contributions',
         description: 'Tasks I contributed to by project',
         endpoint: '/api/analytics/employees/getAllEmployeeProjects',
-        component: EmployeeProjectsChart,
+        component: EmployeeContributionsByProjectChart,
       },
       {
         type: 'employee-hours-overview',
         title: 'My Weekly Hours',
         description: 'My hours worked in the past 4 weeks',
         endpoint: '/api/analytics/employees/getAllEmployeeHours',
-        component: EmployeeHoursChart,
+        component: EmployeeWeeklyHoursChart,
       },
     );
   }
@@ -127,4 +127,4 @@ function EmployeeStatisticsFieldCarouselBottom({ selectedProjectId }) {
   );
 }
 
-export default EmployeeStatisticsFieldCarouselBottom;
+export default EmployeeGraphCarousel;

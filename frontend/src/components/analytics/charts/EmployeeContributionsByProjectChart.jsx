@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as d3 from 'd3';
 
-const EmployeeProjectsChart = ({ data }) => {
+const EmployeeContributionsByProjectChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
@@ -167,4 +167,4 @@ const EmployeeProjectsChart = ({ data }) => {
   return <svg ref={ref} className="w-full" />;
 };
 
-export default EmployeeProjectsChart;
+export default EmployeeContributionsByProjectChart;

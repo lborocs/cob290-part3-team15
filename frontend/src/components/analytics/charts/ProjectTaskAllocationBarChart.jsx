@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as d3 from 'd3';
 
-const TaskAllocationBarChart = ({ data }) => {
+const ProjectTaskAllocationBarChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
@@ -116,4 +116,4 @@ const TaskAllocationBarChart = ({ data }) => {
   return <svg ref={ref} className="w-full" />;
 };
 
-export default TaskAllocationBarChart;
+export default ProjectTaskAllocationBarChart;

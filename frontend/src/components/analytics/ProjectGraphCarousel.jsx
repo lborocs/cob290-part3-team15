@@ -1,55 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import PieChart from './charts/PieChart.jsx';
-import TaskAllocationBarChart from './charts/TaskAllocationBarChart.jsx';
-import HorizontalBarChart from './charts/HorizontalBarChart.jsx';
-import LineChart from './charts/LineChart.jsx';
-import EmployeeHoursChart from './charts/EmployeeHoursChart.jsx';
-import EmployeeProjectsChart from './charts/EmployeeProjectsChart.jsx';
-import TopContributorsBarChart from "./charts/TopContributorsBarChart.jsx";
+import ProjectTaskCompletionPieChart from './charts/ProjectTaskCompletionPieChart.jsx';
+import ProjectTaskAllocationBarChart from './charts/ProjectTaskAllocationBarChart.jsx';
+import ProjectTopContributorsBarChart from "./charts/ProjectTopContributorsBarChart.jsx";
 
-function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
+function ProjectGraphCarousel({ selectedProjectId }) {
 
   const chartConfig = [
     {
-      type: 'pie',
+      type: 'task-completion',
       title: 'Task Completion Status',
       description: 'Percentage of completed vs pending tasks',
       endpoint: '/api/analytics/projects/getTaskCompletionStatus',
-      component: PieChart,
+      component: ProjectTaskCompletionPieChart,
     },
-    /* {
-      type: 'employee-hours',
-      title: 'My Weekly Hours',
-      description: 'My hours worked in the past 4 weeks',
-      component: EmployeeHoursChart,
-    },
-    {
-      type: 'employee-projects',
-      title: 'My Project Contributions',
-      description: 'Tasks I contributed to by project',
-      component: EmployeeProjectsChart,
-    }, */
     {
       type: 'project-contributors',
       title: 'Top Contributors',
       description: 'Total hours worked by each team member',
       endpoint: '/api/analytics/projects/getTopContributors',
-      component: TopContributorsBarChart,
+      component: ProjectTopContributorsBarChart,
     },
     {
-      type: 'bar',
+      type: 'task-allocation',
       title: 'Task Allocation by User',
       description: 'Number of tasks assigned to each team member',
       endpoint: '/api/analytics/projects/getTaskAllocationAndPerformance',
-      component: TaskAllocationBarChart,
-    },
-    /* {
-      type: 'horizontal-bar',
-      title: 'Task Completion Efficiency',
-      description: 'Tasks completed vs assigned by user',
-      component: HorizontalBarChart,
-    } */
+      component: ProjectTaskAllocationBarChart,
+    }
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -69,8 +47,8 @@ function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
 
           console.log(`Response for ${currentChart.title}:`, response.data);
 
-          // Format data for the bar chart
-          if (currentChart.type === 'bar') {
+          // Format data for the task allocation bar chart
+          if (currentChart.type === 'task-allocation') {
             const formattedData = response.data.map((item) => ({
               label: item.label,
               tasksAssigned: item.tasksAssigned,
@@ -78,7 +56,7 @@ function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
             }));
             setChartData(formattedData);
           } else if (currentChart.type === 'project-contributors') {
-            // Format data for the contributors chart
+            // Format data for the top contributors chart
             const formattedData = response.data.map((item) => ({
               name: `${item.forename} ${item.surname}`,
               hours: item.hours,
@@ -86,7 +64,7 @@ function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
             setChartData(formattedData);
           }
           else {
-            // Format data for the pie chart
+            // Format data for the task completion pie chart
             const formattedData = Array.isArray(response.data)
               ? response.data
               : [
@@ -173,4 +151,4 @@ function ProjectStatisticsFieldCarousel({ selectedProjectId }) {
   );
 }
 
-export default ProjectStatisticsFieldCarousel;
+export default ProjectGraphCarousel;
