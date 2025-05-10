@@ -131,25 +131,19 @@ router.get("/getTasks",authenticateToken,(req,res) => {
 });
 
 
-// TODO unused
+
 // Get all tasks assigned to a user
 router.get("/getUserTasks", authenticateToken, (req, res) => {
-    const selectedProjectId = req.query.id;
-
-    let query;
-    let values;
-
-    if (selectedProjectId == 'null') {
-        // If no projectId is provided, fetch all tasks assigned to the user
-        query = `SELECT t.TaskID as 'id', t.Title as 'title', u.Forename AS 'assigneeForename', u.Surname AS 'assigneeSurname', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
+    let query = `SELECT t.TaskID as 'id', t.Title as 'title', u.Forename AS 'assigneeForename', u.Surname AS 'assigneeSurname', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
                  FROM tasks as t INNER JOIN users as u ON t.AssigneeID = u.UserID
                  WHERE t.AssigneeID = ?`;
-        values = [req.user.userID];
-    } else {
+
+    const selectedProjectId = req.query.id;
+    let values = [req.user.userID];
+
+    if (selectedProjectId !== 'null') {
         // If projectId is provided, fetch tasks for the specific project
-        query = `SELECT t.TaskID as 'id', t.Title as 'title', u.Forename AS 'assigneeForename', u.Surname AS 'assigneeSurname', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
-                 FROM tasks as t INNER JOIN users as u ON t.AssigneeID = u.UserID
-                 WHERE t.AssigneeID = ? AND t.ProjectID = ?`;
+        query += ` AND t.ProjectID = ?`;
         values = [req.user.userID, selectedProjectId];
     }
 
