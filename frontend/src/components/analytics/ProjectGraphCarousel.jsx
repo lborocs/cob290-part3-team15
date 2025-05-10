@@ -65,7 +65,6 @@ function ProjectGraphCarousel({ selectedProjectId }) {
             setChartData(formattedData);
           }
           else {
-            // Format data for the task completion pie chart
             const formattedData = Array.isArray(response.data)
               ? response.data
               : [
@@ -99,47 +98,64 @@ function ProjectGraphCarousel({ selectedProjectId }) {
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2">
-      <div className="flex items-center w-full">
+    <div className="relative flex flex-col p-4 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
+      {/* Header - properly centered */}
+      <div className="w-full text-center mb-2">
+        <h3 className="text-lg font-semibold text-gray-800">{currentChart.title}</h3>
+        <p className="text-sm text-gray-500">{currentChart.description}</p>
+      </div>
+
+      {/* Chart Container with navigation arrows */}
+      <div className="w-full h-[65%] flex items-center justify-between mb-2">
+        {/* Left arrow */}
         <button
-          className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
           onClick={() => handleNavigation('left')}
+          className="p-2 text-gray-500 hover:text-accentOrange transition-colors"
+          aria-label="Previous chart"
         >
-          ←
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
         </button>
 
-        <div className="flex flex-col items-center justify-center text-center mx-6 flex-grow h-full">
-          <h2 className="text-xl font-semibold text-text mb-2">{currentChart.title}</h2>
-          <div className="w-full max-w-md max-h-[63%] h-full mb-6">
-            <ChartComponent data={chartData} />
-          </div>
-          <p className="text-gray-600 px-2">{currentChart.description}</p>
+        {/* Chart area */}
+        <div className="w-full h-full max-w-[85%] flex items-center justify-center">
+          <ChartComponent data={chartData} />
         </div>
 
+        {/* Right arrow */}
         <button
-          className="px-4 py-2 rounded text-white bg-accentOrange hover:bg-accentOrange/70"
           onClick={() => handleNavigation('right')}
+          className="p-2 text-gray-500 hover:text-accentOrange transition-colors"
+          aria-label="Next chart"
         >
-          →
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         </button>
       </div>
 
-      <div className="flex space-x-2 pb-4">
+      {/* Navigation Dots - properly centered at bottom */}
+      <div className="flex justify-center space-x-2 mt-auto">
         {chartConfig.map((chart, index) => (
-          <button
-            key={index}
-            className={`w-3 h-3 rounded-full group ${
-              index === currentIndex ? 'bg-accentOrange' : 'bg-gray-300'
-            }`}
-            onClick={() => setCurrentIndex(index)}
-          >
+          <div key={index}>
+            <button
+              className={`w-3 h-3 rounded-full transition-all peer ${
+                index === currentIndex
+                  ? 'bg-accentOrange scale-125'
+                  : 'bg-gray-300 hover:bg-gray-400'
+              }`}
+              onClick={() => setCurrentIndex(index)}
+            />
+
             <span
-              className="absolute text-xs bg-black text-white px-2 py-1 rounded opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none"
-              style={{ transform: 'translate(-48%, -150%)' }}
+              key={`tooltip-${index}`}
+              className="absolute text-xs bg-black text-white px-2 py-1 rounded opacity-0 transition-opacity duration-300 peer-hover:opacity-100 pointer-events-none"
+              style={{ transform: 'translate(-52%, -100%)' }}
             >
               {chart.title}
             </span>
-          </button>
+          </div>
         ))}
       </div>
     </div>
