@@ -73,12 +73,20 @@ function Analytics({ user }) {
             <div className="flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-7 gap-4 h-screen flex-1 w-full bg-primary overflow-y-auto lg:overflow-y-hidden overflow-x-hidden p-2 lg:p-0">
                 <div className="ml-0 col-span-4 col-start-2 row-span-1 row-start-2 rounded-4xl p-2">
                     <h2 className="text-4xl font-bold text-start text-text">Welcome {user.name}</h2>
-                    { userRole === 'Manager' && (
-                        <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>  
-                    )} 
-                    { userRole === 'Employee' && !isLeader &&(
-                        <h3 className='text-2xl text-start mt-0 '>{userRole}</h3>  
-                    )} 
+                    { (userRole === 'Manager' || (userRole === 'Employee' && !isLeader)) && (
+                        <div className="flex items-center mt-4">
+                            { userRole === 'Manager' && (
+                                <div className="flex border-2 border-accentOrange rounded-full overflow-hidden">
+                                    <button className="px-4 py-2 transition-colors duration-200 bg-accentOrange text-white">{userRole}</button>
+                                </div>
+                            )}
+                            { userRole === 'Employee' && !isLeader && (
+                                <div className="flex border-2 border-accentOrange rounded-full overflow-hidden">
+                                    <button className="px-4 py-2 transition-colors duration-200 bg-accentOrange text-white">{userRole}</button>
+                                </div>
+                            )}
+                        </div>
+                    )}
         
                     { isLeader ? (
                         <div className="flex items-center mt-4">
@@ -113,11 +121,12 @@ function Analytics({ user }) {
                     {selectedProjectTitle !== 'Overview' && (
                         <button
                             onClick={() => updateSelectedProject(null, "Overview")}
-                            className="px-2 py-1 bg-[#6B7880]/30 text-white rounded-md hover:bg-secondary-dark"
+                            className="px-4 py-2 bg-white text-grey-700 rounded-full shadow-sm hover:bg-accentOrange/90 hover:text-white transition-all duration-200 transform hover:scale-105 text-sm font-medium"
                         >
                             Back to Overview
                         </button>
                     )}
+                    
                 </div>
 
                 <QuickStatistics
