@@ -73,7 +73,7 @@ const BurndownChart = ({ data }) => {
 
     // Add X-axis label
     svg.append('text')
-      .attr('x', innerWidth / 2)
+      .attr('x', innerWidth / 2 - 15)
       .attr('y', innerHeight + 40)
       .attr('text-anchor', 'middle')
       .text('Date')
