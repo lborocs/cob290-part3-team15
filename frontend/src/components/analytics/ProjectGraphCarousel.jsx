@@ -127,26 +127,20 @@ function ProjectGraphCarousel({ selectedProjectId }) {
         {chartConfig.map((chart, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full ${
+            className={`w-3 h-3 rounded-full group ${
               index === currentIndex ? 'bg-accentOrange' : 'bg-gray-300'
             }`}
             onClick={() => setCurrentIndex(index)}
           >
             <span
-              className="absolute text-xs bg-black text-white px-2 py-1 rounded opacity-0 transition-opacity duration-300 pointer-events-none"
-              style={{ transform: 'translateY(20%)' }}
+              className="absolute text-xs bg-black text-white px-2 py-1 rounded opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none"
+              style={{ transform: 'translate(-48%, -150%)' }}
             >
               {chart.title}
             </span>
           </button>
         ))}
       </div>
-
-      <style jsx>{`
-        button:hover span {
-          opacity: 1;
-        }
-      `}</style>
     </div>
   );
 }
