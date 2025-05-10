@@ -6,13 +6,9 @@ const BurndownChart = ({ data }) => {
 
   // Dummy data for testing
   const dummyData = [
-    { date: '2025-05-01', actual: 50 },
-    { date: '2025-05-02', actual: 45 },
-    { date: '2025-05-03', actual: 40 },
-    { date: '2025-05-08', actual: 35 },
-    { date: '2025-05-11', actual: 30 },
-    { date: '2025-05-16', actual: 25 },
-    { date: '2025-05-20', actual: 20 },
+    { date: '2025-04-20', actual: 5 },
+    { date: '2025-04-24', actual: 4 },
+    { date: '2025-05-24', actual: 4 },
   ];
 
   useEffect(() => {
@@ -36,9 +32,24 @@ const BurndownChart = ({ data }) => {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Set the scales
+    // Extend the x-axis range to include dates beyond the last data point
+    const firstDate = new Date(data[0].date);
+    const lastDate = new Date(data[data.length - 1].date);
+    const extendedLastDate = d3.timeWeek.offset(lastDate, 2); // Extend by 2 weeks
+
+    // Add a placeholder point for the horizontal continuation of the actual line
+    const today = new Date();
+    const filteredData = data.filter(d => new Date(d.date) <= today);
+    let actualLineData = [...filteredData];
+
+    // Add horizontal continuation only if there is at least one data point
+    if (filteredData.length > 0) {
+      const lastPoint = filteredData[filteredData.length - 1];
+      actualLineData.push({ date: today.toISOString(), actual: lastPoint.actual }); // Continue horizontally to today's date
+    }
+
     const x = d3.scaleTime()
-      .domain(d3.extent(data, d => new Date(d.date)))
+      .domain([firstDate, extendedLastDate])
       .range([0, innerWidth]);
 
     const y = d3.scaleLinear()
@@ -55,7 +66,7 @@ const BurndownChart = ({ data }) => {
           .ticks(d3.timeWeek.every(1))
           .tickFormat(d3.timeFormat("%d %b"))
       );
-    
+
     xAxis.transition()
       .duration(800)
       .attr('opacity', 1);
@@ -74,8 +85,8 @@ const BurndownChart = ({ data }) => {
     // Add Y-axis with animation
     const yAxis = svg.append('g')
       .attr('opacity', 0)
-      .call(d3.axisLeft(y));
-    
+      .call(d3.axisLeft(y).ticks(Math.ceil(y.domain()[1]))) // Ensure whole number ticks
+
     yAxis.transition()
       .duration(800)
       .attr('opacity', 1);
@@ -92,6 +103,7 @@ const BurndownChart = ({ data }) => {
       .delay(800)
       .style('opacity', 1);
 
+    // Add ideal line (diagonal from top-left to bottom-right)
     svg.append('line')
       .attr('x1', 0)
       .attr('y1', 0)
@@ -111,7 +123,7 @@ const BurndownChart = ({ data }) => {
 
     // Add the actual line with animation
     const path = svg.append('path')
-      .datum(data)
+      .datum(actualLineData) // Use filtered data with horizontal continuation
       .attr('fill', 'none')
       .attr('stroke', '#FF6384')
       .attr('stroke-width', 2)
@@ -126,7 +138,7 @@ const BurndownChart = ({ data }) => {
 
     // Add dots for actual data points with animation
     const dots = svg.selectAll('.dot-actual')
-      .data(data)
+      .data(filteredData)
       .enter()
       .append('circle')
       .attr('class', 'dot-actual')
@@ -136,10 +148,10 @@ const BurndownChart = ({ data }) => {
       .attr('fill', '#FF6384')
       .on('mouseenter', function (_, d) {
         d3.select(this).attr('fill', '#E53935');
-        
+
         // Format date for display
         const dateStr = d3.timeFormat("%d %b")(new Date(d.date));
-        
+
         // Add tooltip
         svg.append('text')
           .attr('class', 'dot-tooltip')
@@ -163,8 +175,7 @@ const BurndownChart = ({ data }) => {
       .attr('r', 5);
 
     // Add today's date vertical dashed line with animation
-    const today = new Date();
-    if (today >= new Date(data[0].date) && today <= new Date(data[data.length - 1].date)) {
+    if (today >= firstDate && today <= extendedLastDate) {
       const todayX = x(today);
 
       const todayLine = svg.append('line')
