@@ -134,8 +134,8 @@ router.get("/getTasks",authenticateToken,(req,res) => {
 
 // Get all tasks assigned to a user
 router.get("/getUserTasks", authenticateToken, (req, res) => {
-    let query = `SELECT t.TaskID as 'id', t.Title as 'title', u.Forename AS 'assigneeForename', u.Surname AS 'assigneeSurname', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
-                 FROM tasks as t INNER JOIN users as u ON t.AssigneeID = u.UserID
+    let query = `SELECT t.TaskID as 'id', t.Title as 'title', p.Title as 'projectTitle', t.Status as 'status', t.Priority as 'priority', t.Deadline as 'deadline'
+                 FROM tasks as t INNER JOIN projects AS p ON t.ProjectID = p.ProjectID
                  WHERE t.AssigneeID = ?`;
 
     const selectedProjectId = req.query.id;
