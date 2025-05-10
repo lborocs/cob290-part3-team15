@@ -5,90 +5,121 @@ const ProjectTaskCompletionPieChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
+    if (!data || data.length === 0) return;
+
     const width = ref.current.parentElement.offsetWidth;
-    const height = 170;
-    const radius = Math.min(width, height) / 2;
+    const height = 220;
+    const radius = Math.min(width, height) / 3; 
+    const margin = { top: 20, right: 20, bottom: 60, left: 20 }; 
 
     const svg = d3.select(ref.current)
       .attr('width', width)
-      .attr('height', height + 50); // Add extra space for the legend
+      .attr('height', height);
 
     svg.selectAll('*').remove();
 
     const g = svg.append('g')
-      .attr('transform', `translate(${width / 2}, ${height / 2})`);
-
-    // Spin animation on mount
-    g.transition()
-      .duration(1000)
-      .attrTween("transform", () => {
-        const rotateInterpolate = d3.interpolate(0, 360);
-        return t => `translate(${width / 2}, ${height / 2}) rotate(${rotateInterpolate(t)})`;
-      });
+      .attr('transform', `translate(${width / 2}, ${height / 2 - 20})`);
 
     const color = d3.scaleOrdinal(['#4CAF50', '#FF6384']);
-    const pie = d3.pie().value(d => d.value);
-    const arc = d3.arc().innerRadius(radius * 0.5).outerRadius(radius);
+    const pie = d3.pie()
+      .value(d => d.value)
+      .sort(null);
+    
+    const arc = d3.arc()
+      .innerRadius(radius * 0.5)
+      .outerRadius(radius);
+    
+    const outerArc = d3.arc()
+      .innerRadius(radius * 0.9)
+      .outerRadius(radius * 0.9);
 
-    const pieData = pie(data);
     const total = d3.sum(data, d => d.value);
 
+    // Initial empty pie
+    const emptyPie = pie(data.map(d => ({ ...d, value: 0 })));
+
+    // Animate from empty pie to actual data
     const slice = g.selectAll('.slice')
-      .data(pieData)
+      .data(pie(data))
       .enter()
       .append('g')
       .attr('class', 'slice');
 
     slice.append('path')
-      .attr('d', arc)
+      .attr('d', arc(emptyPie[0])) // Start from empty
       .attr('fill', d => color(d.data.label))
       .attr('stroke', 'white')
       .style('stroke-width', '2px')
-      .each(function(d) { this._current = d; })
-     /* .on('mouseenter', function (_, d) {
-        d3.select(this.parentNode).select('text.percentage')
+      .style('opacity', 0.8)
+      .on('mouseover', function() {
+        d3.select(this)
           .transition()
           .duration(200)
-          .style('opacity', 1);
-        d3.select(this.parentNode).select('text.label')
-          .transition()
-          .duration(200)
+          .attr('transform', 'scale(1.05)')
           .style('opacity', 1);
       })
-      .on('mouseleave', function () {
-        d3.select(this.parentNode).select('text.percentage')
+      .on('mouseout', function() {
+        d3.select(this)
           .transition()
           .duration(200)
-          .style('opacity', 0);
-        d3.select(this.parentNode).select('text.label')
-          .transition()
-          .duration(200)
-          .style('opacity', 0);
+          .attr('transform', 'scale(1)')
+          .style('opacity', 0.8);
       })
-    */
       .transition()
-      .duration(1000)
+      .delay((d, i) => i * 200)
+      .duration(800)
       .attrTween('d', function(d) {
-        const interpolate = d3.interpolate(this._current, d);
-        this._current = interpolate(0);
+        const interpolate = d3.interpolate(emptyPie[0], d);
         return t => arc(interpolate(t));
       });
 
-    // Label text
+    // Add polylines connecting labels to slices
+    slice.append('polyline')
+      .attr('stroke', '#333')
+      .style('fill', 'none')
+      .attr('stroke-width', 1)
+      .attr('points', function(d) {
+        const pos = outerArc.centroid(d);
+        pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+        return [arc.centroid(d), outerArc.centroid(d), pos];
+      })
+      .style('opacity', 0)
+      .transition()
+      .delay(1000)
+      .duration(500)
+      .style('opacity', 0.6);
+
+    // Add percentage labels
     slice.append('text')
-      .attr('class', 'label')
-      .attr('transform', d => `translate(${arc.centroid(d)})`)
-      .attr('dy', '1.2em') 
-      .attr('text-anchor', 'middle')
-      .text(d => d.data.label)
-      .style('fill', '#333')
+      .attr('class', 'percentage')
+      .attr('dy', '.35em')
       .style('font-size', '12px')
       .style('font-weight', 'bold')
-      .style('opacity', 0);
+      .attr('transform', function(d) {
+        const pos = outerArc.centroid(d);
+        pos[0] = radius * 1.1 * (midAngle(d) < Math.PI ? 1 : -1);
+        return `translate(${pos})`;
+      })
+      .style('text-anchor', function(d) {
+        return midAngle(d) < Math.PI ? 'start' : 'end';
+      })
+      .text(d => `${Math.round(d.data.value / total * 100)}%`)
+      .style('opacity', 0)
+      .transition()
+      .delay(1000)
+      .duration(500)
+      .style('opacity', 1);
 
-    // Add legend
+    // Helper function for label positioning
+    function midAngle(d) {
+      return d.startAngle + (d.endAngle - d.startAngle) / 2;
+    }
+
+    // Add legend with animation
     const legend = svg.append('g')
-      .attr('transform', `translate(110, ${height + 20})`);
+      .attr('transform', `translate(${width / 2 - 100}, ${height - 30})`)
+      .style('opacity', 0);
 
     legend.append('rect')
       .attr('x', 0)
@@ -117,6 +148,11 @@ const ProjectTaskCompletionPieChart = ({ data }) => {
       .text('Not Completed')
       .style('font-size', '12px')
       .style('fill', '#333');
+
+    legend.transition()
+      .delay(1500)
+      .duration(500)
+      .style('opacity', 1);
 
   }, [data]);
 
