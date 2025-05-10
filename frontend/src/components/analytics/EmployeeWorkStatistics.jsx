@@ -32,6 +32,14 @@ function EmployeeWorkStatistics() {
         hoursWorked: 38,
       },
     },
+    {
+      week: {
+        tasksCompleted: 18,
+        tasksInProgress: 3,
+        tasksOverdue: 1,
+        hoursWorked: 28,
+      },
+    },
   ];
 
   // Calculate monthly roundups based on weekly data
