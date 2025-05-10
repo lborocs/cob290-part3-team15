@@ -119,11 +119,8 @@ function EmployeeWorkStatistics() {
             <button
               onClick={handlePrevWeek}
               disabled={weekIndex === 0}
-              className={`p-1 rounded-lg flex items-center ${weekIndex === 0 ? 'text-gray-300' : 'text-gray-600 hover:bg-gray-100'}`}
+              className={`p-1 rounded-lg ${weekIndex === 0 ? 'text-gray-300' : 'text-gray-600 hover:bg-gray-100'}`}
             >
-              <span className="text-sm">
-                Newer
-              </span>
               <FiChevronLeft />
             </button>
             <span className="text-medium text-gray-600">
@@ -132,12 +129,9 @@ function EmployeeWorkStatistics() {
             <button
               onClick={handleNextWeek}
               disabled={weekIndex === workData.length - 1}
-              className={`p-1 rounded-lg flex items-center ${weekIndex === workData.length - 1 ? 'text-gray-300' : 'text-gray-600 hover:bg-gray-100'}`}
+              className={`p-1 rounded-lg ${weekIndex === workData.length - 1 ? 'text-gray-300' : 'text-gray-600 hover:bg-gray-100'}`}
             >
               <FiChevronRight />
-              <span className="text-sm">
-                Older
-              </span>
             </button>
           </div>
         </div>
