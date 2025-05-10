@@ -141,8 +141,8 @@ router.get("/getUserTasks", authenticateToken, (req, res) => {
     const selectedProjectId = req.query.id;
     let values = [req.user.userID];
 
+    // If projectId is provided, fetch tasks for the specific project
     if (selectedProjectId !== 'null') {
-        // If projectId is provided, fetch tasks for the specific project
         query += ` AND t.ProjectID = ?`;
         values = [req.user.userID, selectedProjectId];
     }
