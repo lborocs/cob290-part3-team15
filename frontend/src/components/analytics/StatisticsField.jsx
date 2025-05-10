@@ -1,42 +1,72 @@
-import StatisticsFieldCarousel from "./StatisticsFieldCarousel.jsx";
+import ProjectGraphCarousel from "./ProjectGraphCarousel.jsx";
 import TasksList from "./TasksList.jsx";
-import StatisticsFieldBottom from "./StatisticsFieldBottom.jsx";
+import ProjectMemberList from "./ProjectMemberList.jsx";
 import React from "react";
+import EmployeeStatisticsFieldCarousel from "./EmployeeStatisticsCarousel.jsx";
+import EmployeeGraphCarousel from "./EmployeeGraphCarousel.jsx";
 
-function StatisticsField({selectedProject, tasks, employees}) {
+function StatisticsField({ userRole, selectedProjectId }) {
 
-    const isOverview = selectedProject.title === "Overview";
-
-    // Filter by tasks on this project
-    const statsTasks = isOverview ? tasks : tasks.filter(task => task.project === selectedProject.id);
-
-    // Filter by employees who have a task on this project or lead this project
-    const statsEmployees = isOverview ? employees :
-        employees.filter(employee =>
-            tasks.some(task => task.assignee === employee.id && task.project === selectedProject.id)
-            || selectedProject.leader === employee.id);
+    // get employees on this project or all projects led by this user
 
     return (
         <div className="lg:col-start-6 lg:row-start-2 lg:col-span-6 lg:row-span-5 rounded-3xl lg:grid lg:grid-cols-6 lg:grid-rows-4 flex flex-col gap-4 w-full">
-            <>
-                {isOverview ?
+            {userRole === "Employee" ? (
+                selectedProjectId ? (
+                    <>  
+                    <EmployeeGraphCarousel selectedProjectId={ null } />
+                    <TasksList selectedProjectId={selectedProjectId} role={userRole} />
+                    <EmployeeStatisticsFieldCarousel selectedProjectId={selectedProjectId} />
+                    </>
+                ) : (
+                    <>
+                    <EmployeeGraphCarousel selectedProjectId={ null } />
+                    <TasksList selectedProjectId={selectedProjectId} role={userRole} />
                     <div className="flex items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 w-full">
                         <p className="text-3xl text-center">Select a project to view details</p>
                     </div>
-                    :
-                    <StatisticsFieldCarousel
-                        selectedProject={ selectedProject }
-                    />
-                }
-                <TasksList
-                    employees={ statsEmployees }
-                    tasks={ statsTasks }
-                />
-                <StatisticsFieldBottom
-                    employees={ statsEmployees }
-                    tasks={ statsTasks }
-                />
-            </>
+                    </>
+                )
+            ) : userRole === "Manager" ? (
+                selectedProjectId ? (
+                    <>
+                        <ProjectGraphCarousel selectedProjectId={selectedProjectId} />
+                        <TasksList selectedProjectId={selectedProjectId} role={userRole} />
+                        <ProjectMemberList selectedProjectId={selectedProjectId} />
+                    </>
+                ) : (
+                    <>
+                    <div className="flex items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 w-full">
+                        <p className="text-3xl text-center">Select a project to view details</p>
+                    </div>
+                    <TasksList selectedProjectId={selectedProjectId} role={userRole} />
+                    <ProjectMemberList selectedProjectId={selectedProjectId} />
+                    </>
+                    
+                )
+            ) : userRole === "Team Leader" ? (
+                selectedProjectId ? (
+                    <>
+                        <ProjectGraphCarousel selectedProjectId={selectedProjectId} />
+                        <TasksList selectedProjectId={selectedProjectId} role={userRole} />
+                        <ProjectMemberList selectedProjectId={selectedProjectId} />
+                    </>
+                ) : (
+                    <>
+                    <div className="flex items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 w-full">
+                        <p className="text-3xl text-center">Select a project to view details</p>
+                    </div>
+                    
+                    <TasksList selectedProjectId={selectedProjectId} role={userRole} />
+                    <ProjectMemberList selectedProjectId={selectedProjectId} />
+                    </>
+
+                )
+            ) : (
+                <div className="flex items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-gray-100 col-span-4 row-span-2 w-full">
+                    <p className="text-3xl text-center">Role not recognized</p>
+                </div>
+            )}
         </div>
     );
 }

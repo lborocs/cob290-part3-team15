@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as d3 from 'd3';
 
-const PieChart = ({ data }) => {
+const ProjectTaskCompletionPieChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
     const width = ref.current.parentElement.offsetWidth;
-    const height = 180;
+    const height = 170;
     const radius = Math.min(width, height) / 2;
 
     const svg = d3.select(ref.current)
@@ -26,7 +26,7 @@ const PieChart = ({ data }) => {
         return t => `translate(${width / 2}, ${height / 2}) rotate(${rotateInterpolate(t)})`;
       });
 
-    const color = d3.scaleOrdinal(['#FF6384', '#36A2EB']);
+    const color = d3.scaleOrdinal(['#4CAF50', '#FF6384']);
     const pie = d3.pie().value(d => d.value);
     const arc = d3.arc().innerRadius(radius * 0.5).outerRadius(radius);
 
@@ -45,7 +45,7 @@ const PieChart = ({ data }) => {
       .attr('stroke', 'white')
       .style('stroke-width', '2px')
       .each(function(d) { this._current = d; })
-      .on('mouseenter', function (_, d) {
+     /* .on('mouseenter', function (_, d) {
         d3.select(this.parentNode).select('text.percentage')
           .transition()
           .duration(200)
@@ -65,6 +65,7 @@ const PieChart = ({ data }) => {
           .duration(200)
           .style('opacity', 0);
       })
+    */
       .transition()
       .duration(1000)
       .attrTween('d', function(d) {
@@ -87,33 +88,39 @@ const PieChart = ({ data }) => {
 
     // Add legend
     const legend = svg.append('g')
-      .attr('transform', `translate(10, ${height + 10})`);
+      .attr('transform', `translate(110, ${height + 20})`);
 
-    legend.selectAll('.legend-item')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('class', 'legend-item')
-      .attr('transform', (_, i) => `translate(0, ${i * 20})`)
-      .each(function(d) {
-        const legendItem = d3.select(this);
+    legend.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', 15)
+      .attr('height', 15)
+      .attr('fill', '#4CAF50');
 
-        legendItem.append('rect')
-          .attr('width', 12)
-          .attr('height', 12)
-          .attr('fill', color(d.label));
+    legend.append('text')
+      .attr('x', 20)
+      .attr('y', 12)
+      .text('Completed')
+      .style('font-size', '12px')
+      .style('fill', '#333');
 
-        legendItem.append('text')
-          .attr('x', 18)
-          .attr('y', 10)
-          .text(d.label)
-          .style('font-size', '12px')
-          .style('fill', '#333');
-      });
+    legend.append('rect')
+      .attr('x', 100)
+      .attr('y', 0)
+      .attr('width', 15)
+      .attr('height', 15)
+      .attr('fill', '#FF6384');
+
+    legend.append('text')
+      .attr('x', 120)
+      .attr('y', 12)
+      .text('Not Completed')
+      .style('font-size', '12px')
+      .style('fill', '#333');
 
   }, [data]);
 
   return <svg ref={ref} className="w-full" />;
 };
 
-export default PieChart;
+export default ProjectTaskCompletionPieChart;

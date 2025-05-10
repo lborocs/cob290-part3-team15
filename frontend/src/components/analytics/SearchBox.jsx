@@ -1,14 +1,47 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useState } from 'react';
 import ProjectCard from './ProjectCard';
 import { FiSearch } from 'react-icons/fi';
+import axios from "axios";
 
-function SearchBox({ projects, onProjectSelect, selectedProject }) {
+function SearchBox({ userRole, onProjectSelect, selectedProjectId }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [projects, setProjects] = useState([]);
+
+  // get projects led by this user
+  const getProjectList = async() => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+
+      // get assigned projects for employee view or led projects for leader/manager view
+      const endpoint = userRole === 'Employee' ? `/api/analytics/employees/getAssignedProjects`
+                                                      : `/api/analytics/projects/getProjectsByLeader`;
+
+      const responseLedProjects = await axios.get(endpoint, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (responseLedProjects?.data?.projects.length > 0) {
+        setProjects(responseLedProjects.data.projects);
+      }
+    }
+    catch (error) {
+      console.error("Error fetching search box data:", error);
+    }
+  }
+
+  useEffect(() => {
+    getProjectList();
+  }, [userRole]);
+
+  const onSelect = (id, title) => {
+    // Set the selected project on the parent component using callback
+    id === selectedProjectId ? onProjectSelect(null, "Overview") : onProjectSelect(id, title);
+  }
 
   const filteredProjects = projects.filter(project =>
-    project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project.description.toLowerCase().includes(searchTerm.toLowerCase())
+      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -36,12 +69,11 @@ function SearchBox({ projects, onProjectSelect, selectedProject }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto p-1">
         {filteredProjects.length > 0 ? (
           filteredProjects.map(project => (
-            <ProjectCard 
-              key={project.id}
-              title={project.title}
-              description={project.description}
-              onClick={(passedProject=project) => onProjectSelect(passedProject)} // Accept an argument so we can deselect the project by clicking again
-              isSelected={selectedProject?.title === project.title}
+            <ProjectCard
+              key={`card-${project.id}`}
+              id={project.id}
+              onClick={() => onSelect(project.id, project.title)}
+              isSelected={selectedProjectId === project.id}
             />
           ))
         ) : (

@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as d3 from 'd3';
 
-const BarChart = ({ data }) => {
+const ProjectTaskAllocationBarChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
     const width = ref.current.parentElement.offsetWidth;
-    const height = 260; // Increased height to accommodate the legend
+    const height = 220; // Increased height to accommodate the legend
     const margin = { top: 20, right: 20, bottom: 60, left: 60 }; // Adjusted bottom margin
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -82,7 +82,7 @@ const BarChart = ({ data }) => {
 
     // Add legend below the chart
     const legend = svg.append('g')
-      .attr('transform', `translate(${margin.left}, ${height - 40})`); // Positioned below the chart
+      .attr('transform', `translate(110, ${height - 30})`); // Positioned below the chart
 
     legend.append('rect')
       .attr('x', 0)
@@ -116,4 +116,4 @@ const BarChart = ({ data }) => {
   return <svg ref={ref} className="w-full" />;
 };
 
-export default BarChart;
+export default ProjectTaskAllocationBarChart;
