@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EmployeeWeeklyHoursChart from './charts/EmployeeWeeklyHoursChart.jsx';
 import EmployeeContributionsByProjectChart from './charts/EmployeeContributionsByProjectChart.jsx';
+import BurndownChart from './charts/BurndownChart.jsx'; // Import BurndownChart
 
 function EmployeeGraphCarousel({ selectedProjectId }) {
   const chartConfig = [];
@@ -23,6 +24,13 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
         endpoint: '/api/analytics/employees/getAllEmployeeHours',
         component: EmployeeWeeklyHoursChart,
       },
+      {
+        type: 'burndown',
+        title: 'Burndown Chart',
+        description: 'Track task completion over time',
+        endpoint: '/api/analytics/employees/getBurndownData',
+        component: BurndownChart,
+      }
     );
   }
 
@@ -108,26 +116,17 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
 
 
       {/* Navigation Dots - properly centered at bottom */}
-      <div className="flex justify-center space-x-2 mt-auto">
-        {chartConfig.map((chart, index) => (
-          <div key={index}>
-            <button
-              className={`w-3 h-3 rounded-full transition-all peer ${
-                index === currentIndex 
-                  ? 'bg-accentOrange scale-125' 
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-              onClick={() => setCurrentIndex(index)}
-            />
-
-            <span
-              key={`tooltip-${index}`}
-              className="absolute text-xs bg-black text-white px-2 py-1 rounded opacity-0 transition-opacity duration-300 peer-hover:opacity-100 pointer-events-none"
-              style={{ transform: 'translate(-52%, -100%)' }}
-            >
-              {chart.title}
-            </span>
-          </div>
+      <div className="flex justify-center space-x-2 mt-auto mb-2">
+        {chartConfig.map((_, index) => (
+          <button
+            key={index}
+            className={`w-3 h-3 rounded-full transition-all ${
+              index === currentIndex 
+                ? 'bg-accentOrange scale-125' 
+                : 'bg-gray-300 hover:bg-gray-400'
+            }`}
+            onClick={() => setCurrentIndex(index)}
+          />
         ))}
       </div>
 
