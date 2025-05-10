@@ -89,6 +89,40 @@ router.get("/getAllEmployeeHours", authenticateToken, (req, res) => {
     });
 });
 
+// get week-by-week stats for the work statistics pane
+router.get("/getWorkStatistics", authenticateToken, (req, res) => {
+    const query = `
+        WITH last_4_weeks AS (
+            SELECT
+                DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL (WEEKDAY(CURDATE())) DAY) - INTERVAL (7 * (n - 1)) DAY, '%Y-%m-%d') AS weekStart,
+                DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL (WEEKDAY(CURDATE()) - 6) DAY) - INTERVAL (7 * (n - 1)) DAY, '%Y-%m-%d') AS weekEnd
+            FROM (SELECT 1 AS n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4) AS weeks
+        )
+        SELECT
+            weekStart,
+            weekEnd,
+            COUNT(CASE WHEN CompletionDate <= weekEnd THEN 1 ELSE null END) as 'completed',
+            SUM(CASE WHEN CompletionDate <= weekEnd THEN HoursRequired ELSE 0 END) as 'hours',
+            COUNT(CASE WHEN CreationDate >= weekStart THEN 1 ELSE null END) as 'assigned'
+        FROM last_4_weeks lw
+                 LEFT JOIN tasks t
+                           ON t.CreationDate <= lw.weekEnd
+                               AND t.CompletionDate >= lw.weekStart
+                               AND t.AssigneeID = ?
+        GROUP BY lw.weekStart, lw.weekEnd
+        ORDER BY lw.weekStart DESC;
+    `;
+
+    database.query(query, [req.user.userID], (err, results) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching employee week-by-week stats" });
+        }
+
+        res.send({ results: results });
+    });
+});
+
+
 //getting all projects the employee contributed to, and returning for each proct the number of tasks completed due and overdue
 router.get("/getAllEmployeeProjects",authenticateToken,(req,res) => {
     const query = `SELECT
