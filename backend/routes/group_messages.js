@@ -257,7 +257,7 @@ router.get("/getMembers",authenticateToken,(req,res) => {
             }
             return member;
           });
-          const leaderQuery = "SELECT Owner as owner from Groups WHERE GroupID=?"
+          const leaderQuery = "SELECT Owner as owner from groups WHERE GroupID=?"
           database.query(leaderQuery, values, (err, results) => {
             if(err){
               return res.status(500).json({ error: "Failed to get Leader" });
