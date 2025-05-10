@@ -58,7 +58,6 @@ const BurndownChart = ({ data }) => {
       .x(d => x(new Date(d.date)))
       .y(d => y(d.actual));
 
-    // Add the ideal line (diagonal from top-left to bottom-right)
     svg.append('line')
       .attr('x1', 0)
       .attr('y1', 0)
@@ -133,19 +132,9 @@ const BurndownChart = ({ data }) => {
       .text('Actual Burndown')
       .style('font-size', '12px');
 
-    // Add chart title
-    svg.append('text')
-      .attr('x', width / 2)
-      .attr('y', -10)
-      .attr('text-anchor', 'middle')
-      .style('font-size', '16px')
-      .style('font-weight', 'bold')
-      .text('Project Burndown');
-
-
   }, [data]);
 
-  return <svg ref={ref} style={{ width: '100%', height: '300px' }} />;
+  return <svg ref={ref} style={{ width: '100%', height: '200px' }} />;
 };
 
 export default BurndownChart;
