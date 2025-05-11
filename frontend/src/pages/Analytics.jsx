@@ -65,7 +65,7 @@ function Analytics({ user }) {
     }
 
     return (
-        <div className="flex h-screen w-screen">
+        <div className="flex h-screen w-screen select-none">
             <Navbar
                 userID={user.userID}
                 selectable={selectable}
