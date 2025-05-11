@@ -1,35 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import { faker } from '@faker-js/faker';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { FiSearch, FiUsers, FiX } from 'react-icons/fi';
+import axios from "axios";
 
-function StatisticsFieldBottom({ employees, tasks }) {
+function ProjectMemberList({ selectedProjectId }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalOpacity, setModalOpacity] = useState(0);
+  const [employees, setEmployees] = useState([]);
 
-  const dummyEmployees = employees.map(employee => {
+  const fetchMemberList = async() => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      const endpoint = selectedProjectId 
+        ? `/api/analytics/projects/getProjectTeamMembers?id=${selectedProjectId}`
+        : `/api/analytics/projects/getOverviewTeamMembers`;
 
-    const employeeTasks = tasks.filter((task) => task.assignee === employee.id);
+      const response = await axios.get(endpoint, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
 
-    const tasksGiven = employeeTasks.length;
-    const tasksDue = employeeTasks.filter((task) => task.status !== "Completed").length;
-    const tasksCompleted = tasksGiven - tasksDue;
-
-    return {
-      id: employee.id,
-      name: `${employee.forename} ${employee.surname}`,
-      profilePicture: faker.image.avatar(),
-      tasksGiven: tasksGiven,
-      tasksDue: tasksDue,
-      tasksCompleted: tasksCompleted,
+      // sort employees initially by name A-Z
+      response.data.employees.sort((a, b) => a.forename.localeCompare(b.forename));
+      setEmployees(response.data.employees);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
+  };
+
+  useEffect(() => {
+    fetchMemberList();
+  }, [selectedProjectId]);
+
+  const getInitials = (name) => 
+    name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
+  const colors = {
+    blue:   "bg-[#4d74b6]", //rgb(0, 57, 150) @ 70%
+    green:  "bg-[#64d68e]", // #22c55e @ 70%
+    red:    "bg-[#f47c7c]", // #ef4444 @ 70%
+    blue2:  "bg-[#74ccfb]", // rgb(0, 170, 255)
+    pink:   "bg-[#f27fb8]", // #ec4899 @ 70%
+    purple: "bg-[#ae8df9]", // #8b5cf6 @ 70%
+    blue3:  "bg-[#6d8cf5]", // rgb(51, 102, 255)
+    gray:   "bg-[#979ca6]", // #6b7280 @ 70%
+    green2: "bg-[#59b64d]", //rgb(111, 224, 101) @ 70%
+    indigo: "bg-[#9294f5]", // #6366f1 @ 70%
+    teal:   "bg-[#5bcdc1]", // #14b8a6 @ 70%
+    pink2: "bg-[#e880aa]", // rgb(255, 162, 199)
+    pink3: "bg-[#dc5e91]", // rgb(221, 34, 119)
+    }
+
+  const getColor = (name) => {
+    const colorValues = Object.values(colors);
+    return colorValues[name.length % colorValues.length];
+  };
+
+  const processedEmployees = employees.map(employee => {
+    const fullName = `${employee.forename} ${employee.surname}`;
+    return {
+      ...employee,
+      name: fullName,
+      initials: getInitials(fullName),
+      colorClass: getColor(fullName),
+    };
   });
 
-  const filteredEmployees = dummyEmployees.filter((employee) =>
+  const filteredEmployees = processedEmployees.filter(employee =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -67,9 +107,36 @@ function StatisticsFieldBottom({ employees, tasks }) {
     <div className="flex flex-col w-full col-span-4 row-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold text-gray-800">Team Members</h3>
-        <span className="px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium">
+        
+        <div className="relative mb-6">
+        <select
+          onChange={(e) => {
+            const sortOrder = e.target.value;
+            const sortedEmployees = [...filteredEmployees].sort((a, b) => {
+              if (sortOrder === 'A-Z') return a.name.localeCompare(b.name);
+              if (sortOrder === 'Z-A') return b.name.localeCompare(a.name);
+              if (sortOrder === 'Most Tasks') return b.tasksGiven - a.tasksGiven;
+              if (sortOrder === 'Least Tasks') return a.tasksGiven - b.tasksGiven;
+              if (sortOrder === 'Most Completed') return b.tasksCompleted - a.tasksCompleted;
+              if (sortOrder === 'Least Completed') return a.tasksCompleted - b.tasksCompleted;
+              return 0;
+            });
+            setEmployees(sortedEmployees);
+          }}
+          className="px-3 py-1 bg-accentWhite/70 text-grey-600 rounded-full text-sm font-medium focus:outline-none"
+        >
+          <option value="A-Z">A-Z</option>
+          <option value="Z-A">Z-A</option>
+          <option value="Most Tasks">Most Tasks</option>
+          <option value="Least Tasks">Least Tasks</option>
+          <option value="Most Completed">Most Completed</option>
+          <option value="Least Completed">Least Completed</option>
+        </select>
+        <span className="px-3 py-1 ml-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium">
           {filteredEmployees.length} {filteredEmployees.length === 1 ? 'member' : 'members'}
         </span>
+      </div>
+        
       </div>
 
       <div className="relative mb-6">
@@ -84,23 +151,20 @@ function StatisticsFieldBottom({ employees, tasks }) {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pr-2">
         {filteredEmployees.length > 0 ? (
           filteredEmployees.map((employee) => (
             <div
               key={employee.id}
-              className="flex items-center p-3 bg-white rounded-xl border border-gray-100 shadow-xs hover:shadow-md hover:border-orange-200 transition-all duration-200 cursor-pointer"
+              className="flex items-center p-3 bg-white rounded-xl border border-gray-100 shadow-xs hover:shadow-md hover:border-accentOrange transition-all duration-200 cursor-pointer"
               onClick={() => handleSelectUser(employee)}
             >
-              <img
-                src={employee.profilePicture}
-                alt={employee.name}
-                className="w-10 h-10 rounded-full mr-3 object-cover border border-gray-200"
-              />
+              <div className={`w-10 h-10 rounded-full mr-3 flex items-center justify-center text-white ${employee.colorClass} border-2 border-accentOrange shadow-sm`}>
+                {employee.initials}
+              </div>
               <div className="flex flex-col">
-                <p className="text-sm font-medium text-gray-800 flex">{employee.name}</p>
-                <p className="text-xs text-gray-500 flex">{employee.tasksCompleted}/{employee.tasksGiven} tasks completed</p>
+                <p className="text-sm font-medium text-gray-800">{employee.name}</p>
+                <p className="text-xs text-gray-500">{employee.tasksCompleted}/{employee.tasksGiven} tasks completed</p>
               </div>
             </div>
           ))
@@ -142,14 +206,11 @@ function StatisticsFieldBottom({ employees, tasks }) {
 
             <div className="p-6">
               <div className="flex flex-col sm:flex-row justify-center items-center sm:items-start gap-6 mb-8">
-                <img
-                  src={selectedUser?.profilePicture}
-                  alt={selectedUser?.name}
-                  className="w-24 h-24 rounded-full object-cover border border-gray-200 shadow-sm"
-                />
+                <div className={`w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl ${selectedUser?.colorClass} border-3 border-accentOrange shadow-md`}>
+                  {selectedUser?.initials}
+                </div>
                 <div className="text-center sm:text-left">
                   <h2 className="text-2xl px-8 items-center font-bold text-gray-800 mb-1">{selectedUser?.name}</h2>
-                  
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                     <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm">
                       {selectedUser?.tasksGiven} Given
@@ -215,4 +276,4 @@ function StatisticsFieldBottom({ employees, tasks }) {
   );
 }
 
-export default StatisticsFieldBottom;
+export default ProjectMemberList;

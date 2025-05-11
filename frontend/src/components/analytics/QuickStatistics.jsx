@@ -1,65 +1,116 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import QuickStatisticItem from "./QuickStatisticItem.jsx";
+import axios from "axios";
 
-function QuickStatistics({ selectedProject, projects, employees, tasks }) {
+function QuickStatistics({ userRole, selectedProjectId }) {
 
-    // Build the quick statistics
-    let statsArr = [];
+    const [stats, setStats] = useState([]);
 
-    if (selectedProject.title === "Overview") {
-        // project count statistic
-        const projectCount = projects.length;
-        const projectCountStat = {
-            id: 'overview-projects',
-            title: 'Projects',
-            value: projectCount,
-        };
-        statsArr.push(projectCountStat);
+    // Get stats for the overview
+    const fetchProjectOverviewStats = async() => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
 
-        // employee count statistic
-        const employeeCountStat = {
-            id: 'overview-employees',
-            title: 'Employees',
-            value: employees.length,
-        };
-        statsArr.push(employeeCountStat);
-
-        // task count statistic
-        const taskCount = tasks.length;
-        const taskCountStat = {
-            id: 'overview-tasks',
-            title: 'Tasks',
-            value: taskCount,
-        };
-        statsArr.push(taskCountStat);
-    }
-    else {
-        const projectTasks = tasks.filter(task => task.project === selectedProject.id);
-        // project task count statistic
-        const taskCount = projectTasks.length;
-        const taskCountStat = {
-            id: `project-${selectedProject.title}-tasks`,
-            title: 'Tasks Total',
-            value: taskCount,
-        };
-        statsArr.push(taskCountStat);
-
-        // project completion percentage statistic
-        const completedTasks = projectTasks.filter(task => task.status === 'Completed').length;
-        let taskCompletionPercentage = Math.round((completedTasks / taskCount) * 100).toString();
-        const taskCompletionStat = {
-            id: `project-${selectedProject.title}-task-completion`,
-            title: 'Task Completion',
-            value: taskCompletionPercentage + '%',
-        };
-        statsArr.push(taskCompletionStat);
+            const response = await axios.get(`/api/analytics/projects/getOverviewQuickStatistics`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            console.log(response.data.results)
+            setStats(
+                [
+                    {
+                        id: 'overview-projects',
+                        title: 'Projects',
+                        value: response.data.results[0].projects,
+                    },
+                    {
+                        id: 'overview-employees',
+                        title: 'Employees',
+                        value: response.data.results[0].employees,
+                    },
+                    {
+                        id: 'overview-tasks',
+                        title: 'All Tasks',
+                        value: response.data.results[0].tasks,
+                    }
+                ]
+            );
+        }
+        catch (error) {
+            console.error("Error fetching data:", error);
+        }
     }
 
+    // Get stats for a selected project
+    const fetchProjectStats = async() => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const response = await axios.get(`/api/analytics/projects/getQuickStatistics?projectId=${selectedProjectId}`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        setStats(
+            [
+                {
+                    id: `project-tasks`,
+                    title: 'Tasks',
+                    value: response.data.results[0].tasks,
+                },
+                {
+                    id: 'project-task-completion',
+                    title: 'Tasks Completed',
+                    value: response.data.results[0].completed,
+                },
+                {
+                    id: 'project-overdue-tasks',
+                    title: 'Overdue Tasks',
+                    value: response.data.results[0].overdue,
+                }
+            ]
+        );
+    }
+
+    // Get stats for the employee view
+    const fetchEmployeeOverviewStats = async() => {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const response = await axios.get(`/api/analytics/employees/getOverviewQuickStatistics`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        setStats(
+            [
+                {
+                    id: 'overview-projects',
+                    title: 'Assigned Projects',
+                    value: response.data.results[0].projects,
+                },
+                {
+                    id: 'overview-tasks',
+                    title: 'Assigned Tasks',
+                    value: response.data.results[0].tasks,
+                },
+                {
+                    id: 'overdue-tasks',
+                    title: 'Tasks Overdue',
+                    value: response.data.results[0].overdue,
+                }
+            ]
+        )
+    }
+
+    useEffect(() => {
+        if (userRole === 'Employee') {
+            fetchEmployeeOverviewStats();
+        }
+        else {
+            selectedProjectId ? fetchProjectStats() : fetchProjectOverviewStats();
+        }
+    }, [selectedProjectId, userRole]);
 
     return (
         <div className="col-start-2 row-start-3 col-span-4 w-full">
             <div className="grid grid-cols-3 gap-4 mt-4 w-full">
-                {statsArr.map((stat) => (
+                {stats.map((stat) => (
                     <QuickStatisticItem
                         key={stat.id}
                         title={stat.title}

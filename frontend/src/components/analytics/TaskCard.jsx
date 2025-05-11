@@ -23,7 +23,10 @@ function TaskCard( { task } ) {
             <div className="flex justify-between items-start">
                 <div>
                     <h4 className="text-start font-medium text-sm text-gray-900">{task.title}</h4>
-                    <p className="text-start text-xs line-clamp-1 text-gray-600">{task.assigneeName}</p>
+                    <p className="text-start text-xs line-clamp-1 text-gray-600">
+                        {/* Assigned project if on employee view, Assignee name if on leader view */}
+                        {task.projectTitle ? task.projectTitle : `${task.assigneeForename} ${task.assigneeSurname}`}
+                    </p>
                 </div>
 
                 <div className="flex flex-col items-end">

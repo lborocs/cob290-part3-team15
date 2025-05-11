@@ -1,21 +1,48 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import TaskCard from './TaskCard';
 import { FiSearch, FiCalendar } from 'react-icons/fi';
+import axios from "axios";
 
-function TasksList({ employees, tasks }) {
+function TasksList({ selectedProjectId, role }) {
+
+  const [taskList, setTaskList] = useState([]);
   const [statusFilter, setStatusFilter] = useState('all');
   const [dueDateFilter, setDueDateFilter] = useState('any');
   const [searchQuery, setSearchQuery] = useState('');
   const today = new Date();
 
-  const addedDetailsTasks = tasks.map(task => {
-    const assignee = employees.find(employee => employee.id === task.assignee);
-    let newTask = task;
-    newTask.assigneeName = `${assignee?.forename} ${assignee?.surname}`
-    return newTask;
-  });
+  const getTaskList = async() => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      let responseTasks;
 
-  const dueDateFilteredTasks = addedDetailsTasks.filter(task => {
+      if (role == 'Employee') {
+        responseTasks = await axios.get(`/api/analytics/employees/getUserTasks?id=${selectedProjectId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        console.log(responseTasks.data.tasks)
+      } else if (role == 'Team Leader') {
+        responseTasks = await axios.get(`/api/analytics/projects/getTasks?id=${selectedProjectId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      } else if (role == 'Manager') {
+        responseTasks = await axios.get(`/api/analytics/projects/getTasks?id=${selectedProjectId}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+      }
+
+      setTaskList(responseTasks.data.tasks);
+    }
+    catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  useEffect(() => {
+    getTaskList();
+  }, [selectedProjectId, role]);
+
+  const dueDateFilteredTasks = taskList.filter(task => {
     const dueDate = new Date(task.deadline);
     if (dueDateFilter === 'today') {
       return dueDate.toDateString() === today.toDateString();
