@@ -9,13 +9,21 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,userID,re
     const [leader,setLeader] = useState(-1)
     const [items,setItems] = useState([])
     const colors = {
-        blue : 'bg-blue-500/60',
-        green : 'bg-green-500/60', 
-        red : 'bg-red-400/60',
-        pink : 'bg-pink-500/40', 
-        purple : 'bg-purple-500/40',
-        gray : 'bg-gray-500/70',
-    }
+        blue:   "bg-[#4d74b6]", //rgb(0, 57, 150) @ 70%
+        green:  "bg-[#64d68e]", // #22c55e @ 70%
+        red:    "bg-[#f47c7c]", // #ef4444 @ 70%
+        blue2:  "bg-[#74ccfb]", // rgb(0, 170, 255)
+        pink:   "bg-[#f27fb8]", // #ec4899 @ 70%
+        purple: "bg-[#ae8df9]", // #8b5cf6 @ 70%
+        blue3:  "bg-[#6d8cf5]", // rgb(51, 102, 255)
+        color3:  "bg-[#ef6f92]", // rgb(255, 0, 76)
+        gray:   "bg-[#979ca6]", // #6b7280 @ 70%
+        green2: "bg-[#59b64d]", //rgb(111, 224, 101) @ 70%
+        indigo: "bg-[#9294f5]", // #6366f1 @ 70%
+        teal:   "bg-[#5bcdc1]", // #14b8a6 @ 70%
+        pink2: "bg-[#e880aa]", // rgb(255, 162, 199)
+        pink3: "bg-[#dc5e91]", // rgb(221, 34, 119)
+        }
     
     const colorKeys = Object.keys(colors);
     const colorBasedOnId = selectedID % colorKeys.length;
