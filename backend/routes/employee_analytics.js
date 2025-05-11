@@ -107,11 +107,11 @@ router.get("/getWorkStatistics", authenticateToken, (req, res) => {
             COUNT(CASE WHEN CompletionDate <= weekEnd THEN 1 END) as 'completed',
             SUM(CASE WHEN CompletionDate <= weekEnd THEN HoursRequired ELSE 0 END) as 'hours',
             COUNT(CASE WHEN CreationDate >= weekStart THEN 1 END) as 'assigned',
-            COUNT(CASE WHEN Deadline BETWEEN weekStart AND weekEnd AND CompletionDate > Deadline THEN 1 END) as 'overdue'
+            COUNT(CASE WHEN Deadline BETWEEN weekStart AND weekEnd AND (CompletionDate > Deadline OR CompletionDate IS NULL) THEN 1 END) as 'overdue'
         FROM last_4_weeks lw
                  LEFT JOIN tasks t
                            ON t.CreationDate <= lw.weekEnd
-                               AND t.CompletionDate >= lw.weekStart
+                               AND (t.CompletionDate >= lw.weekStart OR t.CompletionDate IS NULL)
                                AND t.AssigneeID = ?
     `;
 
