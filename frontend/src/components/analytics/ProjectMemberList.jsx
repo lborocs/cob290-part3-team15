@@ -22,6 +22,9 @@ function ProjectMemberList({ selectedProjectId }) {
       const response = await axios.get(endpoint, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+
+      // sort employees initially by name A-Z
+      response.data.employees.sort((a, b) => a.forename.localeCompare(b.forename));
       setEmployees(response.data.employees);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -104,9 +107,36 @@ function ProjectMemberList({ selectedProjectId }) {
     <div className="flex flex-col w-full col-span-4 row-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold text-gray-800">Team Members</h3>
-        <span className="px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium">
+        
+        <div className="relative mb-6">
+        <select
+          onChange={(e) => {
+            const sortOrder = e.target.value;
+            const sortedEmployees = [...filteredEmployees].sort((a, b) => {
+              if (sortOrder === 'A-Z') return a.name.localeCompare(b.name);
+              if (sortOrder === 'Z-A') return b.name.localeCompare(a.name);
+              if (sortOrder === 'Most Tasks') return b.tasksGiven - a.tasksGiven;
+              if (sortOrder === 'Least Tasks') return a.tasksGiven - b.tasksGiven;
+              if (sortOrder === 'Most Completed') return b.tasksCompleted - a.tasksCompleted;
+              if (sortOrder === 'Least Completed') return a.tasksCompleted - b.tasksCompleted;
+              return 0;
+            });
+            setEmployees(sortedEmployees);
+          }}
+          className="px-3 py-1 bg-accentWhite/70 text-grey-600 rounded-full text-sm font-medium focus:outline-none"
+        >
+          <option value="A-Z">A-Z</option>
+          <option value="Z-A">Z-A</option>
+          <option value="Most Tasks">Most Tasks</option>
+          <option value="Least Tasks">Least Tasks</option>
+          <option value="Most Completed">Most Completed</option>
+          <option value="Least Completed">Least Completed</option>
+        </select>
+        <span className="px-3 py-1 ml-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium">
           {filteredEmployees.length} {filteredEmployees.length === 1 ? 'member' : 'members'}
         </span>
+      </div>
+        
       </div>
 
       <div className="relative mb-6">
@@ -121,7 +151,6 @@ function ProjectMemberList({ selectedProjectId }) {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
       <div className="grid grid-cols-2 gap-4 overflow-y-auto pr-2">
         {filteredEmployees.length > 0 ? (
           filteredEmployees.map((employee) => (

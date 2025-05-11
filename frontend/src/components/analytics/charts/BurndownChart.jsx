@@ -2,6 +2,15 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 const BurndownChart = ({ data }) => {
+
+  // reverse data to show the most recent date on the right
+  if (data) {
+    data = data.map(d => ({
+      date: d.date,
+      actual: d.actual,
+    })).reverse();
+  }
+
   const ref = useRef();
 
   // Dummy data for testing

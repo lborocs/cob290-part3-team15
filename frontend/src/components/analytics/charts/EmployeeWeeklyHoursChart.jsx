@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 const EmployeeWeeklyHoursChart = ({ data }) => {
@@ -6,6 +6,9 @@ const EmployeeWeeklyHoursChart = ({ data }) => {
 
   useEffect(() => {
     if (!data || data.length === 0) return;
+
+    // Reverse the data array to ensure the first entry is the earliest week
+    const reversedData = [...data].reverse();
 
     const width = ref.current.parentElement.offsetWidth;
     const height = 220;
@@ -20,16 +23,16 @@ const EmployeeWeeklyHoursChart = ({ data }) => {
     svg.selectAll('*').remove();
 
     // Transform data
-    const processedData = data.map(d => ({
+    const processedData = reversedData.map(d => ({
       ...d,
       week: d.weekStart,
       hours: Number(d.hours) || 0,
     }));
 
-    // Calculate cumulative hours (reversed for proper accumulation)
-    const cumulativeData = processedData.toReversed().map((d, i) => ({
+    // Calculate cumulative hours
+    const cumulativeData = processedData.map((d, i) => ({
       ...d,
-      cumulativeHours: processedData.toReversed().slice(0, i + 1).reduce((sum, item) => sum + item.hours, 0),
+      cumulativeHours: processedData.slice(0, i + 1).reduce((sum, item) => sum + item.hours, 0),
     }));
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);

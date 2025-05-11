@@ -48,9 +48,26 @@ function SearchBox({ userRole, onProjectSelect, selectedProjectId }) {
     <div className="col-start-2 row-start-4 col-span-4 row-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
     <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold text-gray-800">Projects</h3>
-        <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">
+        <div className="flex items-center space-x-2">
+          <select
+            onChange={(e) => {
+              const sortOrder = e.target.value;
+              const sortedProjects = [...projects].sort((a, b) => {
+                if (sortOrder === 'A-Z') return a.title.localeCompare(b.title);
+                if (sortOrder === 'Z-A') return b.title.localeCompare(a.title);
+                return 0;
+              });
+              setProjects(sortedProjects);
+            }}
+            className="px-3 py-1 bg-accentWhite/70 text-grey-600 rounded-full text-sm font-medium focus:outline-none"
+          >
+            <option value="A-Z">A-Z</option>
+            <option value="Z-A">Z-A</option>
+          </select>
+          <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">
             {filteredProjects.length} projects
-        </span>
+          </span>
+        </div>
     </div>
 
       <div className="relative mb-6">

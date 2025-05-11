@@ -91,7 +91,10 @@ router.get("/getAllEmployeeHours", authenticateToken, (req, res) => {
 
 // get week-by-week stats for the work statistics pane
 router.get("/getWorkStatistics", authenticateToken, (req, res) => {
-    const query = `
+    // if the parameter selectedProjectId is not null, then we need to filter the tasks by project
+    const selectedProjectId = req.query.projectId;
+
+    let query = `
         WITH last_4_weeks AS (
             SELECT
                 DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL (WEEKDAY(CURDATE())) DAY) - INTERVAL (7 * (n - 1)) DAY, '%Y-%m-%d') AS weekStart,
@@ -103,17 +106,29 @@ router.get("/getWorkStatistics", authenticateToken, (req, res) => {
             weekEnd,
             COUNT(CASE WHEN CompletionDate <= weekEnd THEN 1 ELSE null END) as 'completed',
             SUM(CASE WHEN CompletionDate <= weekEnd THEN HoursRequired ELSE 0 END) as 'hours',
-            COUNT(CASE WHEN CreationDate >= weekStart THEN 1 ELSE null END) as 'assigned'
+            COUNT(CASE WHEN CreationDate >= weekStart THEN 1 ELSE null END) as 'assigned',
+            COUNT(CASE WHEN Status != 'Completed' AND Deadline < CURDATE() AND Deadline BETWEEN weekStart AND weekEnd THEN 1 ELSE null END) as 'overdue'
         FROM last_4_weeks lw
                  LEFT JOIN tasks t
                            ON t.CreationDate <= lw.weekEnd
                                AND t.CompletionDate >= lw.weekStart
                                AND t.AssigneeID = ?
+    `;
+
+    const values = [req.user.userID];
+
+    // If projectId is provided, add a filter for the specific project
+    if (selectedProjectId && selectedProjectId !== 'null') {
+        query += ` AND t.ProjectID = ?`;
+        values.push(selectedProjectId);
+    }
+
+    query += `
         GROUP BY lw.weekStart, lw.weekEnd
         ORDER BY lw.weekStart DESC;
     `;
 
-    database.query(query, [req.user.userID], (err, results) => {
+    database.query(query, values, (err, results) => {
         if (err) {
             return res.status(500).send({ error: "Error fetching employee week-by-week stats" });
         }
@@ -189,6 +204,27 @@ router.get("/getUserTasks", authenticateToken, (req, res) => {
         res.send({tasks: taskResults});
     });
  });
+
+ // get the project name by id
+router.get("/getProjectById", authenticateToken, (req, res) => {
+    const query = `SELECT p.Title as 'title'
+                        FROM projects as p WHERE p.ProjectID = ?`;
+
+    const values = [req.query.projectId];
+
+    database.query(query, values, (err, projectResults) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching project" });
+        }
+
+        if (!projectResults || projectResults.length === 0) {
+            return res.send({project: []});
+        }
+
+        res.send({project: projectResults[0]});
+    });
+}
+);
 
 
 

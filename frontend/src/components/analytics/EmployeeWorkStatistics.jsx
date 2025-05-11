@@ -2,9 +2,8 @@ import { React, useState, useEffect } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import axios from "axios";
 
-function EmployeeWorkStatistics() {
-    // no charts just statistical data so no need for a carousel
-  // stats should include:
+function EmployeeWorkStatistics( { selectedProjectId } ) {
+  const [selectedProject, setSelectedProject] = useState("Overview");
   const [timePeriod, setTimePeriod] = useState('week');
   const [weekIndex, setWeekIndex] = useState(0);
   const [workData, setWorkData] = useState([]);
@@ -14,6 +13,9 @@ function EmployeeWorkStatistics() {
       const accessToken = localStorage.getItem('accessToken');
 
       const response = await axios.get(`/api/analytics/employees/getWorkStatistics`, {
+        params: {
+          projectId: selectedProjectId,
+        },
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
@@ -25,11 +27,31 @@ function EmployeeWorkStatistics() {
             tasksCompleted: week.completed,
             hoursWorked: week.hours,
             tasksAssigned: week.assigned,
+            overdueTasks: week.overdue,
           })
         });
 
+        // reverse data
+        data.reverse();
+    
         setWorkData(data);
+        setWeekIndex(data.length - 1); // Set to the last week by default
       }
+
+      // get the name of the project
+      const projectResponse = await axios.get(`/api/analytics/employees/getProjectById`, {
+        params: {
+          projectId: selectedProjectId,
+        },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (projectResponse?.data?.project) {
+        setSelectedProject(projectResponse.data.project.title);
+      } else {
+        setSelectedProject("Overview")
+      }
+
     }
     catch (error) {
       console.error("Error fetching work statistics data:", error);
@@ -38,7 +60,7 @@ function EmployeeWorkStatistics() {
 
   useEffect(() => {
     fetchData();
-  },[])
+  },[selectedProjectId])
 
   // Calculate monthly roundups based on weekly data
   const monthlyStats = workData.reduce(
@@ -46,12 +68,14 @@ function EmployeeWorkStatistics() {
       acc.tasksCompleted += weekData.tasksCompleted;
       acc.hoursWorked += +weekData.hoursWorked;
       acc.tasksAssigned += weekData.tasksAssigned;
+      acc.overdueTasks += weekData.overdueTasks;
       return acc;
     },
     {
       tasksCompleted: 0,
       hoursWorked: 0,
       tasksAssigned: 0,
+      overdueTasks: 0,
     }
   );
 
@@ -89,30 +113,39 @@ function EmployeeWorkStatistics() {
       color: 'text-purple-600',
       bgColor: 'bg-purple-50'
     }
+    ,
+    {
+      key: 'overdueTasks',
+      label: 'Overdue Tasks',
+      value: currentStats?.overdueTasks,
+      color: 'text-red-600',
+      bgColor: 'bg-red-50'
+    }
   ];
 
   return (
     <div className="flex flex-col p-4 bg-white rounded-2xl shadow-sm border border-gray-100 col-span-4 row-span-2 h-full">
-      {/* Header with view toggle */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-gray-800">Work Statistics</h3>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setTimePeriod('week')}
-            className={`px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium ${timePeriod === 'week' ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:bg-gray-100'}`}
-          >
-            Week
-          </button>
-          <button
-            onClick={() => setTimePeriod('month')}
-            className={`px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium ${timePeriod === 'month' ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:bg-gray-100'}`}
-          >
-            Month
-          </button>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Work Statistics - {selectedProject ? selectedProject : "Overview"}
+          </h3>
+          <div className="flex gap-2">
+            <button
+          onClick={() => setTimePeriod('week')}
+          className={`px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium ${timePeriod === 'week' ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:bg-gray-100'}`}
+            >
+          Week
+            </button>
+            <button
+          onClick={() => setTimePeriod('month')}
+          className={`px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-sm font-medium ${timePeriod === 'month' ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:bg-gray-100'}`}
+            >
+          Month
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Week navigation (only shown in week view) */}
+        {/* Week navigation (only shown in week view) */}
       {timePeriod === 'week' && (
         <div className="flex justify-end items-center mb-6">
           <div className="flex items-center gap-1">
@@ -124,7 +157,7 @@ function EmployeeWorkStatistics() {
               <FiChevronLeft />
             </button>
             <span className="text-medium text-gray-600">
-              {currentStats?.weekEnd} - {currentStats?.weekStart}
+              {currentStats?.weekStart} - {currentStats?.weekEnd}
             </span>
             <button
               onClick={handleNextWeek}

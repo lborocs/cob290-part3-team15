@@ -48,6 +48,7 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
         params: { projectId: selectedProjectId },
       });
       setChartData(response.data.results);
+      console.log('Chart data:', response.data.results);
     } catch (error) {
       console.error('Error fetching chart data:', error);
       setChartData([]);
