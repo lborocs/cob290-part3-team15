@@ -259,13 +259,13 @@ router.get("/getTopContributors",authenticateToken,(req,res) => {
     const query=`SELECT
                         u.Forename as 'forename', u.Surname as 'surname',
                         SUM(CASE WHEN t.Status = 'Completed' THEN t.HoursRequired ELSE 0 END) AS hours
-                    FROM users as u INNER JOIN tasks as t on u.UserID = t.AssigneeID
+                    FROM users as u INNER JOIN tasks as t on u.UserID = t.AssigneeID AND t.ProjectID = ?
                     WHERE EXISTS (SELECT pu.ProjectID, pu.UserID FROM project_users AS pu WHERE pu.UserID = u.UserID and pu.ProjectID = ?)
                     GROUP BY u.UserID
                     ORDER BY hours DESC`;
     const projectId = req.query.projectId;
 
-    database.query(query, [projectId], (err, results) => {
+    database.query(query, [projectId, projectId], (err, results) => {
         if (err) {
             return res.status(500).send({ error: "Error fetching top contributors" });
         }
