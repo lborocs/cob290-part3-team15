@@ -38,7 +38,7 @@ function EmployeeWorkStatistics() {
 
   useEffect(() => {
     fetchData();
-  })
+  },[])
 
   // Calculate monthly roundups based on weekly data
   const monthlyStats = workData.reduce(
