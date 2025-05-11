@@ -101,7 +101,7 @@ function EmployeeWorkStatistics( { selectedProjectId } ) {
     },
     {
       key: 'tasksAssigned',
-      label: 'Tasks Assigned',
+      label: 'New Tasks Assigned',
       value: currentStats?.tasksAssigned,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50'
@@ -116,7 +116,7 @@ function EmployeeWorkStatistics( { selectedProjectId } ) {
     ,
     {
       key: 'overdueTasks',
-      label: 'Overdue Tasks',
+      label: 'Deadlines Missed',
       value: currentStats?.overdueTasks,
       color: 'text-red-600',
       bgColor: 'bg-red-50'
