@@ -95,7 +95,6 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
         if (chat.target === idToFind && chat.type === "direct_messages") {
           return { ...chat, status: newStatus };
         }
-        else{console.log(chat.target ,"-", chat.type, " ", idToFind,"-", "direct_messages")}
         return chat;
       });
     });

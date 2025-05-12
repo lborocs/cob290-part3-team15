@@ -66,7 +66,6 @@ const Auth = (WrappedComponent) => {
         if (response?.data?.accessToken) {
           localStorage.setItem('accessToken', response.data.accessToken);
           const decoded = jwtDecode(response.data.accessToken);
-          //console.log(decoded)
           setUser({userID: decoded.userID,role: decoded.role,name: decoded.name,});
           setLoading(false);
         } 

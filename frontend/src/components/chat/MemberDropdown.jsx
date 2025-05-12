@@ -29,7 +29,6 @@ function MemberDropdown({onClose, refs, floatingStyles,mode,selectedID,userID,re
     const colorBasedOnId = selectedID % colorKeys.length;
     const color = colors[colorKeys[colorBasedOnId]];
 
-    const componentsFunctions = [() => console.log("Member 1"), () => console.log("Member 2"), null];
     const icons = [<BsFillPersonFill className="w-6 h-6"/>, <BsFillPersonFill className="w-6 h-6"/>, <BsFillPersonFill className="w-6 h-6"/>]; // Add icons if needed
     const iconColours = ['bg-green-500', 'bg-blue-500', 'bg-red-500'];
 

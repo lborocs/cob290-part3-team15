@@ -4,7 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import {BsSearch} from "react-icons/bs";
 import {FaUser} from "react-icons/fa";
 
-function AddMemberModal({ open, onClose, refs, floatingStyles,selectedID}) {
+function AddMemberModal({ open, onClose, refs, floatingStyles, selectedID}) {
     const [searchInput, setInput] = useState("");
     const [selectedPeople, setSelectedPeople] = useState([]);
     const [people, setPeople] = useState([]); // Limited list of people
@@ -146,7 +146,6 @@ function AddMemberModal({ open, onClose, refs, floatingStyles,selectedID}) {
                         <label
                             key={person.id}
                             className="flex w-full items-center bg-orangeHover shadow-sm p-2 rounded-lg cursor-pointer"
-                            onClick={() => console.log(person.name)}
                         >
                             <div
                                 className={`flex flex-col w-8 h-8 rounded-full items-center ${colors[Object.keys(colors)[person.id % Object.keys(colors).length]]} mr-4`}

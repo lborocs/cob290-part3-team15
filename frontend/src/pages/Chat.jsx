@@ -110,9 +110,6 @@ function Chat({ user }){
             socket.on('newMessage', (data) => { //NOTE - This is suitable, a lot of data needs to be double checked here
                 setRefresh(previous => previous + 1);
                 if(data?.deletion){
-                    console.log(data.deletion)
-                    console.log(data.deletion.target)
-
                     if(data.deletion.target===userIDRef.current && data.deletion.group===selectedIDRef.current && modeRef.current==="group_messages"){
                         setSelectedID(-1)
                         setMode("direct_messages")

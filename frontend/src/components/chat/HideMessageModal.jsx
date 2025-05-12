@@ -11,7 +11,6 @@ function HideMessageModal({ open, onClose, messageID, mode }) {
             const body = {id: messageID};
             const response = await axios.put(`/api/chat/${mode}/hideMessage`, body, headers);
             if (response.data.success) {
-                console.log("Message hidden successfully");
                 onClose();
             } else {
                 console.error("Failed to hide message:");

@@ -13,7 +13,6 @@ function RenameModal({ open, chatID, onClose, refs, floatingStyles, chatName,sel
             if (response?.data?.success) {
                 //setFullPeopleList(getPeople())                
             }
-            console.log("Renaming chat to: ", newChatName);
             onClose(); // Close the modal
         }
         catch (error) {

@@ -364,8 +364,6 @@ router.get("/getTaskCompletionStatus", authenticateToken, (req, res) => {
         return res.status(400).send({ error: "Project ID is required" });
     }
 
-    console.log("Project ID:", projectId); // Debugging
-
     const query = `
         SELECT 
             SUM(CASE WHEN Status = 'Completed' THEN 1 ELSE 0 END) AS completed,
@@ -375,11 +373,8 @@ router.get("/getTaskCompletionStatus", authenticateToken, (req, res) => {
 
     database.query(query, [projectId], (err, results) => {
         if (err) {
-            console.error("Error fetching task completion status:", err); // Debugging
             return res.status(500).send({ error: "Error fetching task completion status" });
         }
-
-        console.log("Task Completion Status Results:", results); // Debugging
 
         res.send({completed: results[0].completed, pending: results[0].pending});
     });
