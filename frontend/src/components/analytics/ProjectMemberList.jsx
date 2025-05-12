@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import React, {useEffect, useState} from 'react';
+import {Bar} from 'react-chartjs-2';
 import 'chart.js/auto';
-import { FiSearch, FiUsers, FiX } from 'react-icons/fi';
+import {FiSearch, FiUsers, FiX} from 'react-icons/fi';
 import axios from "axios";
 
 function ProjectMemberList({ selectedProjectId }) {

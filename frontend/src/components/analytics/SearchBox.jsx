@@ -1,7 +1,6 @@
-import React, {useEffect} from 'react';
-import { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ProjectCard from './ProjectCard';
-import { FiSearch } from 'react-icons/fi';
+import {FiSearch} from 'react-icons/fi';
 import axios from "axios";
 
 function SearchBox({ userRole, onProjectSelect, selectedProjectId }) {

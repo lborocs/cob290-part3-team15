@@ -1,7 +1,7 @@
 import MessageOptions from './MessageOptions.jsx';
-import { use, useRef, useState, useEffect } from 'react';
+import {useRef, useState} from 'react';
 import ChatDropdown from './ChatDropdown.jsx';
-import { useFloating, offset, flip, shift, useDismiss,  autoUpdate, useHover,useInteractions,} from '@floating-ui/react';
+import {autoUpdate, flip, offset, shift, useDismiss, useFloating, useHover,} from '@floating-ui/react';
 import HideMessageModal from './HideMessageModal.jsx';
 
 function Content({ message }) {

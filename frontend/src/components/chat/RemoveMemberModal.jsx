@@ -1,4 +1,5 @@
 import Modal from "../other/Modal";
+
 function RemoveMemberModal({ open, onClose, removeFunction, refs, floatingStyles }) {
     const handleClose = () => {
         onClose(); // Close the modal

@@ -1,14 +1,13 @@
-import ProfileCard from "../accounts/ProfileCard";
-import { useState,useEffect } from "react";
+import {useEffect, useState} from "react";
 import MemberDropdown from "./MemberDropdown.jsx";
-import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate } from "@floating-ui/react";
+import {autoUpdate, flip, limitShift, offset, shift, useDismiss, useFloating} from "@floating-ui/react";
 import AddMemberModal from "../chat/AddMemberModal";
 import RemoveMemberModal from "../chat/RemoveMemberModal";
 import RenameModal from "../chat/RenameModal";
 import LeaveModal from "../chat/LeaveModal";
 import axios from "axios";
-import { FaChevronDown,FaUser } from "react-icons/fa";
-import { HiUserGroup } from "react-icons/hi";
+import {FaChevronDown, FaUser} from "react-icons/fa";
+import {HiUserGroup} from "react-icons/hi";
 
 // components/chat/core/Header.jsx
 export default function Header({ selectedID, mode, userID, refresh,setSelectedID,setMode }) {

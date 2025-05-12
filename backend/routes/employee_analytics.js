@@ -37,6 +37,39 @@ router.get("/getOverviewQuickStatistics",authenticateToken,(req,res) => {
     });
 });
 
+// Get quick statistics for a selected project
+router.get("/getQuickStatistics",authenticateToken,(req,res) => {
+    const projectId = req.query.projectId;
+    if (!projectId) {
+        return res.status(400).send({ error: "Project ID is required" });
+    }
+    const query = `
+        WITH ft AS (
+            SELECT
+                TaskID,
+                Status,
+                Deadline
+            FROM
+                tasks
+            WHERE
+                AssigneeID = ?
+              AND ProjectID = ?
+        )
+        SELECT
+                (SELECT COUNT(TaskID) FROM ft) as 'tasks',
+                (SELECT COUNT(TaskID) FROM ft WHERE Status = 'Completed') as 'completed',
+                (SELECT COUNT(TaskID) FROM ft WHERE Status != 'Completed' AND DATEDIFF(CURDATE(), Deadline)>0) as 'overdue'
+        `;
+
+    database.query(query, [req.user.userID, projectId], (err, results) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching quick statistics"});
+        }
+
+        res.send({results: results});
+    });
+});
+
 // Get all projects assigned to a user
 router.get("/getAssignedProjects",authenticateToken,(req,res) => {
     const query=`SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description'
@@ -57,9 +90,17 @@ router.get("/getAssignedProjects",authenticateToken,(req,res) => {
     });
 });
 
-/* ADDED FUNCTIONS FOR THE EMPLOYEE OVERVIEW */
-// get the employee hours 
-router.get("/getAllEmployeeHours", authenticateToken, (req, res) => {
+// get the hours worked by a user over the past 4 weeks
+router.get("/getWeeklyHoursData", authenticateToken, (req, res) => {
+    const projectId = req.query.projectId;
+    let projectFilter = '';
+    const values = [req.user.userID];
+    // Filter for selected project if not overview
+    if (projectId) {
+        projectFilter = ' AND t.ProjectID = ? ';
+        values.push(projectId);
+    }
+
     const query = `
         WITH last_4_weeks AS (
             SELECT 
@@ -76,11 +117,12 @@ router.get("/getAllEmployeeHours", authenticateToken, (req, res) => {
             ON t.CompletionDate BETWEEN lw.weekStart AND lw.weekEnd
             AND t.AssigneeID = ? 
             AND t.Status = 'Completed'
+            ${projectFilter}
         GROUP BY lw.weekStart, lw.weekEnd
         ORDER BY lw.weekStart DESC;
     `;
 
-    database.query(query, [req.user.userID], (err, results) => {
+    database.query(query, values, (err, results) => {
         if (err) {
             return res.status(500).send({ error: "Error fetching employee hours" });
         }
@@ -248,8 +290,16 @@ router.get("/getWorkStatistics", authenticateToken, (req, res) => {
 });
 
 
-//getting all projects the employee contributed to, and returning for each proct the number of tasks completed due and overdue
-router.get("/getAllEmployeeProjects",authenticateToken,(req,res) => {
+//getting the breakdown of tasks by status, for all projects or a specific project
+router.get("/getContributionData",authenticateToken,(req,res) => {
+    const projectId = req.query.projectId;
+    let projectFilter = '';
+    const values = [req.user.userID, req.user.userID, req.user.userID, req.user.userID];
+    // Filter for selected project if not overview
+    if (projectId) {
+        projectFilter = ' AND pu.ProjectID = ? ';
+        values.push(projectId);
+    }
     const query = `SELECT
                             p.ProjectID as 'id',
                             p.Title as 'title',
@@ -262,9 +312,8 @@ router.get("/getAllEmployeeProjects",authenticateToken,(req,res) => {
                         LEFT JOIN tasks as t2 ON p.ProjectID = t2.ProjectID AND t2.Status != 'Completed' AND DATEDIFF(CURDATE(), t2.Deadline) > 0 AND t2.AssigneeID = ?
                         LEFT JOIN tasks as t3 ON p.ProjectID = t3.ProjectID AND t3.Status != 'Completed' AND DATEDIFF(CURDATE(), t3.Deadline) <= 0 AND t3.AssigneeID = ?
                         WHERE pu.UserID = ?
+                        ${projectFilter}
                         GROUP BY p.ProjectID`;
-
-    const values = [req.user.userID, req.user.userID, req.user.userID, req.user.userID];
 
     database.query(query, values, (err, results) => {
         if (err) {

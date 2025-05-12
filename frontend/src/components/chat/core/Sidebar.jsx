@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { MdClose } from "react-icons/md";
-import { MdGroup } from "react-icons/md";
-import { FaSearch } from "react-icons/fa";
+import {MdClose, MdGroup} from "react-icons/md";
+import {FaSearch} from "react-icons/fa";
 
 import CreateChat from '../CreateChat.jsx';
 import ProfileCard from '../../accounts/ProfileCard.jsx';
@@ -96,7 +95,6 @@ const Sidebar = ({userID,mode,setMode,selectedID,setSelectedID,refresh,statusUpd
         if (chat.target === idToFind && chat.type === "direct_messages") {
           return { ...chat, status: newStatus };
         }
-        else{console.log(chat.target ,"-", chat.type, " ", idToFind,"-", "direct_messages")}
         return chat;
       });
     });

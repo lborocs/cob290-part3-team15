@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode'; // You need to use the default import
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 const Auth = (WrappedComponent) => {
   return (props) => {
@@ -66,7 +66,6 @@ const Auth = (WrappedComponent) => {
         if (response?.data?.accessToken) {
           localStorage.setItem('accessToken', response.data.accessToken);
           const decoded = jwtDecode(response.data.accessToken);
-          //console.log(decoded)
           setUser({userID: decoded.userID,role: decoded.role,name: decoded.name,});
           setLoading(false);
         } 

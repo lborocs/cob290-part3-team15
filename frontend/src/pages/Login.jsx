@@ -1,8 +1,6 @@
-import { useState,useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import make_it_all from '../assets/logo.png';
 
 //This is the boilerplate stuff
 function Login(){
@@ -33,7 +31,7 @@ function Login(){
             if (response?.data?.accessToken && response?.data?.refreshToken){
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
-                navigate("/landing/")
+                navigate("/chat/")
             }
             else{
                 alert("Failed to log in!")
@@ -63,7 +61,7 @@ function Login(){
             if (response?.data?.accessToken && response?.data?.refreshToken){
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
-                navigate("/landing/")
+                navigate("/chat/")
             }
             else{
                 alert("Failed to log in!")

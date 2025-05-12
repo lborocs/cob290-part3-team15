@@ -1,11 +1,9 @@
 // Client socket
-import { connectSocket, disconnectSocket,getSocket } from '../socket';
+import {connectSocket, disconnectSocket, getSocket} from '../socket';
 
-import {useWindowSize,useWindowWidth,useWindowHeight} from '@react-hook/window-size'
-import { BsArrowBarLeft, BsX } from "react-icons/bs";
-import { BsArrowBarRight } from "react-icons/bs";
-import { useState,useEffect,useRef } from 'react';
- 
+import {useWindowWidth} from '@react-hook/window-size'
+import {useEffect, useRef, useState} from 'react';
+
 import MessageList from '../components/chat/core/MessageList.jsx';
 import MessageBox from '../components/chat/core/MessageBox.jsx';
 
@@ -112,9 +110,6 @@ function Chat({ user }){
             socket.on('newMessage', (data) => { //NOTE - This is suitable, a lot of data needs to be double checked here
                 setRefresh(previous => previous + 1);
                 if(data?.deletion){
-                    console.log(data.deletion)
-                    console.log(data.deletion.target)
-
                     if(data.deletion.target===userIDRef.current && data.deletion.group===selectedIDRef.current && modeRef.current==="group_messages"){
                         setSelectedID(-1)
                         setMode("direct_messages")

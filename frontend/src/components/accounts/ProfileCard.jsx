@@ -1,7 +1,7 @@
-import {useEffect,useState} from 'react';
+import {useState} from 'react';
 
-import { FaUser } from "react-icons/fa";
-import { HiUserGroup } from "react-icons/hi";
+import {FaUser} from "react-icons/fa";
+import {HiUserGroup} from "react-icons/hi";
 
 const ProfileCard = ({ displayBG,type,id,status}) => {
   const [userIcon, setUserIcon] = useState(null);

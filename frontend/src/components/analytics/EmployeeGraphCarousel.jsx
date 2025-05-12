@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import EmployeeWeeklyHoursChart from './charts/EmployeeWeeklyHoursChart.jsx';
 import EmployeeContributionsByProjectChart from './charts/EmployeeContributionsByProjectChart.jsx';
@@ -10,14 +10,14 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
           type: 'employee-projects-overview',
           title: 'My Project Contributions',
           description: 'Tasks I contributed to by project',
-          endpoint: '/api/analytics/employees/getAllEmployeeProjects',
+          endpoint: '/api/analytics/employees/getContributionData',
           component: EmployeeContributionsByProjectChart,
       },
       {
           type: 'employee-hours-overview',
           title: 'My Weekly Hours',
           description: 'My hours worked in the past 4 weeks',
-          endpoint: '/api/analytics/employees/getAllEmployeeHours',
+          endpoint: '/api/analytics/employees/getWeeklyHoursData',
           component: EmployeeWeeklyHoursChart,
       },
       {
@@ -36,7 +36,6 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
 
  // fetch data for the current chart
  const fetchChartData = async () => {
-     console.log("Project ID:", selectedProjectId); // Debugging
     try {
       const accessToken = localStorage.getItem('accessToken');
       const response = await axios.get(currentChart.endpoint, {
@@ -44,7 +43,6 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setChartData({index: currentIndex, data: response.data.results});
-      console.log('Chart data:', response.data.results);
     } catch (error) {
       console.error('Error fetching chart data:', error);
       setChartData({index: 0, data: null});

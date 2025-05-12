@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as d3 from 'd3';
 
 const EmployeeWeeklyHoursChart = ({ data }) => {
@@ -43,7 +43,7 @@ const EmployeeWeeklyHoursChart = ({ data }) => {
 
     // Y-axis (hours)
     const y = d3.scaleLinear()
-      .domain([0, d3.max(cumulativeData, d => d.cumulativeHours) * 1.1])
+      .domain([0, d3.max(cumulativeData, d => d.cumulativeHours) * 1.1 + 1])
       .range([innerHeight, 0])
       .nice();
 

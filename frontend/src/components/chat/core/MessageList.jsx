@@ -1,6 +1,6 @@
 import Message from "../Message";
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import {useEffect, useRef, useState} from "react";
 
 function MessageList({userID, selectedID, mode, refresh, setMessagesLoaded ,messageContainerRef, setEditing, setEditingMessage, editingMessage, editedValue}) {
   const [messages, setMessages] = useState([]);

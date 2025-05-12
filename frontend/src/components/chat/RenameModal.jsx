@@ -1,6 +1,7 @@
 import Modal from "../other/Modal";
-import { useState } from "react";
+import {useState} from "react";
 import axios from "axios";
+
 function RenameModal({ open, chatID, onClose, refs, floatingStyles, chatName,selectedID }) {
     const [newChatName, setNewChatName] = useState(chatName);
     const handleRename = async () => {
@@ -12,7 +13,6 @@ function RenameModal({ open, chatID, onClose, refs, floatingStyles, chatName,sel
             if (response?.data?.success) {
                 //setFullPeopleList(getPeople())                
             }
-            console.log("Renaming chat to: ", newChatName);
             onClose(); // Close the modal
         }
         catch (error) {

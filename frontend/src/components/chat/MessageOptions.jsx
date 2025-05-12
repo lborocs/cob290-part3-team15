@@ -1,5 +1,5 @@
-import { BsThreeDots, BsPencil, BsPencilFill } from "react-icons/bs";
-import { useState } from 'react';
+import {BsPencil, BsPencilFill, BsThreeDots} from "react-icons/bs";
+import {useState} from 'react';
 
 function MessageOptions({sentByUser, message, setEditing, setEditingMessage,setIsDropdownOpen}) {
     const [isHoveredEdit, SetIsHoveredEdit] = useState(false);

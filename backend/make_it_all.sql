@@ -47,12 +47,12 @@ CREATE TABLE `active_chats` (
 
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
-INSERT INTO `active_chats` VALUES (1,2,'2025-05-07 11:06:10','2025-05-07 21:52:05');
+INSERT INTO `active_chats` VALUES (1,2,'2025-05-07 11:06:10','2025-05-12 05:38:07');
 INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28','2025-05-11 21:39:01');
 INSERT INTO `active_chats` VALUES (2,1,'2025-05-06 19:11:05','2025-05-07 22:04:51');
 INSERT INTO `active_chats` VALUES (2,3,'2025-04-20 07:07:03','2025-05-07 22:08:12');
-INSERT INTO `active_chats` VALUES (3,1,'2025-04-20 00:02:28','2025-04-20 07:27:10');
-INSERT INTO `active_chats` VALUES (3,2,'2025-04-20 07:07:03','2025-05-12 04:23:35');
+INSERT INTO `active_chats` VALUES (3,1,'2025-04-20 00:02:28','2025-05-12 15:47:19');
+INSERT INTO `active_chats` VALUES (3,2,'2025-04-20 07:07:03','2025-05-12 16:17:37');
 /*!40000 ALTER TABLE `active_chats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,8 +224,8 @@ INSERT INTO `group_users` VALUES (1,4,'2025-05-11 21:39:02');
 INSERT INTO `group_users` VALUES (2,1,'2025-05-07 22:08:22');
 INSERT INTO `group_users` VALUES (2,2,'2025-05-07 22:08:08');
 INSERT INTO `group_users` VALUES (2,3,'2025-05-07 22:06:36');
-INSERT INTO `group_users` VALUES (3,1,'2025-05-11 21:13:45');
-INSERT INTO `group_users` VALUES (3,3,NULL);
+INSERT INTO `group_users` VALUES (3,1,'2025-05-12 15:44:50');
+INSERT INTO `group_users` VALUES (3,3,'2025-05-12 15:45:00');
 INSERT INTO `group_users` VALUES (4,2,'2025-05-06 21:09:49');
 INSERT INTO `group_users` VALUES (4,3,'2025-05-06 21:09:50');
 INSERT INTO `group_users` VALUES (5,3,NULL);
@@ -414,7 +414,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Mr','Mime','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (1,'Mr','Mime','Employee',NULL,'ABC123BCA!!!','Online','Online');
 INSERT INTO `users` VALUES (2,'John','Smith','Manager',NULL,'ABC123BCA!!!','Offline','Online');
 INSERT INTO `users` VALUES (3,'Bill','Bloomstick','Employee',NULL,'ABC123BCA!!!','Online','Online');
 INSERT INTO `users` VALUES (4,'Faker','Realman','Employee',NULL,'12A','Offline','Online');
@@ -437,4 +437,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-12  6:22:40
+-- Dump completed on 2025-05-12 17:18:18

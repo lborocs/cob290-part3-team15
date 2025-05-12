@@ -1,4 +1,3 @@
-
 import DropdownItem from './DropdownItem';
 
 function DropdownList({ items, onClick, icons, refs, floatingStyles, blurBackground }) {

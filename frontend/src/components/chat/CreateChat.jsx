@@ -1,6 +1,7 @@
-import { MdGroupAdd } from "react-icons/md";
-import { useState } from "react";
+import {MdGroupAdd} from "react-icons/md";
+import {useState} from "react";
 import AddChatModal from "./AddChatModal.jsx";
+
 function CreateChat({userID,setSelectedID,setMode}) {
   const [addChatModal, setAddChatModal] = useState(false);
   

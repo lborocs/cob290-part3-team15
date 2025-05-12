@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import TaskCard from './TaskCard';
-import { FiSearch, FiCalendar } from 'react-icons/fi';
+import {FiCalendar, FiSearch} from 'react-icons/fi';
 import axios from "axios";
 
 function TasksList({ selectedProjectId, role }) {
@@ -20,7 +20,6 @@ function TasksList({ selectedProjectId, role }) {
         responseTasks = await axios.get(`/api/analytics/employees/getUserTasks?id=${selectedProjectId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        console.log(responseTasks.data.tasks)
       } else if (role == 'Team Leader') {
         responseTasks = await axios.get(`/api/analytics/projects/getTasks?id=${selectedProjectId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
