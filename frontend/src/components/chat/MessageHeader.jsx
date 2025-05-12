@@ -184,7 +184,7 @@ export default function Header({ selectedID, mode, userID, refresh,setSelectedID
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex-1 truncate select-none">{name}</div>
+                                <div className="flex-1 truncate select-none">{name}</div>
                                 <FaChevronDown
                                     className={`h-5 w-5 text-gray-800 transform transition-transform duration-200 ${
                                         dropdownVisible ? 'rotate-180' : 'rotate-0'
