@@ -17,7 +17,7 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
           type: 'employee-hours-overview',
           title: 'My Weekly Hours',
           description: 'My hours worked in the past 4 weeks',
-          endpoint: '/api/analytics/employees/getAllEmployeeHours',
+          endpoint: '/api/analytics/employees/getWeeklyHoursData',
           component: EmployeeWeeklyHoursChart,
       },
       {

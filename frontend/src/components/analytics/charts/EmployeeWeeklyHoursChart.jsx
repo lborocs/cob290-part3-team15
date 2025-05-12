@@ -43,7 +43,7 @@ const EmployeeWeeklyHoursChart = ({ data }) => {
 
     // Y-axis (hours)
     const y = d3.scaleLinear()
-      .domain([0, d3.max(cumulativeData, d => d.cumulativeHours) * 1.1])
+      .domain([0, d3.max(cumulativeData, d => d.cumulativeHours) * 1.1 + 1])
       .range([innerHeight, 0])
       .nice();
 

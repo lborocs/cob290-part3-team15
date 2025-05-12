@@ -57,9 +57,17 @@ router.get("/getAssignedProjects",authenticateToken,(req,res) => {
     });
 });
 
-/* ADDED FUNCTIONS FOR THE EMPLOYEE OVERVIEW */
-// get the employee hours 
-router.get("/getAllEmployeeHours", authenticateToken, (req, res) => {
+// get the hours worked by a user over the past 4 weeks
+router.get("/getWeeklyHoursData", authenticateToken, (req, res) => {
+    const projectId = req.query.projectId;
+    let projectFilter = '';
+    const values = [req.user.userID];
+    // Filter for selected project if not overview
+    if (projectId) {
+        projectFilter = ' AND t.ProjectID = ? ';
+        values.push(projectId);
+    }
+
     const query = `
         WITH last_4_weeks AS (
             SELECT 
@@ -76,11 +84,12 @@ router.get("/getAllEmployeeHours", authenticateToken, (req, res) => {
             ON t.CompletionDate BETWEEN lw.weekStart AND lw.weekEnd
             AND t.AssigneeID = ? 
             AND t.Status = 'Completed'
+            ${projectFilter}
         GROUP BY lw.weekStart, lw.weekEnd
         ORDER BY lw.weekStart DESC;
     `;
 
-    database.query(query, [req.user.userID], (err, results) => {
+    database.query(query, values, (err, results) => {
         if (err) {
             return res.status(500).send({ error: "Error fetching employee hours" });
         }
