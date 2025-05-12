@@ -20,7 +20,6 @@ function TasksList({ selectedProjectId, role }) {
         responseTasks = await axios.get(`/api/analytics/employees/getUserTasks?id=${selectedProjectId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        console.log(responseTasks.data.tasks)
       } else if (role == 'Team Leader') {
         responseTasks = await axios.get(`/api/analytics/projects/getTasks?id=${selectedProjectId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },

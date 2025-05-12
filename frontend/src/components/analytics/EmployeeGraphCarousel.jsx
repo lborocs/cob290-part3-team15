@@ -36,7 +36,6 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
 
  // fetch data for the current chart
  const fetchChartData = async () => {
-     console.log("Project ID:", selectedProjectId); // Debugging
     try {
       const accessToken = localStorage.getItem('accessToken');
       const response = await axios.get(currentChart.endpoint, {
@@ -44,7 +43,6 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setChartData({index: currentIndex, data: response.data.results});
-      console.log('Chart data:', response.data.results);
     } catch (error) {
       console.error('Error fetching chart data:', error);
       setChartData({index: 0, data: null});

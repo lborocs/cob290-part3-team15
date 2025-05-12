@@ -14,7 +14,6 @@ function QuickStatistics({ userRole, selectedProjectId }) {
             const response = await axios.get(`/api/analytics/projects/getOverviewQuickStatistics`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
             });
-            console.log(response.data.results)
             setStats(
                 [
                     {

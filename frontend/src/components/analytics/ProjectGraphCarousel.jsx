@@ -36,7 +36,6 @@ function ProjectGraphCarousel({ selectedProjectId }) {
   const ChartComponent = chartConfig[chartData.index].component;
 
   useEffect(() => {
-    console.log("Project ID:", selectedProjectId); // Debugging
     const fetchData = async () => {
       try {
           const accessToken = localStorage.getItem('accessToken');
@@ -44,8 +43,6 @@ function ProjectGraphCarousel({ selectedProjectId }) {
               params: { projectId: selectedProjectId },
               headers: { Authorization: `Bearer ${accessToken}` },
           });
-
-          console.log(`Response for ${currentChart.title}:`, response.data);
 
           // Format data for the task allocation bar chart
           if (currentChart.type === 'task-allocation') {
