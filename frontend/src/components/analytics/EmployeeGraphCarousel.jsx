@@ -5,34 +5,29 @@ import EmployeeContributionsByProjectChart from './charts/EmployeeContributionsB
 import BurndownChart from './charts/BurndownChart.jsx'; // Import BurndownChart
 
 function EmployeeGraphCarousel({ selectedProjectId }) {
-  const chartConfig = [];
-
-  // null is the 'id' for the overview
-  if (selectedProjectId === null) {
-    chartConfig.push(
+  const chartConfig = [
       {
-        type: 'employee-projects-overview',
-        title: 'My Project Contributions',
-        description: 'Tasks I contributed to by project',
-        endpoint: '/api/analytics/employees/getAllEmployeeProjects',
-        component: EmployeeContributionsByProjectChart,
+          type: 'employee-projects-overview',
+          title: 'My Project Contributions',
+          description: 'Tasks I contributed to by project',
+          endpoint: '/api/analytics/employees/getAllEmployeeProjects',
+          component: EmployeeContributionsByProjectChart,
       },
       {
-        type: 'employee-hours-overview',
-        title: 'My Weekly Hours',
-        description: 'My hours worked in the past 4 weeks',
-        endpoint: '/api/analytics/employees/getAllEmployeeHours',
-        component: EmployeeWeeklyHoursChart,
+          type: 'employee-hours-overview',
+          title: 'My Weekly Hours',
+          description: 'My hours worked in the past 4 weeks',
+          endpoint: '/api/analytics/employees/getAllEmployeeHours',
+          component: EmployeeWeeklyHoursChart,
       },
       {
-        type: 'burndown',
-        title: 'Burndown Chart',
-        description: 'Track task completion over time',
-        endpoint: '/api/analytics/employees/getBurndownData',
-        component: BurndownChart,
+          type: 'burndown',
+          title: 'Burndown Chart',
+          description: 'Track task completion over time',
+          endpoint: '/api/analytics/employees/getBurndownData',
+          component: BurndownChart,
       }
-    );
-  }
+  ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [chartData, setChartData] = useState([]);
@@ -41,11 +36,12 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
 
  // fetch data for the current chart
  const fetchChartData = async () => {
+     console.log("Project ID:", selectedProjectId); // Debugging
     try {
       const accessToken = localStorage.getItem('accessToken');
       const response = await axios.get(currentChart.endpoint, {
-        headers: { Authorization: `Bearer ${accessToken}` },
         params: { projectId: selectedProjectId },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       setChartData(response.data.results);
       console.log('Chart data:', response.data.results);

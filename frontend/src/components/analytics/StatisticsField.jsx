@@ -13,7 +13,7 @@ function StatisticsField({ userRole, selectedProjectId }) {
         <div className="lg:col-start-6 lg:row-start-2 lg:col-span-6 lg:row-span-5 rounded-3xl lg:grid lg:grid-cols-6 lg:grid-rows-4 flex flex-col gap-4 w-full">
             {userRole === "Employee" ? (
                 <>
-                <EmployeeGraphCarousel selectedProjectId={ null } />
+                <EmployeeGraphCarousel selectedProjectId={selectedProjectId} />
                 <TasksList selectedProjectId={selectedProjectId} role={userRole} />
                 <EmployeeWorkStatistics selectedProjectId={selectedProjectId} />
                 </>
