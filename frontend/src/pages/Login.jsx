@@ -68,7 +68,7 @@ function Login(){
             }
           }
         catch (error) {
-            // Empty as we log errors in the request response
+            alert("Login failed")
         }
     }
 
