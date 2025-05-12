@@ -37,6 +37,39 @@ router.get("/getOverviewQuickStatistics",authenticateToken,(req,res) => {
     });
 });
 
+// Get quick statistics for a selected project
+router.get("/getQuickStatistics",authenticateToken,(req,res) => {
+    const projectId = req.query.projectId;
+    if (!projectId) {
+        return res.status(400).send({ error: "Project ID is required" });
+    }
+    const query = `
+        WITH ft AS (
+            SELECT
+                TaskID,
+                Status,
+                Deadline
+            FROM
+                tasks
+            WHERE
+                AssigneeID = ?
+              AND ProjectID = ?
+        )
+        SELECT
+                (SELECT COUNT(TaskID) FROM ft) as 'tasks',
+                (SELECT COUNT(TaskID) FROM ft WHERE Status = 'Completed') as 'completed',
+                (SELECT COUNT(TaskID) FROM ft WHERE Status != 'Completed' AND DATEDIFF(CURDATE(), Deadline)>0) as 'overdue'
+        `;
+
+    database.query(query, [req.user.userID, projectId], (err, results) => {
+        if (err) {
+            return res.status(500).send({error: "Error fetching quick statistics"});
+        }
+
+        res.send({results: results});
+    });
+});
+
 // Get all projects assigned to a user
 router.get("/getAssignedProjects",authenticateToken,(req,res) => {
     const query=`SELECT p.ProjectID as 'id', p.Title as 'title', p.Description as 'description'
