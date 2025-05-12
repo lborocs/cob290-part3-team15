@@ -3,18 +3,15 @@ import * as d3 from 'd3';
 
 const ProjectTaskCompletionPieChart = ({ data }) => {
   const ref = useRef();
+  const width = 468;
+  const height = 220;
 
   useEffect(() => {
     if (!data || data.length === 0) return;
 
-    const width = ref.current.parentElement.offsetWidth;
-    const height = 220;
-    const radius = Math.min(width, height) / 3; 
-    const margin = { top: 20, right: 20, bottom: 60, left: 20 }; 
+    const radius = Math.min(width, height) / 3;
 
     const svg = d3.select(ref.current)
-      .attr('width', width)
-      .attr('height', height);
 
     svg.selectAll('*').remove();
 
@@ -156,7 +153,7 @@ const ProjectTaskCompletionPieChart = ({ data }) => {
 
   }, [data]);
 
-  return <svg ref={ref} className="w-full" />;
+  return <svg ref={ref} viewBox={`0 0 ${width} ${height}`} />;
 };
 
 export default ProjectTaskCompletionPieChart;
