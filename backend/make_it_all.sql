@@ -48,7 +48,7 @@ CREATE TABLE `active_chats` (
 LOCK TABLES `active_chats` WRITE;
 /*!40000 ALTER TABLE `active_chats` DISABLE KEYS */;
 INSERT INTO `active_chats` VALUES (1,2,'2025-05-07 11:06:10','2025-05-07 21:52:05');
-INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28','2025-05-07 15:40:45');
+INSERT INTO `active_chats` VALUES (1,3,'2025-04-20 00:02:28','2025-05-11 21:39:01');
 INSERT INTO `active_chats` VALUES (2,1,'2025-05-06 19:11:05','2025-05-07 22:04:51');
 INSERT INTO `active_chats` VALUES (2,3,'2025-04-20 07:07:03','2025-05-07 22:08:12');
 INSERT INTO `active_chats` VALUES (3,1,'2025-04-20 00:02:28','2025-04-20 07:27:10');
@@ -220,7 +220,7 @@ LOCK TABLES `group_users` WRITE;
 INSERT INTO `group_users` VALUES (1,1,'2025-05-08 17:10:41');
 INSERT INTO `group_users` VALUES (1,2,'2025-05-07 21:52:07');
 INSERT INTO `group_users` VALUES (1,3,'2025-05-08 08:23:44');
-INSERT INTO `group_users` VALUES (1,4,NULL);
+INSERT INTO `group_users` VALUES (1,4,'2025-05-11 21:39:02');
 INSERT INTO `group_users` VALUES (2,1,'2025-05-07 22:08:22');
 INSERT INTO `group_users` VALUES (2,2,'2025-05-07 22:08:08');
 INSERT INTO `group_users` VALUES (2,3,'2025-05-07 22:06:36');
@@ -333,7 +333,7 @@ LOCK TABLES `projects` WRITE;
 INSERT INTO `projects` VALUES (1,3,'Project Alpha','High','2025-04-01','2025-08-18','A project focused on alpha testing new features.');
 INSERT INTO `projects` VALUES (2,10,'Project Beta','Medium','2025-02-08','2025-12-11','A beta version of our upcoming product release.');
 INSERT INTO `projects` VALUES (3,11,'Project Gamma','Low','2025-04-21','2025-05-07','An initiative to explore gamma ray applications.');
-INSERT INTO `projects` VALUES (4,7,'Project Delta','Medium','2025-06-12','2025-09-18','A task force dedicated to delta process improvements.');
+INSERT INTO `projects` VALUES (4,7,'Project Delta','Medium','2025-03-12','2025-09-18','A task force dedicated to delta process improvements.');
 /*!40000 ALTER TABLE `projects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -369,18 +369,18 @@ CREATE TABLE `tasks` (
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-INSERT INTO `tasks` VALUES (1,1,3,'Alpha Task 1','Completed','High',20,'2025-04-19','2025-04-12','2025-04-01');
+INSERT INTO `tasks` VALUES (1,1,3,'Alpha Task 1','Completed','High',20,'2025-04-19','2025-05-12','2025-04-01');
 INSERT INTO `tasks` VALUES (2,1,1,'Alpha Task 2','Not Started','Medium',10,'2025-04-21',NULL,'2025-04-01');
 INSERT INTO `tasks` VALUES (3,1,3,'Alpha Task 3','Completed','Low',50,'2025-04-19','2025-04-02','2025-04-01');
 INSERT INTO `tasks` VALUES (4,1,1,'Alpha Task 4','Completed','Medium',15,'2025-04-24','2025-05-10','2025-04-16');
 INSERT INTO `tasks` VALUES (5,2,10,'Beta Task 1','Completed','Medium',30,'2025-04-17','2025-02-28','2025-04-08');
 INSERT INTO `tasks` VALUES (6,2,10,'Beta Task 2','In Progress','High',40,'2025-04-21',NULL,'2025-02-08');
 INSERT INTO `tasks` VALUES (7,2,9,'Beta Task 3','Not Started','Low',10,'2025-03-21',NULL,'2025-02-08');
-INSERT INTO `tasks` VALUES (8,2,1,'Beta Task 4','Completed','Medium',20,'2025-04-22','2025-04-21','2025-03-28');
+INSERT INTO `tasks` VALUES (8,2,1,'Beta Task 4','Completed','Medium',20,'2025-04-22','2025-04-25','2025-03-28');
 INSERT INTO `tasks` VALUES (9,3,11,'Gamma Task 1','Completed','High',12,'2025-04-24','2025-04-23','2025-04-21');
-INSERT INTO `tasks` VALUES (10,3,3,'Gamma Task 2','Completed','Low',5,'2025-04-28','2025-04-29','2025-04-21');
+INSERT INTO `tasks` VALUES (10,3,3,'Gamma Task 2','Completed','Low',5,'2025-04-28','2025-05-04','2025-04-21');
 INSERT INTO `tasks` VALUES (11,3,1,'Gamma Task 3','In Progress','High',15,'2025-04-30',NULL,'2025-04-21');
-INSERT INTO `tasks` VALUES (12,3,1,'Gamma Task 4','Completed','Low',2,'2025-04-29','2025-04-22','2025-04-23');
+INSERT INTO `tasks` VALUES (12,3,1,'Gamma Task 4','Completed','Low',2,'2025-04-29','2025-04-28','2025-04-22');
 INSERT INTO `tasks` VALUES (13,4,3,'Delta Task 1','Not Started','High',30,'2025-06-26',NULL,'2025-03-21');
 INSERT INTO `tasks` VALUES (14,4,3,'Delta Task 2','Not Started','Medium',12,'2025-04-30',NULL,'2025-04-11');
 INSERT INTO `tasks` VALUES (15,4,11,'Delta Task 3','Completed','Low',20,'2025-05-16','2025-05-05','2025-04-21');
@@ -415,8 +415,8 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES (1,'Mr','Mime','Employee',NULL,'ABC123BCA!!!','Offline','Online');
-INSERT INTO `users` VALUES (2,'John','Smith','Manager',NULL,'ABC123BCA!!!','Online','Online');
-INSERT INTO `users` VALUES (3,'Bill','Bloomstick','Employee',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (2,'John','Smith','Manager',NULL,'ABC123BCA!!!','Offline','Online');
+INSERT INTO `users` VALUES (3,'Bill','Bloomstick','Employee',NULL,'ABC123BCA!!!','Online','Online');
 INSERT INTO `users` VALUES (4,'Faker','Realman','Employee',NULL,'12A','Offline','Online');
 INSERT INTO `users` VALUES (5,'Rokuro','Thiri','Manager',NULL,'ABC123BCA!!!','Offline','Online');
 INSERT INTO `users` VALUES (6,'Ige','Kapil','Employee',NULL,'ABC123BCA!!!','Offline','Online');
@@ -437,4 +437,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-11 22:26:59
+-- Dump completed on 2025-05-12  5:17:08

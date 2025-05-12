@@ -254,7 +254,7 @@ router.get("/getUserWeeklyHours",authenticateToken,(req,res) => {
 
 
 
-// Get the top 5 employees who have contributed the most hours on this project
+// Get the employees in order of most hours contributed to the project
 router.get("/getTopContributors",authenticateToken,(req,res) => {
     const query=`SELECT
                         u.Forename as 'forename', u.Surname as 'surname',

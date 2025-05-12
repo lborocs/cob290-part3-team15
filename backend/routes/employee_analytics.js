@@ -89,6 +89,116 @@ router.get("/getAllEmployeeHours", authenticateToken, (req, res) => {
     });
 });
 
+// get burndown data for a project
+router.get("/getBurndownData", authenticateToken, (req, res) => {
+    const selectedProjectId = req.query.projectId;
+    let query;
+    let values;
+
+    if(!selectedProjectId) {
+
+        // Get burndown data for an employee's overview
+        query = `
+            WITH RECURSIVE date_range AS (
+                SELECT
+                    sort.CreationDate AS 'date'
+                FROM (
+                         SELECT
+                             CreationDate,
+                             ROW_NUMBER() over (ORDER BY CreationDate) AS 'first'
+                         FROM tasks
+                         WHERE AssigneeID = ?
+                     ) sort
+                WHERE sort.first = 1
+                UNION ALL
+                SELECT
+                    DATE_FORMAT(DATE_ADD(date, INTERVAL 1 DAY), '%Y-%m-%d')
+                FROM date_range
+                WHERE DATEDIFF(date, CURDATE()) < 0
+            )
+
+            SELECT
+                tbl.date,
+                tbl.actual
+            FROM (
+                     SELECT
+                         date,
+                         actual,
+                         LAG(actual) OVER (ORDER BY date) as 'prev_actual'
+                     FROM (SELECT
+                               date as 'date',
+                               IFNULL(SUM(t.HoursRequired), 0) as 'actual'
+                           FROM date_range dr
+                                    LEFT JOIN tasks t
+                                              ON t.CreationDate <= dr.date
+                                                  AND (t.CompletionDate > dr.date OR t.CompletionDate IS NULL)
+                                                  AND t.AssigneeID = ?
+                           GROUP BY date
+                           ORDER BY date) tbl) tbl
+            WHERE
+                actual != prev_actual
+               OR prev_actual IS NULL
+            ORDER BY date
+            `;
+
+        values = [req.user.userID, req.user.userID];
+    }
+    else {
+
+        // Get burndown data for an employee for a specific project
+        query = `
+            WITH RECURSIVE date_range AS (
+                SELECT
+                    StartDate AS 'date'
+                FROM projects
+                WHERE ProjectID = ?
+                UNION ALL
+                SELECT
+                    DATE_FORMAT(DATE_ADD(date, INTERVAL 1 DAY), '%Y-%m-%d')
+                FROM date_range
+                WHERE DATEDIFF(date, (SELECT Deadline FROM projects WHERE ProjectID = ?)) < 0
+            )
+
+            SELECT
+                tbl.date,
+                tbl.actual
+            FROM (
+                     SELECT
+                         date,
+                         actual,
+                         LAG(actual) OVER (ORDER BY date) as 'prev_actual',
+                         ROW_NUMBER() OVER (ORDER BY date DESC) as 'last_row'
+                     FROM (
+                              SELECT
+                                  date as 'date',
+                                  IFNULL(SUM(t.HoursRequired), 0) as 'actual'
+                              FROM date_range dr
+                                       LEFT JOIN tasks t
+                                                 ON t.CreationDate <= dr.date
+                                                     AND (t.CompletionDate > dr.date OR t.CompletionDate IS NULL)
+                                                     AND t.AssigneeID = ?
+                                                     AND t.ProjectID = ?
+                              GROUP BY date
+                              ORDER BY date) tbl) tbl
+            WHERE
+                actual != prev_actual
+               OR prev_actual IS NULL
+               OR last_row = 1
+            ORDER BY date
+        `;
+
+        values = [selectedProjectId, selectedProjectId, req.user.userID, selectedProjectId];
+    }
+
+    database.query(query, values, (err, results) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching employee burndown data" });
+        }
+
+        res.send({ results: {type: selectedProjectId ? 'project' : 'overview', content: results} });
+    });
+});
+
 // get week-by-week stats for the work statistics pane
 router.get("/getWorkStatistics", authenticateToken, (req, res) => {
     // if the parameter selectedProjectId is not null, then we need to filter the tasks by project

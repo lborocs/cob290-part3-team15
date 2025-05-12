@@ -170,8 +170,7 @@ const EmployeeContributionsByProjectChart = ({ data }) => {
       .attr('x', 20)
       .attr('y', 12)
       .text(d => d.type)
-      .style('font-size', '12px')
-      .style('font-weight', 'bold');
+      .style('font-size', '12px');
 
     legend.transition()
       .delay(processedData.length * 100 + 200)

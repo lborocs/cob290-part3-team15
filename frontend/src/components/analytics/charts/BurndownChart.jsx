@@ -3,31 +3,18 @@ import * as d3 from 'd3';
 
 const BurndownChart = ({ data }) => {
 
-  // reverse data to show the most recent date on the right
-  if (data) {
-    data = data.map(d => ({
-      date: d.date,
-      actual: d.actual,
-    })).reverse();
-  }
-
   const ref = useRef();
 
-  // Dummy data for testing
-  const dummyData = [
-    { date: '2025-04-20', actual: 5 },
-    { date: '2025-04-24', actual: 4 },
-    { date: '2025-05-24', actual: 4 },
-  ];
-
   useEffect(() => {
-    if (!data || data.length === 0) {
-      data = dummyData; // Use dummy data if no data is provided
-    }
+    if (!data || data.length === 0) return;
+
+    // Extract the data and the graph type
+    const type = data.type;
+    let content = data.content;
 
     const width = ref.current.parentElement.offsetWidth;
     const height = 220;
-    const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+    const margin = { top: 20, right: 20, bottom: 40, left: 55 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -42,19 +29,34 @@ const BurndownChart = ({ data }) => {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Extend the x-axis range to include dates beyond the last data point
-    const firstDate = new Date(data[0].date);
-    const lastDate = new Date(data[data.length - 1].date);
+    const firstDate = new Date(content[0].date);
+    const lastDate = new Date(content[content.length - 1].date);
     const extendedLastDate = d3.timeWeek.offset(lastDate, 2); // Extend by 2 weeks
 
     // Add a placeholder point for the horizontal continuation of the actual line
     const today = new Date();
-    const filteredData = data.filter(d => new Date(d.date) <= today);
-    let actualLineData = [...filteredData];
+    let actualLineData;
 
-    // Add horizontal continuation only if there is at least one data point
-    if (filteredData.length > 0) {
-      const lastPoint = filteredData[filteredData.length - 1];
-      actualLineData.push({ date: today.toISOString(), actual: lastPoint.actual }); // Continue horizontally to today's date
+    const lastPoint = content[content.length - 1];
+
+    // Add horizontal continuation only if there is at least one data point and we are not viewing a complete project
+    if (content.length > 0) {
+
+      // If the data is for a project, then lastPoint represents the project deadline
+      // So remove it from the data array if it's a placeholder representing the deadline
+      if (type === 'project') {
+        const cutoff = content[content.length - 2]
+        if (lastPoint.actual === cutoff.actual && new Date(lastPoint.date) > today) {
+          content = content.slice(0, -1);
+          actualLineData = [...content, { date: today.toISOString(), actual: cutoff.actual }];
+        }
+        else {
+          actualLineData = [...content];
+        }
+      }
+      else {
+        actualLineData = [...content, { date: today.toISOString(), actual: lastPoint.actual }]; // Continue horizontally to today's date
+      }
     }
 
     const x = d3.scaleTime()
@@ -62,7 +64,7 @@ const BurndownChart = ({ data }) => {
       .range([0, innerWidth]);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.actual)])
+      .domain([0, d3.max(content, d => +d.actual)])
       .range([innerHeight, 0])
       .nice();
 
@@ -72,7 +74,7 @@ const BurndownChart = ({ data }) => {
       .attr('opacity', 0)
       .call(
         d3.axisBottom(x)
-          .ticks(d3.timeWeek.every(1))
+          .ticks(8) // Try for 8 ticks to avoid overlapping
           .tickFormat(d3.timeFormat("%d %b"))
       );
 
@@ -94,7 +96,9 @@ const BurndownChart = ({ data }) => {
     // Add Y-axis with animation
     const yAxis = svg.append('g')
       .attr('opacity', 0)
-      .call(d3.axisLeft(y).ticks(Math.ceil(y.domain()[1]))) // Ensure whole number ticks
+      .call(
+        d3.axisLeft(y)
+          .ticks(5));
 
     yAxis.transition()
       .duration(800)
@@ -106,24 +110,28 @@ const BurndownChart = ({ data }) => {
       .attr('y', -40)
       .attr('x', -innerHeight / 2)
       .attr('text-anchor', 'middle')
-      .text('Tasks Remaining')
+      .text('Hours Remaining')
       .style('opacity', 0)
       .transition()
       .delay(800)
       .style('opacity', 1);
 
-    // Add ideal line (diagonal from top-left to bottom-right)
-    svg.append('line')
-      .attr('x1', 0)
-      .attr('y1', 0)
-      .attr('x2', 0)
-      .attr('y2', 0)
-      .attr('stroke', '#4CAF50')
-      .attr('stroke-width', 2)
-      .transition()
-      .duration(1000)
-      .attr('x2', innerWidth)
-      .attr('y2', innerHeight);
+    // Add ideal line if project selected (diagonal from top-left to bottom-right)
+    if (type === 'project') {
+      const deadline = x(new Date(lastPoint.date));
+
+      svg.append('line')
+          .attr('x1', 0)
+          .attr('y1', 0)
+          .attr('x2', 0)
+          .attr('y2', 0)
+          .attr('stroke', '#4CAF50')
+          .attr('stroke-width', 2)
+          .transition()
+          .duration(1000)
+          .attr('x2', deadline)
+          .attr('y2', innerHeight);
+    }
 
     // Create line generator for the actual line
     const actualLine = d3.line()
@@ -147,7 +155,7 @@ const BurndownChart = ({ data }) => {
 
     // Add dots for actual data points with animation
     const dots = svg.selectAll('.dot-actual')
-      .data(filteredData)
+      .data(content)
       .enter()
       .append('circle')
       .attr('class', 'dot-actual')
@@ -217,7 +225,7 @@ const BurndownChart = ({ data }) => {
 
     // Add legend with animation
     const legend = svg.append('g')
-      .attr('transform', `translate(${innerWidth - 150}, 20)`)
+      .attr('transform', `translate(${innerWidth - 100}, 20)`)
       .style('opacity', 0);
 
     legend.transition()
@@ -225,20 +233,22 @@ const BurndownChart = ({ data }) => {
       .duration(500)
       .style('opacity', 1);
 
-    legend.append('line')
-      .attr('x1', 55)
-      .attr('y1', 0)
-      .attr('x2', 70)
-      .attr('y2', 0)
-      .attr('stroke', '#4CAF50')
-      .attr('stroke-width', 2);
+    if (type === 'project') {
+      legend.append('line')
+          .attr('x1', 55)
+          .attr('y1', 0)
+          .attr('x2', 70)
+          .attr('y2', 0)
+          .attr('stroke', '#4CAF50')
+          .attr('stroke-width', 2);
 
-    legend.append('text')
-      .attr('x', 80)
-      .attr('y', 0)
-      .attr('dy', '.35em')
-      .text('Ideal')
-      .style('font-size', '12px');
+      legend.append('text')
+          .attr('x', 80)
+          .attr('y', 0)
+          .attr('dy', '.35em')
+          .text('Ideal')
+          .style('font-size', '12px');
+    }
 
     legend.append('line')
       .attr('x1', 55)

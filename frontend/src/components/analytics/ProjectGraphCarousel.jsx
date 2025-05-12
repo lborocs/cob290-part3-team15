@@ -4,7 +4,6 @@ import ProjectTaskCompletionPieChart from './charts/ProjectTaskCompletionPieChar
 import ProjectTaskAllocationBarChart from './charts/ProjectTaskAllocationBarChart.jsx';
 import ProjectTopContributorsBarChart from "./charts/ProjectTopContributorsBarChart.jsx";
 
-// TODO - copy structure from employee carousel to make design consistent
 function ProjectGraphCarousel({ selectedProjectId }) {
 
   const chartConfig = [
@@ -32,9 +31,9 @@ function ProjectGraphCarousel({ selectedProjectId }) {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState({index: 0, data: null});
   const currentChart = chartConfig[currentIndex];
-  const ChartComponent = currentChart.component;
+  const ChartComponent = chartConfig[chartData.index].component;
 
   useEffect(() => {
     console.log("Project ID:", selectedProjectId); // Debugging
@@ -55,14 +54,14 @@ function ProjectGraphCarousel({ selectedProjectId }) {
               tasksAssigned: item.tasksAssigned,
               tasksCompleted: item.tasksCompleted,
             }));
-            setChartData(formattedData);
+            setChartData({index: currentIndex, data: formattedData});
           } else if (currentChart.type === 'project-contributors') {
             // Format data for the top contributors chart
             const formattedData = response.data.map((item) => ({
               name: `${item.forename} ${item.surname}`,
               hours: item.hours,
             }));
-            setChartData(formattedData);
+            setChartData({index: currentIndex, data: formattedData});
           }
           else {
             const formattedData = Array.isArray(response.data)
@@ -71,10 +70,11 @@ function ProjectGraphCarousel({ selectedProjectId }) {
                   { label: 'Completed', value: response.data.completed || 0 },
                   { label: 'Not Completed', value: response.data.pending || 0 },
                 ];
-            setChartData(formattedData);
+            setChartData({index: currentIndex, data: formattedData});
           }
       } catch (error) {
-          console.error(`Error fetching data for ${currentChart.title}:`, error);
+          console.error('Error fetching chart data:', error);
+          setChartData({index: 0, data: null});
       }
     };
 
@@ -120,7 +120,7 @@ function ProjectGraphCarousel({ selectedProjectId }) {
 
         {/* Chart area */}
         <div className="w-full h-full max-w-[85%] flex items-center justify-center">
-          <ChartComponent data={chartData} />
+          <ChartComponent data={chartData.data} />
         </div>
 
         {/* Right arrow */}
