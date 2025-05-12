@@ -3,6 +3,8 @@ import axios from 'axios';
 import ProjectTaskCompletionPieChart from './charts/ProjectTaskCompletionPieChart.jsx';
 import ProjectTaskAllocationBarChart from './charts/ProjectTaskAllocationBarChart.jsx';
 import ProjectTopContributorsBarChart from "./charts/ProjectTopContributorsBarChart.jsx";
+import BurndownChart from "./charts/BurndownChart.jsx";
+import {FiSearch} from "react-icons/fi";
 
 function ProjectGraphCarousel({ selectedProjectId }) {
 
@@ -13,6 +15,13 @@ function ProjectGraphCarousel({ selectedProjectId }) {
       description: 'Percentage of completed vs pending tasks',
       endpoint: '/api/analytics/projects/getTaskCompletionStatus',
       component: ProjectTaskCompletionPieChart,
+    },
+    {
+      type: 'project-burndown',
+      title: 'Project Burndown',
+      description: 'Hours of work remaining on the project over time',
+      endpoint: '/api/analytics/projects/getBurndownData',
+      component: BurndownChart,
     },
     {
       type: 'project-contributors',
@@ -60,7 +69,8 @@ function ProjectGraphCarousel({ selectedProjectId }) {
             }));
             setChartData({index: currentIndex, data: formattedData});
           }
-          else {
+          // Format data for the task completion pie chart
+          else if (currentChart.type === 'task-completion') {
             const formattedData = Array.isArray(response.data)
               ? response.data
               : [
@@ -68,6 +78,10 @@ function ProjectGraphCarousel({ selectedProjectId }) {
                   { label: 'Not Completed', value: response.data.pending || 0 },
                 ];
             setChartData({index: currentIndex, data: formattedData});
+          }
+          // No formatting for burndown chart
+          else {
+              setChartData({index: currentIndex, data: response.data.results});
           }
       } catch (error) {
           console.error('Error fetching chart data:', error);
@@ -117,7 +131,14 @@ function ProjectGraphCarousel({ selectedProjectId }) {
 
         {/* Chart area */}
         <div className="w-full h-full max-w-[85%] flex items-center justify-center">
-          <ChartComponent data={chartData.data} />
+            {chartData?.data?.length > 0 || chartData?.data?.content?.length > 0 ? (
+                <ChartComponent data={chartData.data} />
+            ) : (
+                <div className="col-span-full flex flex-col items-center justify-center py-8 text-gray-400">
+                    <FiSearch className="text-3xl mb-2" />
+                    <p>No data available</p>
+                </div>
+            )}
         </div>
 
         {/* Right arrow */}
