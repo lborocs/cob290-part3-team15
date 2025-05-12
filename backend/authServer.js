@@ -62,7 +62,7 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ error: "Database error" });
     }
     if (results.length === 0) {
-      return res.status(401).json({ error: "User not found" });
+      return res.status(403).json({ error: "User does not exist!" });
     }
     const dbUser = results[0];
 
@@ -76,7 +76,7 @@ app.post('/login', (req, res) => {
       res.json({ accessToken: accessToken, refreshToken: refreshToken })
     }
     else{
-      return res.status(401).json({ error: "Password is incorrect" });
+      return res.status(403).json({ error: "Password is incorrect!" });
     }
   });
 })

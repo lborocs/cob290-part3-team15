@@ -68,7 +68,7 @@ function Login(){
             }
           }
         catch (error) {
-            alert("Login failed")
+            alert(error.response.data.error);
         }
     }
 
