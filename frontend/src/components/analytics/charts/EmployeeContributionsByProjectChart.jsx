@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 
 const EmployeeContributionsByProjectChart = ({ data }) => {
   const ref = useRef();
+  const width = 468;
+  const height = 220;
 
   useEffect(() => {
     if (!data || data.length === 0) return;
@@ -16,15 +18,11 @@ const EmployeeContributionsByProjectChart = ({ data }) => {
       title: d.title || `Project ${data.indexOf(d) + 1}`
     }));
 
-    const width = ref.current.parentElement.offsetWidth;
-    const height = 220;
     const margin = { top: 50, right: 20, bottom: 40, left: 80 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
-    const svg = d3.select(ref.current)
-      .attr('width', width)
-      .attr('height', height);
+    const svg = d3.select(ref.current);
 
     svg.selectAll('*').remove();
 
@@ -179,7 +177,7 @@ const EmployeeContributionsByProjectChart = ({ data }) => {
 
   }, [data]);
 
-  return <svg ref={ref} className="w-full" />;
+  return <svg ref={ref} viewBox={`0 0 ${width} ${height}`} />;
 };
 
 export default EmployeeContributionsByProjectChart;

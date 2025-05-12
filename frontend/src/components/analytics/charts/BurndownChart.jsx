@@ -2,8 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 const BurndownChart = ({ data }) => {
-
   const ref = useRef();
+  const width = 468;
+  const height = 220;
 
   useEffect(() => {
     if (!data || data.length === 0) return;
@@ -12,8 +13,6 @@ const BurndownChart = ({ data }) => {
     const type = data.type;
     let content = data.content;
 
-    const width = ref.current.parentElement.offsetWidth;
-    const height = 220;
     const margin = { top: 20, right: 20, bottom: 40, left: 55 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -23,8 +22,6 @@ const BurndownChart = ({ data }) => {
 
     // Create SVG
     const svg = d3.select(ref.current)
-      .attr("width", width)
-      .attr("height", height)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -267,7 +264,7 @@ const BurndownChart = ({ data }) => {
 
   }, [data]);
 
-  return <svg ref={ref} className="w-full" />;
+  return <svg ref={ref} viewBox={`0 0 ${width} ${height}`} />;
 };
 
 export default BurndownChart;

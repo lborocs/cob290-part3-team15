@@ -95,7 +95,7 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
         </button>
 
         {/* Chart area */}
-        <div className="w-full h-full max-w-[85%] flex items-center justify-center">
+        <div className="w-full max-w-[80%] h-full max-h-[50%] flex items-center justify-center">
           <ChartComponent data={chartData.data} />
         </div>
 
