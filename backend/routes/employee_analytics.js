@@ -250,6 +250,14 @@ router.get("/getWorkStatistics", authenticateToken, (req, res) => {
 
 //getting all projects the employee contributed to, and returning for each proct the number of tasks completed due and overdue
 router.get("/getAllEmployeeProjects",authenticateToken,(req,res) => {
+    const projectId = req.query.projectId;
+    let projectFilter = '';
+    const values = [req.user.userID, req.user.userID, req.user.userID, req.user.userID];
+    // Filter for selected project if not overview
+    if (projectId) {
+        projectFilter = ' AND pu.ProjectID = ? ';
+        values.push(projectId);
+    }
     const query = `SELECT
                             p.ProjectID as 'id',
                             p.Title as 'title',
@@ -262,9 +270,8 @@ router.get("/getAllEmployeeProjects",authenticateToken,(req,res) => {
                         LEFT JOIN tasks as t2 ON p.ProjectID = t2.ProjectID AND t2.Status != 'Completed' AND DATEDIFF(CURDATE(), t2.Deadline) > 0 AND t2.AssigneeID = ?
                         LEFT JOIN tasks as t3 ON p.ProjectID = t3.ProjectID AND t3.Status != 'Completed' AND DATEDIFF(CURDATE(), t3.Deadline) <= 0 AND t3.AssigneeID = ?
                         WHERE pu.UserID = ?
+                        ${projectFilter}
                         GROUP BY p.ProjectID`;
-
-    const values = [req.user.userID, req.user.userID, req.user.userID, req.user.userID];
 
     database.query(query, values, (err, results) => {
         if (err) {
