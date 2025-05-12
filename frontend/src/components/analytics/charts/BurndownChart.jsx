@@ -13,6 +13,10 @@ const BurndownChart = ({ data }) => {
     const type = data.type;
     let content = data.content;
 
+    const today = new Date();
+    // Extract the deadline if data is for a project
+    const projectDeadline = data.type === 'project' ? new Date(data.deadline) : null;
+
     const margin = { top: 20, right: 20, bottom: 40, left: 55 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -28,32 +32,16 @@ const BurndownChart = ({ data }) => {
     // Extend the x-axis range to include dates beyond the last data point
     const firstDate = new Date(content[0].date);
     const lastDate = new Date(content[content.length - 1].date);
-    const extendedLastDate = d3.timeWeek.offset(lastDate, 2); // Extend by 2 weeks
+    const maxLastDate = lastDate > projectDeadline ? lastDate : projectDeadline;
+    const extendedLastDate = d3.timeWeek.offset(maxLastDate, 2); // Extend by 2 weeks
 
     // Add a placeholder point for the horizontal continuation of the actual line
-    const today = new Date();
-    let actualLineData;
+    let actualLineData = [...content];
+    const lastValue = content[content.length - 1].actual;
 
-    const lastPoint = content[content.length - 1];
-
-    // Add horizontal continuation only if there is at least one data point and we are not viewing a complete project
-    if (content.length > 0) {
-
-      // If the data is for a project, then lastPoint represents the project deadline
-      // So remove it from the data array if it's a placeholder representing the deadline
-      if (type === 'project') {
-        const cutoff = content[content.length - 2]
-        if (lastPoint.actual === cutoff.actual && new Date(lastPoint.date) > today) {
-          content = content.slice(0, -1);
-          actualLineData = [...content, { date: today.toISOString(), actual: cutoff.actual }];
-        }
-        else {
-          actualLineData = [...content];
-        }
-      }
-      else {
-        actualLineData = [...content, { date: today.toISOString(), actual: lastPoint.actual }]; // Continue horizontally to today's date
-      }
+    // Add horizontal continuation only if there is at least one data point and the final data point is not zero
+    if (content.length > 0 && lastValue != 0) {
+      actualLineData = [...content, { date: today.toISOString(), actual: lastValue }]; // Continue horizontally to today's date
     }
 
     const x = d3.scaleTime()
@@ -61,7 +49,7 @@ const BurndownChart = ({ data }) => {
       .range([0, innerWidth]);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(content, d => +d.actual)])
+      .domain([0, d3.max(content, d => +d.actual) * 1.1 + 1])
       .range([innerHeight, 0])
       .nice();
 
@@ -113,21 +101,32 @@ const BurndownChart = ({ data }) => {
       .delay(800)
       .style('opacity', 1);
 
-    // Add ideal line if project selected (diagonal from top-left to bottom-right)
+    // Add ideal line and deadline marker if project selected (diagonal from top-left to bottom-right)
     if (type === 'project') {
-      const deadline = x(new Date(lastPoint.date));
+      const deadline = x(projectDeadline);
+      const yTop = d3.max(content, d => +d.actual);
 
       svg.append('line')
-          .attr('x1', 0)
-          .attr('y1', 0)
-          .attr('x2', 0)
-          .attr('y2', 0)
-          .attr('stroke', '#4CAF50')
-          .attr('stroke-width', 2)
-          .transition()
-          .duration(1000)
-          .attr('x2', deadline)
-          .attr('y2', innerHeight);
+        .attr('x1', 0)
+        .attr('y1', yTop > 0 ? y(yTop) : y(0.8))
+        .attr('x2', 0)
+        .attr('y2', 0)
+        .attr('stroke', '#4CAF50')
+        .attr('stroke-width', 2)
+        .transition()
+        .duration(1000)
+        .attr('x2', deadline)
+        .attr('y2', innerHeight);
+
+      svg.append('path')
+        .attr('transform', `translate(${deadline}, ${innerHeight})`)
+        .attr('d', d3.symbol()
+          .type(d3.symbolDiamond)
+        )
+        .style('opacity', 0)
+        .transition()
+        .delay(800)
+        .style('opacity', 1);
     }
 
     // Create line generator for the actual line
@@ -222,15 +221,32 @@ const BurndownChart = ({ data }) => {
 
     // Add legend with animation
     const legend = svg.append('g')
-      .attr('transform', `translate(${innerWidth - 100}, 20)`)
-      .style('opacity', 0);
+        .attr('transform', `translate(${innerWidth - 100}, 20)`)
+        .style('opacity', 0);
 
     legend.transition()
-      .delay(2000)
-      .duration(500)
-      .style('opacity', 1);
+        .delay(2000)
+        .duration(500)
+        .style('opacity', 1);
 
+    legend.append('line')
+        .attr('x1', 55)
+        .attr('y1', 20)
+        .attr('x2', 70)
+        .attr('y2', 20)
+        .attr('stroke', '#FF6384')
+        .attr('stroke-width', 2);
+
+    legend.append('text')
+        .attr('x', 80)
+        .attr('y', 20)
+        .attr('dy', '.35em')
+        .text('Actual')
+        .style('font-size', '12px');
+
+    // Add ideal line and deadline marker if project selected
     if (type === 'project') {
+
       legend.append('line')
           .attr('x1', 55)
           .attr('y1', 0)
@@ -245,22 +261,20 @@ const BurndownChart = ({ data }) => {
           .attr('dy', '.35em')
           .text('Ideal')
           .style('font-size', '12px');
+
+      legend.append('path')
+          .attr('transform', `translate(62.5, 40)`)
+          .attr('d', d3.symbol()
+              .type(d3.symbolDiamond)
+          );
+
+      legend.append('text')
+          .attr('x', 80)
+          .attr('y', 40)
+          .attr('dy', '.35em')
+          .text('Due')
+          .style('font-size', '12px');
     }
-
-    legend.append('line')
-      .attr('x1', 55)
-      .attr('y1', 20)
-      .attr('x2', 70)
-      .attr('y2', 20)
-      .attr('stroke', '#FF6384')
-      .attr('stroke-width', 2);
-
-    legend.append('text')
-      .attr('x', 80)
-      .attr('y', 20)
-      .attr('dy', '.35em')
-      .text('Actual')
-      .style('font-size', '12px');
 
   }, [data]);
 

@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import EmployeeWeeklyHoursChart from './charts/EmployeeWeeklyHoursChart.jsx';
 import EmployeeContributionsByProjectChart from './charts/EmployeeContributionsByProjectChart.jsx';
-import BurndownChart from './charts/BurndownChart.jsx'; // Import BurndownChart
+import BurndownChart from './charts/BurndownChart.jsx';
+import {FiSearch} from "react-icons/fi"; // Import BurndownChart
 
 function EmployeeGraphCarousel({ selectedProjectId }) {
   const chartConfig = [
@@ -14,18 +15,18 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
           component: EmployeeContributionsByProjectChart,
       },
       {
+          type: 'burndown',
+          title: 'Task Burndown',
+          description: 'Track hours of work remaining over time',
+          endpoint: '/api/analytics/employees/getBurndownData',
+          component: BurndownChart,
+      },
+      {
           type: 'employee-hours-overview',
           title: 'My Weekly Hours',
           description: 'My hours worked in the past 4 weeks',
           endpoint: '/api/analytics/employees/getWeeklyHoursData',
           component: EmployeeWeeklyHoursChart,
-      },
-      {
-          type: 'burndown',
-          title: 'Burndown Chart',
-          description: 'Track hours of work remaining over time',
-          endpoint: '/api/analytics/employees/getBurndownData',
-          component: BurndownChart,
       }
   ];
 
@@ -94,7 +95,14 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
 
         {/* Chart area */}
         <div className="w-full max-w-[80%] h-full max-h-[50%] flex items-center justify-center">
-          <ChartComponent data={chartData.data} />
+            {chartData?.data?.length > 0 || chartData?.data?.content?.length > 0 ? (
+                <ChartComponent data={chartData.data} />
+            ) : (
+                <div className="col-span-full flex flex-col items-center justify-center py-8 text-gray-400">
+                    <FiSearch className="text-3xl mb-2" />
+                    <p>No data available</p>
+                </div>
+            )}
         </div>
 
         {/* Right arrow */}

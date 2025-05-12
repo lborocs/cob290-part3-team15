@@ -136,6 +136,7 @@ router.get("/getBurndownData", authenticateToken, (req, res) => {
     const selectedProjectId = req.query.projectId;
     let query;
     let values;
+    let deadline = null;
 
     if(!selectedProjectId) {
 
@@ -188,6 +189,17 @@ router.get("/getBurndownData", authenticateToken, (req, res) => {
     else {
 
         // Get burndown data for an employee for a specific project
+
+        // First query for the project deadline
+        query = `SELECT Deadline AS deadline FROM projects WHERE ProjectID = ?`;
+        database.query(query, [selectedProjectId], (err, results) => {
+            if (err) {
+                return res.status(500).send({ error: "Error fetching employee burndown data" });
+            }
+
+            deadline = results[0].deadline;
+        });
+
         query = `
             WITH RECURSIVE date_range AS (
                 SELECT
@@ -198,7 +210,7 @@ router.get("/getBurndownData", authenticateToken, (req, res) => {
                 SELECT
                     DATE_FORMAT(DATE_ADD(date, INTERVAL 1 DAY), '%Y-%m-%d')
                 FROM date_range
-                WHERE DATEDIFF(date, (SELECT Deadline FROM projects WHERE ProjectID = ?)) < 0
+                WHERE DATEDIFF(date, CURDATE()) < 0
             )
 
             SELECT
@@ -208,8 +220,7 @@ router.get("/getBurndownData", authenticateToken, (req, res) => {
                      SELECT
                          date,
                          actual,
-                         LAG(actual) OVER (ORDER BY date) as 'prev_actual',
-                         ROW_NUMBER() OVER (ORDER BY date DESC) as 'last_row'
+                         LAG(actual) OVER (ORDER BY date) as 'prev_actual'
                      FROM (
                               SELECT
                                   date as 'date',
@@ -225,7 +236,6 @@ router.get("/getBurndownData", authenticateToken, (req, res) => {
             WHERE
                 actual != prev_actual
                OR prev_actual IS NULL
-               OR last_row = 1
             ORDER BY date
         `;
 
@@ -237,7 +247,7 @@ router.get("/getBurndownData", authenticateToken, (req, res) => {
             return res.status(500).send({ error: "Error fetching employee burndown data" });
         }
 
-        res.send({ results: {type: selectedProjectId ? 'project' : 'overview', content: results} });
+        res.send({ results: {type: selectedProjectId ? 'project' : 'overview', deadline: deadline, content: results} });
     });
 });
 

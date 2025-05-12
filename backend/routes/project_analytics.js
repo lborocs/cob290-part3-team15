@@ -382,6 +382,73 @@ router.get("/getTaskCompletionStatus", authenticateToken, (req, res) => {
 
 
 
+// Get data for the project burndown chart
+router.get("/getBurndownData", authenticateToken, (req, res) => {
+    const selectedProjectId = req.query.projectId;
+    if(!selectedProjectId) {
+        return res.status(400).send({ error: "Project ID is required" });
+    }
+
+    // First query for the project deadline
+    let deadline;
+    let query = `SELECT Deadline AS deadline FROM projects WHERE ProjectID = ?`;
+    database.query(query, [selectedProjectId], (err, results) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching employee burndown data" });
+        }
+
+        deadline = results[0].deadline;
+    });
+
+    // Get burndown data for an employee for a specific project
+    query = `
+        WITH RECURSIVE date_range AS (
+            SELECT
+                StartDate AS 'date'
+            FROM projects
+            WHERE ProjectID = ?
+            UNION ALL
+            SELECT
+                DATE_FORMAT(DATE_ADD(date, INTERVAL 1 DAY), '%Y-%m-%d')
+            FROM date_range
+            WHERE DATEDIFF(date, CURDATE()) < 0
+        )
+
+        SELECT
+            tbl.date,
+            tbl.actual
+        FROM (
+                 SELECT
+                     date,
+                     actual,
+                     LAG(actual) OVER (ORDER BY date) as 'prev_actual'
+                 FROM (
+                          SELECT
+                              date as 'date',
+                              IFNULL(SUM(t.HoursRequired), 0) as 'actual'
+                          FROM date_range dr
+                                   LEFT JOIN tasks t
+                                             ON t.CreationDate <= dr.date
+                                                 AND (t.CompletionDate > dr.date OR t.CompletionDate IS NULL)
+                                                 AND t.ProjectID = ?
+                          GROUP BY date
+                          ORDER BY date) tbl) tbl
+        WHERE
+            actual != prev_actual
+           OR prev_actual IS NULL
+        ORDER BY date
+    `;
+
+    const values = [selectedProjectId, selectedProjectId, selectedProjectId];
+
+    database.query(query, values, (err, results) => {
+        if (err) {
+            return res.status(500).send({ error: "Error fetching employee burndown data" });
+        }
+
+        res.send({ results: {type: 'project', deadline: deadline, content: results} });
+    });
+});
 
 
 module.exports = router;
