@@ -31,7 +31,7 @@ function Login(){
             if (response?.data?.accessToken && response?.data?.refreshToken){
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
-                navigate("/chat/")
+                navigate("/analytics/")
             }
             else{
                 alert("Failed to log in!")
@@ -61,7 +61,7 @@ function Login(){
             if (response?.data?.accessToken && response?.data?.refreshToken){
                 localStorage.setItem('accessToken', response.data.accessToken);
                 localStorage.setItem("refreshToken", response.data.refreshToken);
-                navigate("/chat/")
+                navigate("/analytics/")
             }
             else{
                 alert("Failed to log in!")
