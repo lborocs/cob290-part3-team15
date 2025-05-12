@@ -64,7 +64,7 @@ const BurndownChart = ({ data }) => {
       .range([0, innerWidth]);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(content, d => d.actual)])
+      .domain([0, d3.max(content, d => +d.actual)])
       .range([innerHeight, 0])
       .nice();
 
@@ -74,7 +74,7 @@ const BurndownChart = ({ data }) => {
       .attr('opacity', 0)
       .call(
         d3.axisBottom(x)
-          .ticks(d3.timeWeek.every(1))
+          .ticks(8) // Try for 8 ticks to avoid overlapping
           .tickFormat(d3.timeFormat("%d %b"))
       );
 
@@ -97,8 +97,8 @@ const BurndownChart = ({ data }) => {
     const yAxis = svg.append('g')
       .attr('opacity', 0)
       .call(
-          d3.axisLeft(y)
-              .ticks(1, 9, 5)) // Ensure whole number ticks
+        d3.axisLeft(y)
+          .ticks(5));
 
     yAxis.transition()
       .duration(800)
@@ -110,7 +110,7 @@ const BurndownChart = ({ data }) => {
       .attr('y', -40)
       .attr('x', -innerHeight / 2)
       .attr('text-anchor', 'middle')
-      .text('Tasks Remaining')
+      .text('Hours Remaining')
       .style('opacity', 0)
       .transition()
       .delay(800)

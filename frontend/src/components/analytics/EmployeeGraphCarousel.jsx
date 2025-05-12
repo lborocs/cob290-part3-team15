@@ -23,7 +23,7 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
       {
           type: 'burndown',
           title: 'Burndown Chart',
-          description: 'Track task completion over time',
+          description: 'Track hours of work remaining over time',
           endpoint: '/api/analytics/employees/getBurndownData',
           component: BurndownChart,
       }
