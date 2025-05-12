@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import TaskCard from './TaskCard';
-import { FiSearch, FiCalendar } from 'react-icons/fi';
+import {FiCalendar, FiSearch} from 'react-icons/fi';
 import axios from "axios";
 
 function TasksList({ selectedProjectId, role }) {

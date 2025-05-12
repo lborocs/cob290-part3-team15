@@ -1,8 +1,8 @@
-import React, { use, useEffect, useState,useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Modal from "../other/Modal.jsx";
-import { BsChevronLeft, BsChevronRight, BsSearch } from "react-icons/bs";
+import {BsSearch} from "react-icons/bs";
 import axios from "axios";
-import { FaUser } from "react-icons/fa";
+import {FaUser} from "react-icons/fa";
 
 function AddChatModal({ open, onClose, setSelectedID,setMode }) {
     const [searchInput, setInput] = useState("");

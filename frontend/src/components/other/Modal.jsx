@@ -1,4 +1,5 @@
-import { BsX } from "react-icons/bs";
+import {BsX} from "react-icons/bs";
+
 export default function Modal({open, onClose, children, bgColor, accentColor}) {
     return(
         <div 

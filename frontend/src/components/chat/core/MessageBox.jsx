@@ -1,7 +1,6 @@
-import {BsSend, BsX} from 'react-icons/bs';
-import { LuSendHorizontal } from "react-icons/lu";
-import { TbMinusVertical } from "react-icons/tb";
-import { useState,useRef, useEffect } from 'react';
+import {BsX} from 'react-icons/bs';
+import {LuSendHorizontal} from "react-icons/lu";
+import {useEffect, useRef, useState} from 'react';
 import axios from "axios";
 
 function MessageBox({userID, selectedID, mode, editing, setEditing, setEditingMessage, editingMessage}) {

@@ -1,5 +1,6 @@
 import Modal from "../other/Modal";
 import axios from "axios";
+
 function HideMessageModal({ open, onClose, messageID, mode }) {
     const handleHide = async() => {
         // Logic to hide the message

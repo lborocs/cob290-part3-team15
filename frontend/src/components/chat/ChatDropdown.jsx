@@ -1,8 +1,6 @@
 import DropdownList from "../other/DropdownList";
-import { useEffect, useRef } from "react";
-import { BsClipboard2Fill } from "react-icons/bs";
-import { BsFillPencilFill } from "react-icons/bs";
-import { BsFillTrashFill } from "react-icons/bs";
+import {BsClipboard2Fill, BsFillPencilFill, BsFillTrashFill} from "react-icons/bs";
+
 function ChatDropdown({ sentByUser, onClose, message, setEditing, setEditingMessage,refs,floatingStyles, openHideModal }) {
   
     const copyText = () => {

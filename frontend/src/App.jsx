@@ -1,5 +1,5 @@
-import { lazy } from 'react';
-import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import {lazy} from 'react';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import './App.css';
 import './axios.jsx'
 

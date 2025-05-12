@@ -1,8 +1,6 @@
-import { useState,useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import make_it_all from '../assets/logo.png';
 
 //This is the boilerplate stuff
 function Login(){

@@ -1,7 +1,8 @@
 import Modal from "./Modal";
-import { useState } from "react";
+import {useState} from "react";
 import axios from "axios";
-function EditMessageModal({open, onClose, message, setMessage,mode}){ 
+
+function EditMessageModal({open, onClose, message, setMessage,mode}){
     const [editedContent, setEditedContent] = useState(message.content); // Initially set the edited content to the message content
     const handleSave = async () => {
         try {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import EmployeeWeeklyHoursChart from './charts/EmployeeWeeklyHoursChart.jsx';
 import EmployeeContributionsByProjectChart from './charts/EmployeeContributionsByProjectChart.jsx';

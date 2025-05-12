@@ -1,8 +1,8 @@
 import Modal from "../other/Modal";
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
-import { BsSearch } from "react-icons/bs";
-import { FaUser } from "react-icons/fa";
+import {useEffect, useRef, useState} from "react";
+import {BsSearch} from "react-icons/bs";
+import {FaUser} from "react-icons/fa";
 
 function AddMemberModal({ open, onClose, refs, floatingStyles,selectedID}) {
     const [searchInput, setInput] = useState("");

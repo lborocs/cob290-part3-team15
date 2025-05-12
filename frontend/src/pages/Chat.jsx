@@ -1,11 +1,9 @@
 // Client socket
-import { connectSocket, disconnectSocket,getSocket } from '../socket';
+import {connectSocket, disconnectSocket, getSocket} from '../socket';
 
-import {useWindowSize,useWindowWidth,useWindowHeight} from '@react-hook/window-size'
-import { BsArrowBarLeft, BsX } from "react-icons/bs";
-import { BsArrowBarRight } from "react-icons/bs";
-import { useState,useEffect,useRef } from 'react';
- 
+import {useWindowWidth} from '@react-hook/window-size'
+import {useEffect, useRef, useState} from 'react';
+
 import MessageList from '../components/chat/core/MessageList.jsx';
 import MessageBox from '../components/chat/core/MessageBox.jsx';
 

@@ -1,17 +1,15 @@
-import { useState,useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import Logo from '../../assets/logo.png';
 import axios from 'axios';
 
-import { MdOutlineChat } from "react-icons/md";
-import { LuChartNoAxesCombined } from "react-icons/lu";
+import {MdOutlineChat} from "react-icons/md";
+import {LuChartNoAxesCombined} from "react-icons/lu";
 
 import ProfileCard from '../accounts/ProfileCard.jsx'
 import StatusDropdown from './StatusDropdown.jsx';
 
-import { getSocket } from '../../socket.js';
-
-import { useFloating, offset, flip, shift,limitShift,useDismiss,autoUpdate} from '@floating-ui/react';
+import {autoUpdate, flip, limitShift, offset, shift, useDismiss, useFloating} from '@floating-ui/react';
 
 const Tab = (props) => {
     const handleNavigate = () => {

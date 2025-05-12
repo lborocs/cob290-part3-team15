@@ -1,5 +1,5 @@
-import { useLocation } from 'react-router-dom';
-      
+import {useLocation} from 'react-router-dom';
+
 //This is the boilerplate stuff
 function PageDoesNotExist(){
     const location = useLocation();

@@ -1,5 +1,5 @@
-import { React, useState, useEffect } from 'react';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import {React, useEffect, useState} from 'react';
+import {FiChevronLeft, FiChevronRight} from 'react-icons/fi';
 import axios from "axios";
 
 function EmployeeWorkStatistics( { selectedProjectId } ) {

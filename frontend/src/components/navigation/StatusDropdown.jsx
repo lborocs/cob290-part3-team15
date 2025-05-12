@@ -1,6 +1,5 @@
 import DropdownItem from "../other/DropdownItem";
-import { useEffect, useRef } from "react";
-import { getSocket } from '../../socket';
+import {getSocket} from '../../socket';
 
 function statusDropdown({onClose, refs, floatingStyles}) {
 
