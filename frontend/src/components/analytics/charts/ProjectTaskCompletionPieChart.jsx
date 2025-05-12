@@ -49,26 +49,29 @@ const ProjectTaskCompletionPieChart = ({ data }) => {
       .attr('stroke', 'white')
       .style('stroke-width', '2px')
       .style('opacity', 0.8)
-      .on('mouseover', function() {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr('transform', 'scale(1.05)')
-          .style('opacity', 1);
-      })
-      .on('mouseout', function() {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr('transform', 'scale(1)')
-          .style('opacity', 0.8);
-      })
       .transition()
       .delay((d, i) => i * 200)
       .duration(800)
       .attrTween('d', function(d) {
         const interpolate = d3.interpolate(emptyPie[0], d);
         return t => arc(interpolate(t));
+      })
+      .on("end", () => {
+        slice
+          .on('mouseover', function() {
+            d3.select(this)
+                .transition()
+                .duration(200)
+                .attr('transform', 'scale(1.05)')
+                .style('opacity', 0.8);
+          })
+          .on('mouseout', function() {
+            d3.select(this)
+                .transition()
+                .duration(200)
+                .attr('transform', 'scale(1)')
+                .style('opacity', 1);
+          })
       });
 
     // Add polylines connecting labels to slices
