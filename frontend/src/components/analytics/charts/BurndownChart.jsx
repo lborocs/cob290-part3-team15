@@ -6,9 +6,9 @@ const BurndownChart = ({ data }) => {
   const ref = useRef();
 
   useEffect(() => {
+    if (!data || data.length === 0) return;
 
     // Extract the data and the graph type
-    if (!data.content) return;
     const type = data.type;
     let content = data.content;
 
