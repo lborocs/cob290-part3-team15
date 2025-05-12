@@ -248,8 +248,8 @@ router.get("/getWorkStatistics", authenticateToken, (req, res) => {
 });
 
 
-//getting all projects the employee contributed to, and returning for each proct the number of tasks completed due and overdue
-router.get("/getAllEmployeeProjects",authenticateToken,(req,res) => {
+//getting the breakdown of tasks by status, for all projects or a specific project
+router.get("/getContributionData",authenticateToken,(req,res) => {
     const projectId = req.query.projectId;
     let projectFilter = '';
     const values = [req.user.userID, req.user.userID, req.user.userID, req.user.userID];

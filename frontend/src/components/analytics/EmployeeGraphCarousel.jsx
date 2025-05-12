@@ -10,7 +10,7 @@ function EmployeeGraphCarousel({ selectedProjectId }) {
           type: 'employee-projects-overview',
           title: 'My Project Contributions',
           description: 'Tasks I contributed to by project',
-          endpoint: '/api/analytics/employees/getAllEmployeeProjects',
+          endpoint: '/api/analytics/employees/getContributionData',
           component: EmployeeContributionsByProjectChart,
       },
       {
