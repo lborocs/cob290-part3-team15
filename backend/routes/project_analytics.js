@@ -9,12 +9,13 @@ router.use(express.json()) // for parsing 'application/json'
 // Get the quick statistics for overview
 router.get("/getOverviewQuickStatistics",authenticateToken,(req,res) => {
 
-    // If user is not manager, filter stats by led projects
+    // If user is not manager, filter stats by led projects and users on led projects
     const leaderFilter = req.user.role === 'Manager' ? '' : `WHERE LeaderID = ${req.user.userID}`;
+    const leaderUsers = req.user.role === 'Manager' ? ` (SELECT COUNT(UserID) FROM users) ` : ` (SELECT COUNT(DISTINCT pu.UserID) FROM project_users AS pu INNER JOIN projects AS p ON pu.ProjectID = p.ProjectID ${leaderFilter}) `;
 
     const query = `SELECT
                             (SELECT COUNT(ProjectID) FROM projects ${leaderFilter}) AS 'projects',
-                            (SELECT COUNT(pu.UserID) FROM project_users AS pu INNER JOIN projects AS p ON pu.ProjectID = p.ProjectID ${leaderFilter}) AS 'employees',
+                            ${leaderUsers} AS 'employees',
                             (SELECT COUNT(t.TaskID) FROM tasks AS t INNER JOIN projects AS p ON t.ProjectID = p.ProjectID ${leaderFilter}) AS 'tasks'`;
 
     database.query(query, [], (err, results) => {

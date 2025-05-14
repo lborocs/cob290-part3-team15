@@ -245,13 +245,13 @@ function AddChatModal({ open, onClose, setSelectedID,setMode }) {
 
                 <div className="w-full px-4">
                     {/* Search Bar */}
-                    <div className="flex items-center bg-gray-500 rounded-lg p-2 mb-4 w-full">
+                    <div className="flex items-center bg-white rounded-lg p-2 mb-4 w-full">
                     <input
                         type="text"
                         value={searchInput}
                         onChange={handleSearchInput}
                         placeholder="Search"
-                        className="flex-grow bg-transparent outline-none text-gray-200 placeholder-gray-200"
+                        className="flex-grow bg-transparent outline-none text-text"
                     />
                         <BsSearch className="text-gray-200" />
                     </div>
